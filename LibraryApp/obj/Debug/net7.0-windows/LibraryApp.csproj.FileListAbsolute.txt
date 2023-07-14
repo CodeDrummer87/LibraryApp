@@ -1,0 +1,15 @@
+C:\Users\Vadik\Desktop\LibraryApp\LibraryApp\bin\Debug\net7.0-windows\LibraryApp.exe
+C:\Users\Vadik\Desktop\LibraryApp\LibraryApp\bin\Debug\net7.0-windows\LibraryApp.deps.json
+C:\Users\Vadik\Desktop\LibraryApp\LibraryApp\bin\Debug\net7.0-windows\LibraryApp.runtimeconfig.json
+C:\Users\Vadik\Desktop\LibraryApp\LibraryApp\bin\Debug\net7.0-windows\LibraryApp.dll
+C:\Users\Vadik\Desktop\LibraryApp\LibraryApp\bin\Debug\net7.0-windows\LibraryApp.pdb
+C:\Users\Vadik\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.csproj.AssemblyReference.cache
+C:\Users\Vadik\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Vadik\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.AssemblyInfoInputs.cache
+C:\Users\Vadik\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.AssemblyInfo.cs
+C:\Users\Vadik\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.csproj.CoreCompileInputs.cache
+C:\Users\Vadik\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.dll
+C:\Users\Vadik\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\refint\LibraryApp.dll
+C:\Users\Vadik\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.pdb
+C:\Users\Vadik\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.genruntimeconfig.cache
+C:\Users\Vadik\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\ref\LibraryApp.dll

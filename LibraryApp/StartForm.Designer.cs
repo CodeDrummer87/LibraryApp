@@ -17,10 +17,6 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartForm));
@@ -28,7 +24,7 @@
             loginInputBox = new TextBox();
             loginInputLabel = new Label();
             passwordInputBox = new TextBox();
-            label1 = new Label();
+            pswdInputLabel = new Label();
             authButton = new Button();
             cancelButton = new Button();
             appVersion = new Label();
@@ -41,11 +37,11 @@
             appName.BackColor = Color.Transparent;
             appName.Font = new Font("Arial Narrow", 20.25F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
             appName.ForeColor = Color.MidnightBlue;
-            appName.Location = new Point(423, 36);
+            appName.Location = new Point(405, 38);
             appName.Name = "appName";
-            appName.Size = new Size(134, 31);
+            appName.Size = new Size(150, 31);
             appName.TabIndex = 0;
-            appName.Text = "LibraryApp";
+            appName.Text = "Библионикс";
             // 
             // loginInputBox
             // 
@@ -75,17 +71,17 @@
             passwordInputBox.Size = new Size(189, 23);
             passwordInputBox.TabIndex = 3;
             // 
-            // label1
+            // pswdInputLabel
             // 
-            label1.AutoSize = true;
-            label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Arial", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label1.ForeColor = Color.MidnightBlue;
-            label1.Location = new Point(264, 179);
-            label1.Name = "label1";
-            label1.Size = new Size(52, 15);
-            label1.TabIndex = 4;
-            label1.Text = "Пароль";
+            pswdInputLabel.AutoSize = true;
+            pswdInputLabel.BackColor = Color.Transparent;
+            pswdInputLabel.Font = new Font("Arial", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            pswdInputLabel.ForeColor = Color.MidnightBlue;
+            pswdInputLabel.Location = new Point(264, 179);
+            pswdInputLabel.Name = "pswdInputLabel";
+            pswdInputLabel.Size = new Size(52, 15);
+            pswdInputLabel.TabIndex = 4;
+            pswdInputLabel.Text = "Пароль";
             // 
             // authButton
             // 
@@ -128,9 +124,9 @@
             closeLabel.Size = new Size(53, 15);
             closeLabel.TabIndex = 8;
             closeLabel.Text = "Закрыть";
-            this.closeLabel.Click += new System.EventHandler(this.closeLabel_Click);
-            this.closeLabel.MouseEnter += new System.EventHandler(this.closeLabel_MouseEnter);
-            this.closeLabel.MouseLeave += new System.EventHandler(this.closeLabel_MouseLeave);
+            closeLabel.Click += CloseLabel_Click;
+            closeLabel.MouseEnter += CloseLabel_MouseEnter;
+            closeLabel.MouseLeave += CloseLabel_MouseLeave;
             // 
             // StartForm
             // 
@@ -142,7 +138,7 @@
             Controls.Add(appVersion);
             Controls.Add(cancelButton);
             Controls.Add(authButton);
-            Controls.Add(label1);
+            Controls.Add(pswdInputLabel);
             Controls.Add(passwordInputBox);
             Controls.Add(loginInputLabel);
             Controls.Add(loginInputBox);
@@ -151,7 +147,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "StartForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "LibraryApp 0.1";
+            Text = "Библионикс 0.1";
             ResumeLayout(false);
             PerformLayout();
         }
@@ -162,7 +158,7 @@
         private TextBox loginInputBox;
         private Label loginInputLabel;
         private TextBox passwordInputBox;
-        private Label label1;
+        private Label pswdInputLabel;
         private Button authButton;
         private Button cancelButton;
         private Label appVersion;

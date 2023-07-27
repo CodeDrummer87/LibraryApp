@@ -105,3 +105,4 @@ D:\Training\projects\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\refint\Libra
 D:\Training\projects\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.pdb
 D:\Training\projects\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.genruntimeconfig.cache
 D:\Training\projects\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\ref\LibraryApp.dll
+C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.UserAccountForm.resources

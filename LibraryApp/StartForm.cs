@@ -14,13 +14,11 @@
 
         private void CloseLabel_MouseEnter(object? sender, EventArgs e)
         {
-
             closeLabel.ForeColor = Color.Red;
         }
 
         private void CloseLabel_MouseLeave(object? sender, EventArgs e)
         {
-
             closeLabel.ForeColor = Color.MidnightBlue;
         }
 

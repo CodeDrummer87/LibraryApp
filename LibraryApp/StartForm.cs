@@ -1,10 +1,14 @@
-﻿namespace LibraryApp
+﻿using System.Security.Principal;
+
+namespace LibraryApp
 {
     public partial class StartForm : Form
     {
+        private AccountAction account;
         public StartForm()
         {
             InitializeComponent();
+            account = new AccountAction();
         }
 
         private void CloseLabel_Click(object? sender, EventArgs e)

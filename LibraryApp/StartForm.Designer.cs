@@ -37,19 +37,18 @@
             appName.BackColor = Color.Transparent;
             appName.Font = new Font("Microsoft Sans Serif", 20.25F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
             appName.ForeColor = Color.MidnightBlue;
-            appName.Location = new Point(463, 51);
+            appName.Location = new Point(405, 38);
             appName.Name = "appName";
-            appName.Size = new Size(216, 39);
+            appName.Size = new Size(175, 31);
             appName.TabIndex = 0;
             appName.Text = "Библионикс";
             // 
             // loginInputBox
             // 
             loginInputBox.BackColor = Color.OldLace;
-            loginInputBox.Location = new Point(302, 187);
-            loginInputBox.Margin = new Padding(3, 4, 3, 4);
+            loginInputBox.Location = new Point(264, 140);
             loginInputBox.Name = "loginInputBox";
-            loginInputBox.Size = new Size(215, 27);
+            loginInputBox.Size = new Size(189, 23);
             loginInputBox.TabIndex = 1;
             // 
             // loginInputLabel
@@ -58,19 +57,18 @@
             loginInputLabel.BackColor = Color.Transparent;
             loginInputLabel.Font = new Font("Arial", 9F, FontStyle.Bold, GraphicsUnit.Point);
             loginInputLabel.ForeColor = Color.MidnightBlue;
-            loginInputLabel.Location = new Point(302, 163);
+            loginInputLabel.Location = new Point(264, 122);
             loginInputLabel.Name = "loginInputLabel";
-            loginInputLabel.Size = new Size(52, 18);
+            loginInputLabel.Size = new Size(41, 15);
             loginInputLabel.TabIndex = 2;
             loginInputLabel.Text = "Логин";
             // 
             // passwordInputBox
             // 
             passwordInputBox.BackColor = Color.OldLace;
-            passwordInputBox.Location = new Point(302, 263);
-            passwordInputBox.Margin = new Padding(3, 4, 3, 4);
+            passwordInputBox.Location = new Point(264, 197);
             passwordInputBox.Name = "passwordInputBox";
-            passwordInputBox.Size = new Size(215, 27);
+            passwordInputBox.Size = new Size(189, 23);
             passwordInputBox.TabIndex = 3;
             // 
             // pswdInputLabel
@@ -79,9 +77,9 @@
             pswdInputLabel.BackColor = Color.Transparent;
             pswdInputLabel.Font = new Font("Arial", 9F, FontStyle.Bold, GraphicsUnit.Point);
             pswdInputLabel.ForeColor = Color.MidnightBlue;
-            pswdInputLabel.Location = new Point(302, 239);
+            pswdInputLabel.Location = new Point(264, 179);
             pswdInputLabel.Name = "pswdInputLabel";
-            pswdInputLabel.Size = new Size(64, 18);
+            pswdInputLabel.Size = new Size(52, 15);
             pswdInputLabel.TabIndex = 4;
             pswdInputLabel.Text = "Пароль";
             // 
@@ -89,21 +87,20 @@
             // 
             authButton.BackColor = SystemColors.Control;
             authButton.Cursor = Cursors.Hand;
-            authButton.Location = new Point(335, 336);
-            authButton.Margin = new Padding(3, 4, 3, 4);
+            authButton.Location = new Point(293, 252);
             authButton.Name = "authButton";
-            authButton.Size = new Size(86, 31);
+            authButton.Size = new Size(75, 23);
             authButton.TabIndex = 5;
             authButton.Text = "Вход";
             authButton.UseVisualStyleBackColor = false;
+            authButton.Click += AuthButton_Click;
             // 
             // cancelButton
             // 
             cancelButton.Cursor = Cursors.Hand;
-            cancelButton.Location = new Point(432, 336);
-            cancelButton.Margin = new Padding(3, 4, 3, 4);
+            cancelButton.Location = new Point(378, 252);
             cancelButton.Name = "cancelButton";
-            cancelButton.Size = new Size(86, 31);
+            cancelButton.Size = new Size(75, 23);
             cancelButton.TabIndex = 6;
             cancelButton.Text = "Отмена";
             cancelButton.UseVisualStyleBackColor = true;
@@ -113,9 +110,9 @@
             appVersion.AutoSize = true;
             appVersion.BackColor = Color.Transparent;
             appVersion.Font = new Font("Arial", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            appVersion.Location = new Point(563, 92);
+            appVersion.Location = new Point(518, 69);
             appVersion.Name = "appVersion";
-            appVersion.Size = new Size(77, 16);
+            appVersion.Size = new Size(62, 14);
             appVersion.TabIndex = 7;
             appVersion.Text = "версия 0.1";
             // 
@@ -126,9 +123,9 @@
             closeLabel.Cursor = Cursors.Hand;
             closeLabel.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
             closeLabel.ForeColor = Color.MidnightBlue;
-            closeLabel.Location = new Point(593, 449);
+            closeLabel.Location = new Point(519, 337);
             closeLabel.Name = "closeLabel";
-            closeLabel.Size = new Size(67, 20);
+            closeLabel.Size = new Size(53, 15);
             closeLabel.TabIndex = 8;
             closeLabel.Text = "Закрыть";
             closeLabel.Click += CloseLabel_Click;
@@ -137,10 +134,10 @@
             // 
             // StartForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
-            ClientSize = new Size(686, 481);
+            ClientSize = new Size(600, 361);
             Controls.Add(closeLabel);
             Controls.Add(appVersion);
             Controls.Add(cancelButton);
@@ -152,7 +149,6 @@
             Controls.Add(appName);
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Margin = new Padding(3, 4, 3, 4);
             Name = "StartForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Библионикс 0.1";

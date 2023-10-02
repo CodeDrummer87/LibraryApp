@@ -93,6 +93,7 @@
             authButton.TabIndex = 5;
             authButton.Text = "Вход";
             authButton.UseVisualStyleBackColor = false;
+            authButton.Click += AuthButton_Click;
             // 
             // cancelButton
             // 

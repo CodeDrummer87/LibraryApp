@@ -6,8 +6,7 @@ namespace LibraryApp
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-            //Application.Run(new StartForm());
-            Application.Run(new UserAccountForm());
+            Application.Run(new StartForm());
         }
     }
 }

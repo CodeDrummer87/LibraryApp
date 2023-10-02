@@ -1,14 +1,10 @@
-﻿using System.Security.Principal;
-
-namespace LibraryApp
+﻿namespace LibraryApp
 {
     public partial class StartForm : Form
     {
-        private AccountAction account;
         public StartForm()
         {
             InitializeComponent();
-            account = new AccountAction();
         }
 
         private void CloseLabel_Click(object? sender, EventArgs e)
@@ -24,6 +20,15 @@ namespace LibraryApp
         private void CloseLabel_MouseLeave(object? sender, EventArgs e)
         {
             closeLabel.ForeColor = Color.MidnightBlue;
+        }
+
+        private void AuthButton_Click(object? sender, EventArgs e)
+        {
+            // временный код передачи Id пользователя
+            int loginId = 1;
+            UserAccountForm userForm = new(this, loginId);
+            this.Hide();
+            userForm.Show();
         }
 
     }

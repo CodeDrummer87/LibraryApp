@@ -48,7 +48,7 @@ namespace LibraryApp
             currentDateLabel.BackColor = Color.Transparent;
             currentDateLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentDateLabel.ForeColor = Color.MidnightBlue;
-            currentDateLabel.Location = new Point(564, 58);
+            currentDateLabel.Location = new Point(562, 58);
             currentDateLabel.Name = "currentDateLabel";
             currentDateLabel.Size = new Size(111, 17);
             currentDateLabel.TabIndex = 0;

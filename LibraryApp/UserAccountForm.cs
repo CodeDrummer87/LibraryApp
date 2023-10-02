@@ -23,7 +23,7 @@ namespace LibraryApp
         private void UserAccountCloseLabel_Click(object? sender, EventArgs e)
         {
             this.Close();
-            Application.Exit();
+            startForm.Close();
         }
 
         private void UserAccountCloseLabel_MouseEnter(object? sender, EventArgs e)

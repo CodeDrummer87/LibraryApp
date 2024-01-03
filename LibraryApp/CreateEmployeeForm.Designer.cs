@@ -44,6 +44,11 @@
             createEmployeePersonnelNumberBox = new TextBox();
             createEmployeeButton = new Button();
             createEmployeeCloseLabel = new Label();
+            createEmployeeLoginLabel = new Label();
+            createEmployeeLoginInputBox = new TextBox();
+            createEmployeePassInputBox = new Label();
+            createEmployeePasswordInputBox = new TextBox();
+            ClearFormButton = new Button();
             SuspendLayout();
             // 
             // CreateEmployeeFormName
@@ -70,6 +75,7 @@
             // 
             // createEmployeeLastNameInputBox
             // 
+            createEmployeeLastNameInputBox.BackColor = SystemColors.Window;
             createEmployeeLastNameInputBox.Location = new Point(44, 103);
             createEmployeeLastNameInputBox.Name = "createEmployeeLastNameInputBox";
             createEmployeeLastNameInputBox.Size = new Size(100, 23);
@@ -117,7 +123,7 @@
             createEmployeeDateOfBirthLabel.AutoSize = true;
             createEmployeeDateOfBirthLabel.BackColor = Color.Transparent;
             createEmployeeDateOfBirthLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            createEmployeeDateOfBirthLabel.Location = new Point(443, 83);
+            createEmployeeDateOfBirthLabel.Location = new Point(442, 83);
             createEmployeeDateOfBirthLabel.Name = "createEmployeeDateOfBirthLabel";
             createEmployeeDateOfBirthLabel.Size = new Size(105, 17);
             createEmployeeDateOfBirthLabel.TabIndex = 7;
@@ -125,7 +131,7 @@
             // 
             // createEmployeeDateOfBirthInputBox
             // 
-            createEmployeeDateOfBirthInputBox.Location = new Point(443, 103);
+            createEmployeeDateOfBirthInputBox.Location = new Point(442, 103);
             createEmployeeDateOfBirthInputBox.Name = "createEmployeeDateOfBirthInputBox";
             createEmployeeDateOfBirthInputBox.Size = new Size(105, 23);
             createEmployeeDateOfBirthInputBox.TabIndex = 8;
@@ -166,8 +172,9 @@
             // 
             // createEmployeeButton
             // 
+            createEmployeeButton.Cursor = Cursors.Hand;
             createEmployeeButton.ForeColor = Color.Black;
-            createEmployeeButton.Location = new Point(44, 248);
+            createEmployeeButton.Location = new Point(44, 327);
             createEmployeeButton.Name = "createEmployeeButton";
             createEmployeeButton.Size = new Size(75, 23);
             createEmployeeButton.TabIndex = 13;
@@ -179,6 +186,7 @@
             // 
             createEmployeeCloseLabel.AutoSize = true;
             createEmployeeCloseLabel.BackColor = Color.Transparent;
+            createEmployeeCloseLabel.Cursor = Cursors.Hand;
             createEmployeeCloseLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
             createEmployeeCloseLabel.ForeColor = Color.Black;
             createEmployeeCloseLabel.Location = new Point(761, 15);
@@ -190,12 +198,63 @@
             createEmployeeCloseLabel.MouseEnter += CreateEmployeeCloseLabel_MouseEnter;
             createEmployeeCloseLabel.MouseLeave += CreateEmployeeCloseLabel_MouseLeave;
             // 
+            // createEmployeeLoginLabel
+            // 
+            createEmployeeLoginLabel.AutoSize = true;
+            createEmployeeLoginLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            createEmployeeLoginLabel.Location = new Point(44, 233);
+            createEmployeeLoginLabel.Name = "createEmployeeLoginLabel";
+            createEmployeeLoginLabel.Size = new Size(46, 17);
+            createEmployeeLoginLabel.TabIndex = 15;
+            createEmployeeLoginLabel.Text = "Логин";
+            // 
+            // createEmployeeLoginInputBox
+            // 
+            createEmployeeLoginInputBox.Location = new Point(44, 253);
+            createEmployeeLoginInputBox.Name = "createEmployeeLoginInputBox";
+            createEmployeeLoginInputBox.Size = new Size(100, 23);
+            createEmployeeLoginInputBox.TabIndex = 16;
+            // 
+            // createEmployeePassInputBox
+            // 
+            createEmployeePassInputBox.AutoSize = true;
+            createEmployeePassInputBox.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            createEmployeePassInputBox.Location = new Point(179, 233);
+            createEmployeePassInputBox.Name = "createEmployeePassInputBox";
+            createEmployeePassInputBox.Size = new Size(55, 17);
+            createEmployeePassInputBox.TabIndex = 17;
+            createEmployeePassInputBox.Text = "Пароль";
+            // 
+            // createEmployeePasswordInputBox
+            // 
+            createEmployeePasswordInputBox.Location = new Point(179, 253);
+            createEmployeePasswordInputBox.Name = "createEmployeePasswordInputBox";
+            createEmployeePasswordInputBox.Size = new Size(100, 23);
+            createEmployeePasswordInputBox.TabIndex = 18;
+            // 
+            // ClearFormButton
+            // 
+            ClearFormButton.Cursor = Cursors.Hand;
+            ClearFormButton.ForeColor = Color.Black;
+            ClearFormButton.Location = new Point(139, 327);
+            ClearFormButton.Name = "ClearFormButton";
+            ClearFormButton.Size = new Size(75, 23);
+            ClearFormButton.TabIndex = 19;
+            ClearFormButton.Text = "Очистить";
+            ClearFormButton.UseVisualStyleBackColor = true;
+            ClearFormButton.Click += ClearFormButton_Click;
+            // 
             // CreateEmployeeForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(800, 450);
+            Controls.Add(ClearFormButton);
+            Controls.Add(createEmployeePasswordInputBox);
+            Controls.Add(createEmployeePassInputBox);
+            Controls.Add(createEmployeeLoginInputBox);
+            Controls.Add(createEmployeeLoginLabel);
             Controls.Add(createEmployeeCloseLabel);
             Controls.Add(createEmployeeButton);
             Controls.Add(createEmployeePersonnelNumberBox);
@@ -215,7 +274,10 @@
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "CreateEmployeeForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "CreateEmployeeForm";
+            MouseDown += ThisForm_MouseDown;
+            MouseMove += ThisForm_MouseMove;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -236,7 +298,11 @@
         private Label createEmployeePersonnelNumberLabel;
         private TextBox createEmployeePersonnelNumberBox;
         private Button createEmployeeButton;
-        private Label label1;
         private Label createEmployeeCloseLabel;
+        private Label createEmployeeLoginLabel;
+        private TextBox createEmployeeLoginInputBox;
+        private Label createEmployeePassInputBox;
+        private TextBox createEmployeePasswordInputBox;
+        private Button ClearFormButton;
     }
 }

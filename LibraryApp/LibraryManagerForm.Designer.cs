@@ -31,9 +31,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LibraryManagerForm));
             LibraryManagerName = new Label();
             createEmployeeButton = new Button();
-            archiveEmployeeButton = new Button();
             libraryManagerCloseLabel = new Label();
-            timeWorkedButton = new Button();
+            listOfEmployeesButton = new Button();
+            createNewPositionButton = new Button();
+            listOfPositionsButton = new Button();
+            currentDateLabel = new Label();
             SuspendLayout();
             // 
             // LibraryManagerName
@@ -49,26 +51,19 @@
             // 
             // createEmployeeButton
             // 
+            createEmployeeButton.Cursor = Cursors.Hand;
             createEmployeeButton.Location = new Point(54, 100);
             createEmployeeButton.Name = "createEmployeeButton";
-            createEmployeeButton.Size = new Size(166, 23);
+            createEmployeeButton.Size = new Size(185, 23);
             createEmployeeButton.TabIndex = 1;
-            createEmployeeButton.Text = "Создать сотрудника";
+            createEmployeeButton.Text = "Создать аккаунт сотрудника";
             createEmployeeButton.UseVisualStyleBackColor = true;
             createEmployeeButton.Click += CreateEmployeeButton_Click;
-            // 
-            // archiveEmployeeButton
-            // 
-            archiveEmployeeButton.Location = new Point(54, 129);
-            archiveEmployeeButton.Name = "archiveEmployeeButton";
-            archiveEmployeeButton.Size = new Size(166, 23);
-            archiveEmployeeButton.TabIndex = 2;
-            archiveEmployeeButton.Text = "Архивировать сотрудника";
-            archiveEmployeeButton.UseVisualStyleBackColor = true;
             // 
             // libraryManagerCloseLabel
             // 
             libraryManagerCloseLabel.AutoSize = true;
+            libraryManagerCloseLabel.Cursor = Cursors.Hand;
             libraryManagerCloseLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
             libraryManagerCloseLabel.Location = new Point(764, 13);
             libraryManagerCloseLabel.Name = "libraryManagerCloseLabel";
@@ -79,14 +74,44 @@
             libraryManagerCloseLabel.MouseEnter += LibraryManagerCloseLabel_MouseEnter;
             libraryManagerCloseLabel.MouseLeave += LibraryManagerCloseLabel_MouseLeave;
             // 
-            // timeWorkedButton
+            // listOfEmployeesButton
             // 
-            timeWorkedButton.Location = new Point(54, 158);
-            timeWorkedButton.Name = "timeWorkedButton";
-            timeWorkedButton.Size = new Size(166, 23);
-            timeWorkedButton.TabIndex = 4;
-            timeWorkedButton.Text = "Отработанное время";
-            timeWorkedButton.UseVisualStyleBackColor = true;
+            listOfEmployeesButton.Cursor = Cursors.Hand;
+            listOfEmployeesButton.Location = new Point(54, 129);
+            listOfEmployeesButton.Name = "listOfEmployeesButton";
+            listOfEmployeesButton.Size = new Size(185, 23);
+            listOfEmployeesButton.TabIndex = 5;
+            listOfEmployeesButton.Text = "Список сотрудников";
+            listOfEmployeesButton.UseVisualStyleBackColor = true;
+            // 
+            // createNewPositionButton
+            // 
+            createNewPositionButton.Cursor = Cursors.Hand;
+            createNewPositionButton.Location = new Point(54, 158);
+            createNewPositionButton.Name = "createNewPositionButton";
+            createNewPositionButton.Size = new Size(185, 23);
+            createNewPositionButton.TabIndex = 6;
+            createNewPositionButton.Text = "Создать новую должность";
+            createNewPositionButton.UseVisualStyleBackColor = true;
+            // 
+            // listOfPositionsButton
+            // 
+            listOfPositionsButton.Location = new Point(54, 187);
+            listOfPositionsButton.Name = "listOfPositionsButton";
+            listOfPositionsButton.Size = new Size(185, 23);
+            listOfPositionsButton.TabIndex = 7;
+            listOfPositionsButton.Text = "Список должностей";
+            listOfPositionsButton.UseVisualStyleBackColor = true;
+            // 
+            // currentDateLabel
+            // 
+            currentDateLabel.AutoSize = true;
+            currentDateLabel.BackColor = Color.Transparent;
+            currentDateLabel.Location = new Point(481, 96);
+            currentDateLabel.Name = "currentDateLabel";
+            currentDateLabel.Size = new Size(97, 15);
+            currentDateLabel.TabIndex = 8;
+            currentDateLabel.Text = "currentDateLabel";
             // 
             // LibraryManagerForm
             // 
@@ -94,16 +119,20 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(800, 450);
-            Controls.Add(timeWorkedButton);
+            Controls.Add(currentDateLabel);
+            Controls.Add(listOfPositionsButton);
+            Controls.Add(createNewPositionButton);
+            Controls.Add(listOfEmployeesButton);
             Controls.Add(libraryManagerCloseLabel);
-            Controls.Add(archiveEmployeeButton);
             Controls.Add(createEmployeeButton);
             Controls.Add(LibraryManagerName);
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "LibraryManagerForm";
-            StartPosition = FormStartPosition.CenterParent;
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "LibraryManagerForm";
+            MouseDown += ThisForm_MouseDown;
+            MouseMove += ThisForm_MouseMove;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -112,8 +141,10 @@
 
         private Label LibraryManagerName;
         private Button createEmployeeButton;
-        private Button archiveEmployeeButton;
         private Label libraryManagerCloseLabel;
-        private Button timeWorkedButton;
+        private Button listOfEmployeesButton;
+        private Button createNewPositionButton;
+        private Button listOfPositionsButton;
+        private Label currentDateLabel;
     }
 }

@@ -5,6 +5,7 @@ namespace LibraryApp
 {
     public partial class UserAccountForm : Form
     {
+        private int iFormX, iFormY, iMouseX, iMouseY;
         private SqliteCommand? command;
         private SqliteDataReader? reader;
         private int currentLoginId;
@@ -91,6 +92,22 @@ namespace LibraryApp
 
             DataBase.CloseConnection();
             return model;
+        }
+
+        private void ThisForm_MouseDown(object sender, MouseEventArgs e)
+        {
+            iFormX = this.Location.X;
+            iFormY = this.Location.Y;
+            iMouseX = MousePosition.X;
+            iMouseY = MousePosition.Y;
+        }
+
+        private void ThisForm_MouseMove(object sender, MouseEventArgs e)
+        {
+            int iMouseX2 = MousePosition.X;
+            int iMouseY2 = MousePosition.Y;
+            if (e.Button == MouseButtons.Left)
+                this.Location = new Point(iFormX + (iMouseX2 - iMouseX), iFormY + (iMouseY2 - iMouseY));
         }
     }
 

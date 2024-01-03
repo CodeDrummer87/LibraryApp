@@ -24,11 +24,31 @@
 
         private void AuthButton_Click(object? sender, EventArgs e)
         {
-            // временный код передачи Id пользователя
-            int loginId = 1;
-            UserAccountForm userForm = new(this, loginId);
-            this.Hide();
-            userForm.Show();
+            if(loginInputBox.Text == "admin" && passwordInputBox.Text == "admin")
+            {
+                this.Hide();
+                LibraryManagerForm ManagerForm = new(this);
+                ManagerForm.Show();
+            }
+            else if(loginInputBox.Text == "emp" && passwordInputBox.Text == "emp")
+            {
+                // временный код передачи Id пользователя
+                int loginId = 1;
+                UserAccountForm userForm = new(this, loginId);
+                this.Hide();
+                userForm.Show();
+            }
+            else
+            {
+                MessageBox.Show("Неверный логин или пароль","Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CancelButton_Click(object? sender, EventArgs e)
+        {
+            loginInputBox.Clear();
+            passwordInputBox.Clear();
+            loginInputBox.Focus();
         }
 
     }

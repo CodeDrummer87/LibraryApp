@@ -127,6 +127,7 @@ namespace LibraryApp
             // 
             userAccountCloseLabel.AutoSize = true;
             userAccountCloseLabel.BackColor = Color.Transparent;
+            userAccountCloseLabel.Cursor = Cursors.Hand;
             userAccountCloseLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
             userAccountCloseLabel.Location = new Point(963, 21);
             userAccountCloseLabel.Name = "userAccountCloseLabel";
@@ -170,6 +171,8 @@ namespace LibraryApp
             Name = "UserAccountForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Личный кабинет пользователя";
+            MouseDown += ThisForm_MouseDown;
+            MouseMove += ThisForm_MouseMove;
             ResumeLayout(false);
             PerformLayout();
         }

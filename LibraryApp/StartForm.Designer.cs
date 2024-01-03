@@ -104,6 +104,7 @@
             cancelButton.TabIndex = 6;
             cancelButton.Text = "Отмена";
             cancelButton.UseVisualStyleBackColor = true;
+            cancelButton.Click += CancelButton_Click;
             // 
             // appVersion
             // 

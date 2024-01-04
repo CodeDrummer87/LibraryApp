@@ -35,6 +35,7 @@
 
         private void GetCurrentDate() => currentDateLabel.Text = "Сегодня " + DateTime.Now.ToLongDateString();
 
+        #region Move the Form
         private void ThisForm_MouseDown(object sender, MouseEventArgs e)
         {
             iFormX = this.Location.X;
@@ -50,5 +51,7 @@
             if (e.Button == MouseButtons.Left)
                 this.Location = new Point(iFormX + (iMouseX2 - iMouseX), iFormY + (iMouseY2 - iMouseY));
         }
+
+        #endregion
     }
 }

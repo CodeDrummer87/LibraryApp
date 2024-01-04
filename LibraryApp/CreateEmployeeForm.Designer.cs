@@ -39,7 +39,6 @@
             createEmployeeDateOfBirthLabel = new Label();
             createEmployeeDateOfBirthInputBox = new TextBox();
             createEmployeePostLabel = new Label();
-            createEmployeePostInputBox = new TextBox();
             createEmployeePersonnelNumberLabel = new Label();
             createEmployeePersonnelNumberBox = new TextBox();
             createEmployeeButton = new Button();
@@ -49,6 +48,7 @@
             createEmployeePassInputBox = new Label();
             createEmployeePasswordInputBox = new TextBox();
             ClearFormButton = new Button();
+            createEmployeePostInputComboBox = new ComboBox();
             SuspendLayout();
             // 
             // CreateEmployeeFormName
@@ -146,18 +146,11 @@
             createEmployeePostLabel.TabIndex = 9;
             createEmployeePostLabel.Text = "Должность";
             // 
-            // createEmployeePostInputBox
-            // 
-            createEmployeePostInputBox.Location = new Point(44, 177);
-            createEmployeePostInputBox.Name = "createEmployeePostInputBox";
-            createEmployeePostInputBox.Size = new Size(100, 23);
-            createEmployeePostInputBox.TabIndex = 10;
-            // 
             // createEmployeePersonnelNumberLabel
             // 
             createEmployeePersonnelNumberLabel.AutoSize = true;
             createEmployeePersonnelNumberLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            createEmployeePersonnelNumberLabel.Location = new Point(179, 159);
+            createEmployeePersonnelNumberLabel.Location = new Point(202, 157);
             createEmployeePersonnelNumberLabel.Name = "createEmployeePersonnelNumberLabel";
             createEmployeePersonnelNumberLabel.Size = new Size(121, 17);
             createEmployeePersonnelNumberLabel.TabIndex = 11;
@@ -165,7 +158,7 @@
             // 
             // createEmployeePersonnelNumberBox
             // 
-            createEmployeePersonnelNumberBox.Location = new Point(179, 177);
+            createEmployeePersonnelNumberBox.Location = new Point(202, 177);
             createEmployeePersonnelNumberBox.Name = "createEmployeePersonnelNumberBox";
             createEmployeePersonnelNumberBox.Size = new Size(121, 23);
             createEmployeePersonnelNumberBox.TabIndex = 12;
@@ -244,12 +237,21 @@
             ClearFormButton.UseVisualStyleBackColor = true;
             ClearFormButton.Click += ClearFormButton_Click;
             // 
+            // createEmployeePostInputComboBox
+            // 
+            createEmployeePostInputComboBox.FormattingEnabled = true;
+            createEmployeePostInputComboBox.Location = new Point(44, 177);
+            createEmployeePostInputComboBox.Name = "createEmployeePostInputComboBox";
+            createEmployeePostInputComboBox.Size = new Size(121, 23);
+            createEmployeePostInputComboBox.TabIndex = 20;
+            // 
             // CreateEmployeeForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(800, 450);
+            Controls.Add(createEmployeePostInputComboBox);
             Controls.Add(ClearFormButton);
             Controls.Add(createEmployeePasswordInputBox);
             Controls.Add(createEmployeePassInputBox);
@@ -259,7 +261,6 @@
             Controls.Add(createEmployeeButton);
             Controls.Add(createEmployeePersonnelNumberBox);
             Controls.Add(createEmployeePersonnelNumberLabel);
-            Controls.Add(createEmployeePostInputBox);
             Controls.Add(createEmployeePostLabel);
             Controls.Add(createEmployeeDateOfBirthInputBox);
             Controls.Add(createEmployeeDateOfBirthLabel);
@@ -276,6 +277,7 @@
             Name = "CreateEmployeeForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "CreateEmployeeForm";
+            Load += LoadPosts;
             MouseDown += ThisForm_MouseDown;
             MouseMove += ThisForm_MouseMove;
             ResumeLayout(false);
@@ -294,7 +296,6 @@
         private Label createEmployeeDateOfBirthLabel;
         private TextBox createEmployeeDateOfBirthInputBox;
         private Label createEmployeePostLabel;
-        private TextBox createEmployeePostInputBox;
         private Label createEmployeePersonnelNumberLabel;
         private TextBox createEmployeePersonnelNumberBox;
         private Button createEmployeeButton;
@@ -304,5 +305,6 @@
         private Label createEmployeePassInputBox;
         private TextBox createEmployeePasswordInputBox;
         private Button ClearFormButton;
+        private ComboBox createEmployeePostInputComboBox;
     }
 }

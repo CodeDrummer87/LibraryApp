@@ -3,64 +3,66 @@ using Microsoft.Data.Sqlite;
 
 namespace LibraryApp
 {
-    public partial class UserAccountForm : Form
+    public partial class LibraryManagerForm : Form
     {
         private int iFormX, iFormY, iMouseX, iMouseY;
         private SqliteCommand? command;
         private SqliteDataReader? reader;
         private int currentLoginId;
         private StartForm startForm;
-
-        public UserAccountForm(StartForm startForm, int currentLoginId)
+        public LibraryManagerForm(StartForm startForm, int currentLoginId)
         {
             InitializeComponent();
             GetCurrentDate();
             this.currentLoginId = currentLoginId!;
             this.startForm = startForm;
 
-            PutCurrentUserData(GetCurrentUserData(currentLoginId));
+            PutCurrentUserData(GetCurrentManagerData(currentLoginId));
         }
 
-        private void UserAccountCloseLabel_Click(object? sender, EventArgs e)
+        private void LibraryManagerCloseLabel_Click(object? sender, EventArgs e)
         {
             this.Close();
             startForm.Close();
         }
 
-        private void UserAccountCloseLabel_MouseEnter(object? sender, EventArgs e)
+        private void LibraryManagerCloseLabel_MouseEnter(object? sender, EventArgs e)
         {
-            userAccountCloseLabel.Text = "x";
-            userAccountCloseLabel.ForeColor = Color.Red;
+            libraryManagerCloseLabel.Text = "x";
+            libraryManagerCloseLabel.ForeColor = Color.Red;
         }
 
-        private void UserAccountCloseLabel_MouseLeave(object? sender, EventArgs e)
+        private void LibraryManagerCloseLabel_MouseLeave(object? sender, EventArgs e)
         {
-            userAccountCloseLabel.Text = "-";
-            userAccountCloseLabel.ForeColor = Color.Black;
+            libraryManagerCloseLabel.Text = "-";
+            libraryManagerCloseLabel.ForeColor = Color.Black;
+        }
+
+        private void CreateEmployeeButton_Click(object? sender, EventArgs e)
+        {
+            CreateEmployeeForm employeeForm = new();
+            employeeForm.Show();
         }
 
         // выводим текущую дату
         private void GetCurrentDate() => currentDateLabel.Text = "Сегодня " + DateTime.Now.ToLongDateString();
 
-        // выводим имя, дату рождения, номер читательского билета и кол-во книг текущего пользователя
-        private void PutCurrentUserData(ViewReaderModel reader)
+        // выводим имя текущего управляющего
+        private void PutCurrentUserData(ViewManagerModel manager)
         {
-            currentUserName.Text = $"{reader.Lastname.ToString()} {reader.Firstname.ToString()} {reader.Surname.ToString()}";
-            currentDateOfBirth.Text = $"Дата рождения: {reader.DateOfBirth.ToString()}";
-            currentLibraryCardNumber.Text = reader.libraryCardNumber.ToString();
-            currentTotalBooks.Text = reader.TotalBooks.ToString();
+            currentManagerNameLabel.Text = $"Управляющий: {manager.Lastname.ToString()} {manager.Firstname.ToString()} {manager.Surname.ToString()}";
         }
 
-        // получаем данные текущего пользователя
-        public ViewReaderModel GetCurrentUserData(int loginId)
+        // получаем данные текущего управляющего
+        public ViewManagerModel GetCurrentManagerData(int loginId)
         {
-            ViewReaderModel model = new();
+            ViewManagerModel model = new();
 
-            string query = "SELECT r.Id, r.PersonalId, r.libraryCardNumber, r.TotalBooks, p.Firstname, p.Lastname, p.Surname, p.DateOfBirth " +
-                           "FROM Readers r " +
+            string query = "SELECT e.Id, e.PersonId, e.PersonnelNumber, e.PostId, p.Firstname, p.Lastname, p.Surname " +
+                           "FROM Employees e " +
                            "INNER JOIN Persons p " +
-                           "ON p.Id = r.PersonalId " +
-                           "WHERE r.Id = @Id";
+                           "ON p.Id = e.PersonId " +
+                           "WHERE e.PersonId = @Id";
 
             try
             {
@@ -73,16 +75,15 @@ namespace LibraryApp
                 while (reader.Read())
                 {
 
-                    model = new ViewReaderModel()
+                    model = new ViewManagerModel()
                     {
                         Id = reader.GetInt32(0),
-                        PersonalId = reader.GetInt32(1),
-                        libraryCardNumber = reader.GetInt32(2),
-                        TotalBooks = reader.GetInt32(3),
+                        PersonId = reader.GetInt32(1),
+                        PersonnelNumber = reader.GetInt32(2),
+                        PostId = reader.GetInt32(3),
                         Firstname = reader.GetString(4),
                         Lastname = reader.GetString(5),
-                        Surname = reader.GetString(6),
-                        DateOfBirth = reader.GetString(7)
+                        Surname = reader.GetString(6)
                     };
 
                 }
@@ -90,7 +91,7 @@ namespace LibraryApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Не удалось получить данные текущего пользователя:\n\"{ex.Message}\"\n" +
+                MessageBox.Show($"Не удалось получить данные текущего управляющего:\n\"{ex.Message}\"\n" +
                                 $"Обратитесь к системному администратору для её устранения.",
                                 "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }

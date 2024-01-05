@@ -106,3 +106,6 @@ D:\Training\projects\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.p
 D:\Training\projects\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.genruntimeconfig.cache
 D:\Training\projects\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\ref\LibraryApp.dll
 C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.UserAccountForm.resources
+C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.LibraryManagerForm.resources
+C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.sourcelink.json
+C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.CreateEmployeeForm.resources

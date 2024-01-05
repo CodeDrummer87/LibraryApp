@@ -48,7 +48,7 @@ namespace LibraryApp
             currentDateLabel.BackColor = Color.Transparent;
             currentDateLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentDateLabel.ForeColor = Color.MidnightBlue;
-            currentDateLabel.Location = new Point(562, 58);
+            currentDateLabel.Location = new Point(684, 61);
             currentDateLabel.Name = "currentDateLabel";
             currentDateLabel.Size = new Size(111, 17);
             currentDateLabel.TabIndex = 0;
@@ -108,9 +108,9 @@ namespace LibraryApp
             UserAccountFormName.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point);
             UserAccountFormName.Location = new Point(35, 43);
             UserAccountFormName.Name = "UserAccountFormName";
-            UserAccountFormName.Size = new Size(283, 45);
+            UserAccountFormName.Size = new Size(509, 45);
             UserAccountFormName.TabIndex = 7;
-            UserAccountFormName.Text = "Личный кабинет";
+            UserAccountFormName.Text = "Личный кабинет пользователя";
             // 
             // currentUserName
             // 
@@ -128,12 +128,12 @@ namespace LibraryApp
             userAccountCloseLabel.AutoSize = true;
             userAccountCloseLabel.BackColor = Color.Transparent;
             userAccountCloseLabel.Cursor = Cursors.Hand;
-            userAccountCloseLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            userAccountCloseLabel.Font = new Font("Lucida Console", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             userAccountCloseLabel.Location = new Point(963, 21);
             userAccountCloseLabel.Name = "userAccountCloseLabel";
-            userAccountCloseLabel.Size = new Size(20, 21);
+            userAccountCloseLabel.Size = new Size(21, 19);
             userAccountCloseLabel.TabIndex = 9;
-            userAccountCloseLabel.Text = "X";
+            userAccountCloseLabel.Text = "-";
             userAccountCloseLabel.Click += UserAccountCloseLabel_Click;
             userAccountCloseLabel.MouseEnter += UserAccountCloseLabel_MouseEnter;
             userAccountCloseLabel.MouseLeave += UserAccountCloseLabel_MouseLeave;

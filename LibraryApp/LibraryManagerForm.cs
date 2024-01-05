@@ -1,14 +1,23 @@
-﻿namespace LibraryApp
+﻿using LibraryApp.Models;
+using Microsoft.Data.Sqlite;
+
+namespace LibraryApp
 {
     public partial class LibraryManagerForm : Form
     {
         private int iFormX, iFormY, iMouseX, iMouseY;
+        private SqliteCommand? command;
+        private SqliteDataReader? reader;
+        private int currentLoginId;
         private StartForm startForm;
-        public LibraryManagerForm(StartForm startForm)
+        public LibraryManagerForm(StartForm startForm, int currentLoginId)
         {
             InitializeComponent();
             GetCurrentDate();
+            this.currentLoginId = currentLoginId!;
             this.startForm = startForm;
+
+            PutCurrentUserData(GetCurrentManagerData(currentLoginId));
         }
 
         private void LibraryManagerCloseLabel_Click(object? sender, EventArgs e)
@@ -19,11 +28,13 @@
 
         private void LibraryManagerCloseLabel_MouseEnter(object? sender, EventArgs e)
         {
+            libraryManagerCloseLabel.Text = "x";
             libraryManagerCloseLabel.ForeColor = Color.Red;
         }
 
         private void LibraryManagerCloseLabel_MouseLeave(object? sender, EventArgs e)
         {
+            libraryManagerCloseLabel.Text = "-";
             libraryManagerCloseLabel.ForeColor = Color.Black;
         }
 
@@ -33,7 +44,61 @@
             employeeForm.Show();
         }
 
+        // выводим текущую дату
         private void GetCurrentDate() => currentDateLabel.Text = "Сегодня " + DateTime.Now.ToLongDateString();
+
+        // выводим имя текущего управляющего
+        private void PutCurrentUserData(ViewManagerModel manager)
+        {
+            currentManagerNameLabel.Text = $"Управляющий: {manager.Lastname.ToString()} {manager.Firstname.ToString()} {manager.Surname.ToString()}";
+        }
+
+        // получаем данные текущего управляющего
+        public ViewManagerModel GetCurrentManagerData(int loginId)
+        {
+            ViewManagerModel model = new();
+
+            string query = "SELECT e.Id, e.PersonId, e.PersonnelNumber, e.PostId, p.Firstname, p.Lastname, p.Surname " +
+                           "FROM Employees e " +
+                           "INNER JOIN Persons p " +
+                           "ON p.Id = e.PersonId " +
+                           "WHERE e.PersonId = @Id";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.Add("@Id", SqliteType.Integer).Value = loginId;
+
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+
+                    model = new ViewManagerModel()
+                    {
+                        Id = reader.GetInt32(0),
+                        PersonId = reader.GetInt32(1),
+                        PersonnelNumber = reader.GetInt32(2),
+                        PostId = reader.GetInt32(3),
+                        Firstname = reader.GetString(4),
+                        Lastname = reader.GetString(5),
+                        Surname = reader.GetString(6)
+                    };
+
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось получить данные текущего управляющего:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+            return model;
+        }
 
         #region Move the Form
         private void ThisForm_MouseDown(object sender, MouseEventArgs e)
@@ -54,4 +119,5 @@
 
         #endregion
     }
+
 }

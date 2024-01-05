@@ -36,6 +36,7 @@
             createNewPositionButton = new Button();
             listOfPositionsButton = new Button();
             currentDateLabel = new Label();
+            currentManagerNameLabel = new Label();
             SuspendLayout();
             // 
             // LibraryManagerName
@@ -64,12 +65,12 @@
             // 
             libraryManagerCloseLabel.AutoSize = true;
             libraryManagerCloseLabel.Cursor = Cursors.Hand;
-            libraryManagerCloseLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            libraryManagerCloseLabel.Font = new Font("Lucida Console", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             libraryManagerCloseLabel.Location = new Point(764, 13);
             libraryManagerCloseLabel.Name = "libraryManagerCloseLabel";
-            libraryManagerCloseLabel.Size = new Size(20, 21);
+            libraryManagerCloseLabel.Size = new Size(21, 19);
             libraryManagerCloseLabel.TabIndex = 3;
-            libraryManagerCloseLabel.Text = "X";
+            libraryManagerCloseLabel.Text = "-";
             libraryManagerCloseLabel.Click += LibraryManagerCloseLabel_Click;
             libraryManagerCloseLabel.MouseEnter += LibraryManagerCloseLabel_MouseEnter;
             libraryManagerCloseLabel.MouseLeave += LibraryManagerCloseLabel_MouseLeave;
@@ -107,11 +108,21 @@
             // 
             currentDateLabel.AutoSize = true;
             currentDateLabel.BackColor = Color.Transparent;
-            currentDateLabel.Location = new Point(481, 96);
+            currentDateLabel.Location = new Point(296, 104);
             currentDateLabel.Name = "currentDateLabel";
             currentDateLabel.Size = new Size(97, 15);
             currentDateLabel.TabIndex = 8;
             currentDateLabel.Text = "currentDateLabel";
+            // 
+            // currentManagerNameLabel
+            // 
+            currentManagerNameLabel.AutoSize = true;
+            currentManagerNameLabel.BackColor = Color.Transparent;
+            currentManagerNameLabel.Location = new Point(296, 128);
+            currentManagerNameLabel.Name = "currentManagerNameLabel";
+            currentManagerNameLabel.Size = new Size(152, 15);
+            currentManagerNameLabel.TabIndex = 9;
+            currentManagerNameLabel.Text = "currentManagerNameLabel";
             // 
             // LibraryManagerForm
             // 
@@ -119,6 +130,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(800, 450);
+            Controls.Add(currentManagerNameLabel);
             Controls.Add(currentDateLabel);
             Controls.Add(listOfPositionsButton);
             Controls.Add(createNewPositionButton);
@@ -146,5 +158,6 @@
         private Button createNewPositionButton;
         private Button listOfPositionsButton;
         private Label currentDateLabel;
+        private Label currentManagerNameLabel;
     }
 }

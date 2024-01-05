@@ -180,13 +180,13 @@
             createEmployeeCloseLabel.AutoSize = true;
             createEmployeeCloseLabel.BackColor = Color.Transparent;
             createEmployeeCloseLabel.Cursor = Cursors.Hand;
-            createEmployeeCloseLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            createEmployeeCloseLabel.Font = new Font("Lucida Console", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             createEmployeeCloseLabel.ForeColor = Color.Black;
             createEmployeeCloseLabel.Location = new Point(761, 15);
             createEmployeeCloseLabel.Name = "createEmployeeCloseLabel";
-            createEmployeeCloseLabel.Size = new Size(20, 21);
+            createEmployeeCloseLabel.Size = new Size(21, 19);
             createEmployeeCloseLabel.TabIndex = 14;
-            createEmployeeCloseLabel.Text = "X";
+            createEmployeeCloseLabel.Text = "-";
             createEmployeeCloseLabel.Click += CreateEmployeeCloseLabel_Click;
             createEmployeeCloseLabel.MouseEnter += CreateEmployeeCloseLabel_MouseEnter;
             createEmployeeCloseLabel.MouseLeave += CreateEmployeeCloseLabel_MouseLeave;

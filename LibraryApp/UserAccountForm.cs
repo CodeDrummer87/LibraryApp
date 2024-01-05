@@ -29,33 +29,38 @@ namespace LibraryApp
 
         private void UserAccountCloseLabel_MouseEnter(object? sender, EventArgs e)
         {
+            userAccountCloseLabel.Text = "x";
             userAccountCloseLabel.ForeColor = Color.Red;
         }
 
         private void UserAccountCloseLabel_MouseLeave(object? sender, EventArgs e)
         {
+            userAccountCloseLabel.Text = "-";
             userAccountCloseLabel.ForeColor = Color.Black;
         }
 
+        // выводим текущую дату
         private void GetCurrentDate() => currentDateLabel.Text = "Сегодня " + DateTime.Now.ToLongDateString();
 
+        // выводим имя, дату рождения, номер читательского билета и кол-во книг текущего пользователя
         private void PutCurrentUserData(ViewReaderModel reader)
         {
             currentUserName.Text = $"{reader.Lastname.ToString()} {reader.Firstname.ToString()} {reader.Surname.ToString()}";
-            currentDateOfBirth.Text = reader.DateOfBirth.ToString();
+            currentDateOfBirth.Text = $"Дата рождения: {reader.DateOfBirth.ToString()}";
             currentLibraryCardNumber.Text = reader.libraryCardNumber.ToString();
             currentTotalBooks.Text = reader.TotalBooks.ToString();
         }
 
+        // получаем данные текущего пользователя
         public ViewReaderModel GetCurrentUserData(int loginId)
         {
             ViewReaderModel model = new();
 
             string query = "SELECT r.Id, r.PersonalId, r.libraryCardNumber, r.TotalBooks, p.Firstname, p.Lastname, p.Surname, p.DateOfBirth " +
-                "FROM Readers r " +
-                "INNER JOIN Persons p " +
-                "ON p.Id = r.PersonalId " +
-                "WHERE r.Id = @Id";
+                           "FROM Readers r " +
+                           "INNER JOIN Persons p " +
+                           "ON p.Id = r.PersonalId " +
+                           "WHERE r.Id = @Id";
 
             try
             {
@@ -86,8 +91,8 @@ namespace LibraryApp
             catch (Exception ex)
             {
                 MessageBox.Show($"Не удалось получить данные текущего пользователя:\n\"{ex.Message}\"\n" +
-                    $"Обратитесь к системному администратору для её устранения.",
-                    "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
             DataBase.CloseConnection();

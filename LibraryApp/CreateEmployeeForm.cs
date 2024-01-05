@@ -21,11 +21,13 @@ namespace LibraryApp
 
         private void CreateEmployeeCloseLabel_MouseEnter(object? sender, EventArgs e)
         {
+            createEmployeeCloseLabel.Text = "x";
             createEmployeeCloseLabel.ForeColor = Color.Red;
         }
 
         private void CreateEmployeeCloseLabel_MouseLeave(object? sender, EventArgs e)
         {
+            createEmployeeCloseLabel.Text = "-";
             createEmployeeCloseLabel.ForeColor = Color.Black;
         }
 
@@ -70,14 +72,31 @@ namespace LibraryApp
             catch (Exception ex)
             {
                 MessageBox.Show($"Не удалось загрузить должности:\n\"{ex.Message}\"\n" +
-                    $"Обратитесь к системному администратору для устранения ошибки.",
-                    "Ошибка работы Базы Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                $"Обратитесь к системному администратору для устранения ошибки.",
+                                "Ошибка работы Базы Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
             DataBase.CloseConnection();
         }
 
+        // проверяем, есть ли табельный номер в базе данных
+        private bool CheckPersonnelNumber()
+        {
+            string query = "SELECT COUNT(PersonnelNumber) " +
+                            "FROM Employees WHERE PersonnelNumber = @PersonnelNumber";
 
+            command = DataBase.GetConnection().CreateCommand();
+            command.CommandText = query;
+            command.Parameters.AddWithValue("@PersonnelNumber", createEmployeePersonnelNumberBox.Text);
+
+            DataBase.OpenConnection();
+            bool answer = Convert.ToBoolean(command.ExecuteScalar());
+
+            DataBase.CloseConnection();
+            return answer;
+        }
+
+        // создаем нового сотрудника
         public void CreateEmployee()
         {
             if (CheckPersonnelNumber())
@@ -87,19 +106,17 @@ namespace LibraryApp
             }
             else
             {
+                string query = "INSERT INTO Persons (Firstname, Lastname, Surname, DateOfBirth) " +
+                                "VALUES (@Firstname, @Lastname, @Surname, @DateOfBirth); " +
+                                "INSERT INTO Employees (PersonId, PersonnelNumber, PostId) " +
+                                "SELECT Persons.Id, @PersonnelNumber, (SELECT Id FROM Posts WHERE Post = @PostId) FROM Persons " +
+                                "WHERE (Firstname, Lastname, Surname, DateOfBirth) = (@Firstname, @Lastname, @Surname, @DateOfBirth); " +
+                                "INSERT INTO Accounts (LoginId, Login, Password) SELECT Persons.Id, @Login, @Password FROM Persons " +
+                                "WHERE (Firstname, Lastname, Surname, DateOfBirth) = (@Firstname, @Lastname, @Surname, @DateOfBirth); ";
                 try
                 {
-                    SqliteCommand command = new SqliteCommand();
                     command = DataBase.GetConnection().CreateCommand();
-                    DataBase.OpenConnection();
-                    command.CommandText = "INSERT INTO Persons (Firstname, Lastname, Surname, DateOfBirth) " +
-                                          "VALUES (@Firstname, @Lastname, @Surname, @DateOfBirth); " +
-                                          "INSERT INTO Employees (PersonId, PersonnelNumber, PostId) " +
-                                          "SELECT Persons.Id, @PersonnelNumber, (SELECT Id FROM Posts WHERE Post = @PostId) FROM Persons " +
-                                          "WHERE (Firstname, Lastname, Surname, DateOfBirth) = (@Firstname, @Lastname, @Surname, @DateOfBirth); " +
-                                          "INSERT INTO Accounts (LoginId, Login, Password) SELECT Persons.Id, @Login, @Password FROM Persons " +
-                                          "WHERE (Firstname, Lastname, Surname, DateOfBirth) = (@Firstname, @Lastname, @Surname, @DateOfBirth); ";
-
+                    command.CommandText = query;
                     command.Parameters.AddWithValue("@Firstname", createEmployeeFirstNameInputBox.Text);
                     command.Parameters.AddWithValue("@Lastname", createEmployeeLastNameInputBox.Text);
                     command.Parameters.AddWithValue("@Surname", createEmployeeSurNameInputBox.Text);
@@ -108,10 +125,12 @@ namespace LibraryApp
                     command.Parameters.AddWithValue("@PostId", createEmployeePostInputComboBox.Text);
                     command.Parameters.AddWithValue("@Login", createEmployeeLoginInputBox.Text);
                     command.Parameters.AddWithValue("@Password", createEmployeePasswordInputBox.Text);
+                    
+                    DataBase.OpenConnection();
                     command.ExecuteNonQuery();
 
                     MessageBox.Show($"Сотрудник с табельным номером {createEmployeePersonnelNumberBox.Text} создан",
-                                "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
@@ -125,22 +144,7 @@ namespace LibraryApp
             }
         }
 
-        // для проверки табельного номера в базе данных
-        private bool CheckPersonnelNumber()
-        {
-            SqliteCommand command = new SqliteCommand();
-            command = DataBase.GetConnection().CreateCommand();
-            DataBase.OpenConnection();
-            command.CommandText = "SELECT COUNT(PersonnelNumber) " +
-                                  "FROM Employees WHERE PersonnelNumber = @PersonnelNumber";
-
-            command.Parameters.AddWithValue("@PersonnelNumber", createEmployeePersonnelNumberBox.Text);
-            bool answer = Convert.ToBoolean(command.ExecuteScalar());
-
-            DataBase.CloseConnection();
-            return answer;
-        }
-
+        // очищаем форму
         private void ClearForm()
         {
             foreach (Control ctrl in Controls)
@@ -170,4 +174,5 @@ namespace LibraryApp
 
         #endregion
     }
+
 }

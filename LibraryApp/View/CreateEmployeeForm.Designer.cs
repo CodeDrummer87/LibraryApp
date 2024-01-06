@@ -274,6 +274,8 @@
             ForeColor = Color.MidnightBlue;
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximumSize = new Size(800, 450);
+            MinimumSize = new Size(800, 450);
             Name = "CreateEmployeeForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "CreateEmployeeForm";

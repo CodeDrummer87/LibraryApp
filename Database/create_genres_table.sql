@@ -1,0 +1,5 @@
+CREATE TABLE Genres
+(
+Id INTEGER PRIMARY KEY,
+Name TEXT
+)

@@ -168,6 +168,8 @@ namespace LibraryApp
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
+            MaximumSize = new Size(1008, 729);
+            MinimumSize = new Size(1008, 729);
             Name = "UserAccountForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Личный кабинет пользователя";

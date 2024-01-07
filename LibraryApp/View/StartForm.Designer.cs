@@ -150,6 +150,8 @@
             Controls.Add(appName);
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximumSize = new Size(600, 361);
+            MinimumSize = new Size(600, 361);
             Name = "StartForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Библионикс 0.1";

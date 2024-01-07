@@ -140,6 +140,8 @@
             Controls.Add(LibraryManagerName);
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximumSize = new Size(800, 450);
+            MinimumSize = new Size(800, 450);
             Name = "LibraryManagerForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "LibraryManagerForm";

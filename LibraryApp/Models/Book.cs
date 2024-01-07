@@ -8,7 +8,7 @@
         public string? Author { get; set; }
         public int? AgeLimit { get; set; }
         public string? ImagePath { get; set; }
-        public int? IsAvailable { get; set; }
-        public int? IsActive { get; set; }
+        public bool IsAvailable { get; set; }
+        public bool IsActive { get; set; }
     }
 }

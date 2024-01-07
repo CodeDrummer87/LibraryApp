@@ -53,10 +53,7 @@ namespace LibraryApp
         }
 
         // получаем Id аккаунта
-        private int GetCurrentLoginId()
-        {
-            return GetCurrentAccountData(loginInputBox.Text).LoginId;
-        }
+        private int GetCurrentLoginId() => Convert.ToInt32(GetCurrentAccountData(loginInputBox.Text).LoginId);
 
         // получаем данные аккаунта
         public Account GetCurrentAccountData(string login)

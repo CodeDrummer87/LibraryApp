@@ -79,8 +79,14 @@ namespace LibraryApp
             DataBase.CloseConnection();
         }
 
+        // проверяем, является ли табельный номер числом
+        private bool CheckPersonnelNumberIsNumber()
+        {
+            return int.TryParse(createEmployeePersonnelNumberBox.Text, out _);
+        }
+
         // проверяем, есть ли табельный номер в базе данных
-        private bool CheckPersonnelNumber()
+        private bool CheckPersonnelNumberInDataBase()
         {
             string query = "SELECT COUNT(PersonnelNumber) " +
                             "FROM Employees WHERE PersonnelNumber = @PersonnelNumber";
@@ -99,49 +105,62 @@ namespace LibraryApp
         // создаем нового сотрудника
         public void CreateEmployee()
         {
-            if (CheckPersonnelNumber())
+            if (CheckPersonnelNumberIsNumber())
             {
-                MessageBox.Show($"Сотрудник с табельным номером {createEmployeePersonnelNumberBox.Text} уже существует",
-                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (CheckPersonnelNumberInDataBase())
+                {
+                    MessageBox.Show($"Сотрудник с табельным номером {createEmployeePersonnelNumberBox.Text} уже существует",
+                                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    string query = "INSERT INTO Persons (Firstname, Lastname, Surname, DateOfBirth) " +
+                                   "VALUES (@Firstname, @Lastname, @Surname, @DateOfBirth); " +
+                                   "INSERT INTO Employees (PersonId, PersonnelNumber, PostId) " +
+                                   "SELECT Persons.Id, @PersonnelNumber, (SELECT Id FROM Posts WHERE Post = @PostId) FROM Persons " +
+                                   "WHERE (Firstname, Lastname, Surname, DateOfBirth) = (@Firstname, @Lastname, @Surname, @DateOfBirth); " +
+                                   "INSERT INTO Accounts (LoginId, Login, Password) SELECT Persons.Id, @Login, @Password FROM Persons " +
+                                   "WHERE (Firstname, Lastname, Surname, DateOfBirth) = (@Firstname, @Lastname, @Surname, @DateOfBirth); ";
+
+                    try
+                    {
+                        command = DataBase.GetConnection().CreateCommand();
+                        command.CommandText = query;
+                        command.Parameters.AddWithValue("@Firstname", createEmployeeFirstNameInputBox.Text);
+                        command.Parameters.AddWithValue("@Lastname", createEmployeeLastNameInputBox.Text);
+                        command.Parameters.AddWithValue("@Surname", createEmployeeSurNameInputBox.Text);
+                        command.Parameters.AddWithValue("@DateOfBirth", createEmployeeDateOfBirthInputBox.Text);
+                        command.Parameters.AddWithValue("@PersonnelNumber", createEmployeePersonnelNumberBox.Text);
+                        command.Parameters.AddWithValue("@PostId", createEmployeePostInputComboBox.Text);
+                        command.Parameters.AddWithValue("@Login", createEmployeeLoginInputBox.Text);
+                        command.Parameters.AddWithValue("@Password", createEmployeePasswordInputBox.Text);
+
+                        DataBase.OpenConnection();
+                        command.ExecuteNonQuery();
+
+                        MessageBox.Show($"Сотрудник с табельным номером {createEmployeePersonnelNumberBox.Text} создан",
+                                        "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Не удалось создать сотрудника:\n\"{ex.Message}\"\n" +
+                                        $"Обратитесь к системному администратору для её устранения.",
+                                        "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    }
+
+                    DataBase.CloseConnection();
+                    ClearForm();
+                }
             }
             else
             {
-                string query = "INSERT INTO Persons (Firstname, Lastname, Surname, DateOfBirth) " +
-                                "VALUES (@Firstname, @Lastname, @Surname, @DateOfBirth); " +
-                                "INSERT INTO Employees (PersonId, PersonnelNumber, PostId) " +
-                                "SELECT Persons.Id, @PersonnelNumber, (SELECT Id FROM Posts WHERE Post = @PostId) FROM Persons " +
-                                "WHERE (Firstname, Lastname, Surname, DateOfBirth) = (@Firstname, @Lastname, @Surname, @DateOfBirth); " +
-                                "INSERT INTO Accounts (LoginId, Login, Password) SELECT Persons.Id, @Login, @Password FROM Persons " +
-                                "WHERE (Firstname, Lastname, Surname, DateOfBirth) = (@Firstname, @Lastname, @Surname, @DateOfBirth); ";
-                try
-                {
-                    command = DataBase.GetConnection().CreateCommand();
-                    command.CommandText = query;
-                    command.Parameters.AddWithValue("@Firstname", createEmployeeFirstNameInputBox.Text);
-                    command.Parameters.AddWithValue("@Lastname", createEmployeeLastNameInputBox.Text);
-                    command.Parameters.AddWithValue("@Surname", createEmployeeSurNameInputBox.Text);
-                    command.Parameters.AddWithValue("@DateOfBirth", createEmployeeDateOfBirthInputBox.Text);
-                    command.Parameters.AddWithValue("@PersonnelNumber", createEmployeePersonnelNumberBox.Text);
-                    command.Parameters.AddWithValue("@PostId", createEmployeePostInputComboBox.Text);
-                    command.Parameters.AddWithValue("@Login", createEmployeeLoginInputBox.Text);
-                    command.Parameters.AddWithValue("@Password", createEmployeePasswordInputBox.Text);
-                    
-                    DataBase.OpenConnection();
-                    command.ExecuteNonQuery();
+                MessageBox.Show($"Недопустимый формат табельного номера. Необходимо использовать только цифры",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                    MessageBox.Show($"Сотрудник с табельным номером {createEmployeePersonnelNumberBox.Text} создан",
-                                    "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Не удалось создать сотрудника:\n\"{ex.Message}\"\n" +
-                                    $"Обратитесь к системному администратору для её устранения.",
-                                    "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                }
-
-                DataBase.CloseConnection();
-                ClearForm();
+                createEmployeePersonnelNumberBox.Clear();
+                createEmployeePersonnelNumberBox.Focus();
             }
+
         }
 
         // очищаем форму

@@ -124,7 +124,7 @@
             closeLabel.Cursor = Cursors.Hand;
             closeLabel.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
             closeLabel.ForeColor = Color.MidnightBlue;
-            closeLabel.Location = new Point(519, 332);
+            closeLabel.Location = new Point(519, 329);
             closeLabel.Name = "closeLabel";
             closeLabel.Size = new Size(53, 15);
             closeLabel.TabIndex = 8;

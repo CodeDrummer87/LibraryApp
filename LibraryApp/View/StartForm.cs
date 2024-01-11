@@ -8,9 +8,12 @@ namespace LibraryApp
         private SqliteCommand command;
         private SqliteDataReader reader;
 
+        private bool isHiddenPassword;
+
         public StartForm()
         {
             InitializeComponent();
+            isHiddenPassword = true;
         }
 
         private void CloseLabel_Click(object? sender, EventArgs e)
@@ -26,6 +29,35 @@ namespace LibraryApp
         private void CloseLabel_MouseLeave(object? sender, EventArgs e)
         {
             closeLabel.ForeColor = Color.MidnightBlue;
+        }
+
+        private void PictureBoxMouseEnter(object? sender, EventArgs e)
+        {
+            PictureBox pic = sender as PictureBox;
+            pic.BackColor = Color.Wheat;
+        }
+
+        private void PictureBoxMouseLeave(object? sender, EventArgs e)
+        {
+            PictureBox pic = sender as PictureBox;
+            pic.BackColor = Color.OldLace;
+        }
+
+        // скрываем или показывамем пароль в поле ввода по нажатию кнопки
+        private void HidePasswordPictureBox_Click(object? sender, EventArgs e)
+        {
+            if (isHiddenPassword)
+            {
+                isHiddenPassword = false;
+                hidePasswordPictureBox.Image = Properties.Resources.show_password;
+                passwordInputBox.PasswordChar = '\0';
+            }
+            else
+            {
+                isHiddenPassword = true;
+                hidePasswordPictureBox.Image = Properties.Resources.hide_password;
+                passwordInputBox.PasswordChar = '*';
+            }
         }
 
         private void AuthButton_Click(object? sender, EventArgs e)

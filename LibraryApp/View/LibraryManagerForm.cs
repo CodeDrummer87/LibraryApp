@@ -38,6 +38,29 @@ namespace LibraryApp
             libraryManagerCloseLabel.ForeColor = Color.Black;
         }
 
+        // выходим на стартовую форму, если ответить "да"
+        private void ExitToStartFormLabel_CLick(object sender, EventArgs e)
+        {
+            MessageBoxButtons msb = MessageBoxButtons.YesNo;
+            String message = "Вы действительно хотите выйти?";
+            String caption = "Выход";
+            if (MessageBox.Show(message, caption, msb) == DialogResult.Yes)
+            {
+                this.Close();
+                startForm.Show();
+            }
+        }
+
+        private void ExitToStartFormLabel_MouseEnter(object sender, EventArgs e)
+        {
+            exitToStartFormLabel.ForeColor = Color.Red;
+        }
+
+        private void ExitToStartFormLabel_MouseLeave(object sender, EventArgs e)
+        {
+            exitToStartFormLabel.ForeColor = Color.MidnightBlue;
+        }
+
         private void CreateEmployeeButton_Click(object? sender, EventArgs e)
         {
             CreateEmployeeForm employeeForm = new();

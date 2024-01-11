@@ -250,6 +250,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(800, 450);
             Controls.Add(createEmployeePostInputComboBox);
             Controls.Add(ClearFormButton);
@@ -278,7 +279,7 @@
             MinimumSize = new Size(800, 450);
             Name = "CreateEmployeeForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "CreateEmployeeForm";
+            Text = "Создать сотрудника";
             Load += LoadPosts;
             MouseDown += ThisForm_MouseDown;
             MouseMove += ThisForm_MouseMove;

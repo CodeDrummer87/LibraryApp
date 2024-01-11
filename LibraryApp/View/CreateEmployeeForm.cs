@@ -154,7 +154,7 @@ namespace LibraryApp
             }
             else
             {
-                MessageBox.Show($"Недопустимый формат табельного номера. Необходимо использовать только цифры",
+                MessageBox.Show("Недопустимый формат табельного номера. Необходимо использовать только цифры",
                                 "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 createEmployeePersonnelNumberBox.Clear();

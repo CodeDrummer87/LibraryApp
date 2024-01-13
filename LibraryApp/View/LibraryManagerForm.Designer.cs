@@ -37,6 +37,7 @@
             listOfPositionsButton = new Button();
             currentDateLabel = new Label();
             currentManagerNameLabel = new Label();
+            exitToStartFormLabel = new Label();
             SuspendLayout();
             // 
             // LibraryManagerName
@@ -124,12 +125,30 @@
             currentManagerNameLabel.TabIndex = 9;
             currentManagerNameLabel.Text = "currentManagerNameLabel";
             // 
+            // exitToStartFormLabel
+            // 
+            exitToStartFormLabel.AutoSize = true;
+            exitToStartFormLabel.BackColor = Color.Transparent;
+            exitToStartFormLabel.Cursor = Cursors.Hand;
+            exitToStartFormLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            exitToStartFormLabel.ForeColor = Color.MidnightBlue;
+            exitToStartFormLabel.Location = new Point(730, 421);
+            exitToStartFormLabel.Name = "exitToStartFormLabel";
+            exitToStartFormLabel.Size = new Size(49, 17);
+            exitToStartFormLabel.TabIndex = 10;
+            exitToStartFormLabel.Text = "Выход";
+            exitToStartFormLabel.Click += ExitToStartFormLabel_CLick;
+            exitToStartFormLabel.MouseEnter += ExitToStartFormLabel_MouseEnter;
+            exitToStartFormLabel.MouseLeave += ExitToStartFormLabel_MouseLeave;
+            // 
             // LibraryManagerForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(800, 450);
+            Controls.Add(exitToStartFormLabel);
             Controls.Add(currentManagerNameLabel);
             Controls.Add(currentDateLabel);
             Controls.Add(listOfPositionsButton);
@@ -144,7 +163,7 @@
             MinimumSize = new Size(800, 450);
             Name = "LibraryManagerForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "LibraryManagerForm";
+            Text = "Управление библиотекой";
             MouseDown += ThisForm_MouseDown;
             MouseMove += ThisForm_MouseMove;
             ResumeLayout(false);
@@ -161,5 +180,6 @@
         private Button listOfPositionsButton;
         private Label currentDateLabel;
         private Label currentManagerNameLabel;
+        private Label exitToStartFormLabel;
     }
 }

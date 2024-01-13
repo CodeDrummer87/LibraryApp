@@ -29,6 +29,8 @@
             cancelButton = new Button();
             appVersion = new Label();
             closeLabel = new Label();
+            hidePasswordPictureBox = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)hidePasswordPictureBox).BeginInit();
             SuspendLayout();
             // 
             // appName
@@ -68,6 +70,7 @@
             passwordInputBox.BackColor = Color.OldLace;
             passwordInputBox.Location = new Point(264, 197);
             passwordInputBox.Name = "passwordInputBox";
+            passwordInputBox.PasswordChar = '*';
             passwordInputBox.Size = new Size(189, 23);
             passwordInputBox.TabIndex = 3;
             // 
@@ -124,7 +127,7 @@
             closeLabel.Cursor = Cursors.Hand;
             closeLabel.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
             closeLabel.ForeColor = Color.MidnightBlue;
-            closeLabel.Location = new Point(519, 332);
+            closeLabel.Location = new Point(519, 329);
             closeLabel.Name = "closeLabel";
             closeLabel.Size = new Size(53, 15);
             closeLabel.TabIndex = 8;
@@ -133,12 +136,30 @@
             closeLabel.MouseEnter += CloseLabel_MouseEnter;
             closeLabel.MouseLeave += CloseLabel_MouseLeave;
             // 
+            // hidePasswordPictureBox
+            // 
+            hidePasswordPictureBox.BackColor = Color.OldLace;
+            hidePasswordPictureBox.BorderStyle = BorderStyle.FixedSingle;
+            hidePasswordPictureBox.Cursor = Cursors.Hand;
+            hidePasswordPictureBox.Image = Properties.Resources.hide_password;
+            hidePasswordPictureBox.Location = new Point(459, 197);
+            hidePasswordPictureBox.Name = "hidePasswordPictureBox";
+            hidePasswordPictureBox.Size = new Size(23, 23);
+            hidePasswordPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            hidePasswordPictureBox.TabIndex = 9;
+            hidePasswordPictureBox.TabStop = false;
+            hidePasswordPictureBox.Click += HidePasswordPictureBox_Click;
+            hidePasswordPictureBox.MouseEnter += PictureBoxMouseEnter;
+            hidePasswordPictureBox.MouseLeave += PictureBoxMouseLeave;
+            // 
             // StartForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(600, 361);
+            Controls.Add(hidePasswordPictureBox);
             Controls.Add(closeLabel);
             Controls.Add(appVersion);
             Controls.Add(cancelButton);
@@ -155,6 +176,7 @@
             Name = "StartForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Библионикс 0.1";
+            ((System.ComponentModel.ISupportInitialize)hidePasswordPictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -170,5 +192,6 @@
         private Button cancelButton;
         private Label appVersion;
         private Label closeLabel;
+        private PictureBox hidePasswordPictureBox;
     }
 }

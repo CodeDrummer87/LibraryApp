@@ -40,6 +40,7 @@ namespace LibraryApp
             currentUserName = new Label();
             userAccountCloseLabel = new Label();
             currentDateOfBirth = new Label();
+            exitToStartFormLabel = new Label();
             SuspendLayout();
             // 
             // currentDateLabel
@@ -149,13 +150,31 @@ namespace LibraryApp
             currentDateOfBirth.TabIndex = 10;
             currentDateOfBirth.Text = "currentDateOfBirth";
             // 
+            // exitToStartFormLabel
+            // 
+            exitToStartFormLabel.AutoSize = true;
+            exitToStartFormLabel.BackColor = Color.Transparent;
+            exitToStartFormLabel.Cursor = Cursors.Hand;
+            exitToStartFormLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            exitToStartFormLabel.ForeColor = Color.MidnightBlue;
+            exitToStartFormLabel.Location = new Point(930, 686);
+            exitToStartFormLabel.Name = "exitToStartFormLabel";
+            exitToStartFormLabel.Size = new Size(49, 17);
+            exitToStartFormLabel.TabIndex = 11;
+            exitToStartFormLabel.Text = "Выход";
+            exitToStartFormLabel.Click += ExitToStartFormLabel_CLick;
+            exitToStartFormLabel.MouseEnter += ExitToStartFormLabel_MouseEnter;
+            exitToStartFormLabel.MouseLeave += ExitToStartFormLabel_MouseLeave;
+            // 
             // UserAccountForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1008, 729);
+            Controls.Add(exitToStartFormLabel);
             Controls.Add(currentDateOfBirth);
             Controls.Add(userAccountCloseLabel);
             Controls.Add(currentUserName);
@@ -190,5 +209,6 @@ namespace LibraryApp
         private Label currentUserName;
         private Label userAccountCloseLabel;
         private Label currentDateOfBirth;
+        private Label exitToStartFormLabel;
     }
 }

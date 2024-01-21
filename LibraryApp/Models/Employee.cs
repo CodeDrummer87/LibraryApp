@@ -6,5 +6,6 @@
         public int? PersonlId { get; set; }
         public int? PersonnelNumber { get; set; }
         public int? PostId { get; set; }
+        public bool IsActive { get; set; }
     }
 }

@@ -49,6 +49,7 @@
             createEmployeePasswordInputBox = new TextBox();
             ClearFormButton = new Button();
             createEmployeePostInputComboBox = new ComboBox();
+            createEmployeeIsActiveCheckBox = new CheckBox();
             SuspendLayout();
             // 
             // CreateEmployeeFormName
@@ -245,6 +246,20 @@
             createEmployeePostInputComboBox.Size = new Size(121, 23);
             createEmployeePostInputComboBox.TabIndex = 20;
             // 
+            // createEmployeeIsActiveCheckBox
+            // 
+            createEmployeeIsActiveCheckBox.AutoSize = true;
+            createEmployeeIsActiveCheckBox.BackColor = Color.Transparent;
+            createEmployeeIsActiveCheckBox.Checked = true;
+            createEmployeeIsActiveCheckBox.CheckState = CheckState.Checked;
+            createEmployeeIsActiveCheckBox.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            createEmployeeIsActiveCheckBox.Location = new Point(356, 179);
+            createEmployeeIsActiveCheckBox.Name = "createEmployeeIsActiveCheckBox";
+            createEmployeeIsActiveCheckBox.Size = new Size(115, 21);
+            createEmployeeIsActiveCheckBox.TabIndex = 21;
+            createEmployeeIsActiveCheckBox.Text = "Действующий";
+            createEmployeeIsActiveCheckBox.UseVisualStyleBackColor = false;
+            // 
             // CreateEmployeeForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -252,6 +267,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(800, 450);
+            Controls.Add(createEmployeeIsActiveCheckBox);
             Controls.Add(createEmployeePostInputComboBox);
             Controls.Add(ClearFormButton);
             Controls.Add(createEmployeePasswordInputBox);
@@ -309,5 +325,6 @@
         private TextBox createEmployeePasswordInputBox;
         private Button ClearFormButton;
         private ComboBox createEmployeePostInputComboBox;
+        private CheckBox createEmployeeIsActiveCheckBox;
     }
 }

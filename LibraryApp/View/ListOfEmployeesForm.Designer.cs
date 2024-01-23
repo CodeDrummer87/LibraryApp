@@ -28,11 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ListOfEmployeesForm));
             listOfEmployeesFormName = new Label();
             listOfEmployeesCloseLabel = new Label();
             employeesTable = new DataGridView();
+            listOfEmployeesGroupBox = new GroupBox();
+            listOfEmployeesFilterBox = new TextBox();
+            listOfEmployeesPersonnelNumberFilterRadioButton = new RadioButton();
+            listOfEmployeesPostFilterRadioButton = new RadioButton();
+            listOfEmployeesLastNameFilterRadioButton = new RadioButton();
             ((System.ComponentModel.ISupportInitialize)employeesTable).BeginInit();
+            listOfEmployeesGroupBox.SuspendLayout();
             SuspendLayout();
             // 
             // listOfEmployeesFormName
@@ -52,7 +59,7 @@
             listOfEmployeesCloseLabel.AutoSize = true;
             listOfEmployeesCloseLabel.Font = new Font("Lucida Console", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             listOfEmployeesCloseLabel.ForeColor = Color.Black;
-            listOfEmployeesCloseLabel.Location = new Point(761, 15);
+            listOfEmployeesCloseLabel.Location = new Point(1014, 13);
             listOfEmployeesCloseLabel.Name = "listOfEmployeesCloseLabel";
             listOfEmployeesCloseLabel.Size = new Size(21, 19);
             listOfEmployeesCloseLabel.TabIndex = 1;
@@ -65,9 +72,10 @@
             // 
             employeesTable.AllowUserToAddRows = false;
             employeesTable.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.BackColor = Color.WhiteSmoke;
+            employeesTable.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             employeesTable.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             employeesTable.BackgroundColor = SystemColors.Control;
-            employeesTable.AlternatingRowsDefaultCellStyle.BackColor = Color.WhiteSmoke;
             employeesTable.BorderStyle = BorderStyle.None;
             employeesTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             employeesTable.Location = new Point(47, 69);
@@ -75,14 +83,77 @@
             employeesTable.RowHeadersVisible = false;
             employeesTable.RowTemplate.Height = 25;
             employeesTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            employeesTable.Size = new Size(712, 444);
+            employeesTable.Size = new Size(718, 497);
             employeesTable.TabIndex = 2;
+            // 
+            // listOfEmployeesGroupBox
+            // 
+            listOfEmployeesGroupBox.Controls.Add(listOfEmployeesFilterBox);
+            listOfEmployeesGroupBox.Controls.Add(listOfEmployeesPersonnelNumberFilterRadioButton);
+            listOfEmployeesGroupBox.Controls.Add(listOfEmployeesPostFilterRadioButton);
+            listOfEmployeesGroupBox.Controls.Add(listOfEmployeesLastNameFilterRadioButton);
+            listOfEmployeesGroupBox.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold, GraphicsUnit.Point);
+            listOfEmployeesGroupBox.ForeColor = Color.MidnightBlue;
+            listOfEmployeesGroupBox.Location = new Point(794, 65);
+            listOfEmployeesGroupBox.Name = "listOfEmployeesGroupBox";
+            listOfEmployeesGroupBox.Size = new Size(211, 166);
+            listOfEmployeesGroupBox.TabIndex = 3;
+            listOfEmployeesGroupBox.TabStop = false;
+            listOfEmployeesGroupBox.Text = "Фильтрация";
+            // 
+            // listOfEmployeesFilterBox
+            // 
+            listOfEmployeesFilterBox.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            listOfEmployeesFilterBox.Location = new Point(12, 121);
+            listOfEmployeesFilterBox.Name = "listOfEmployeesFilterBox";
+            listOfEmployeesFilterBox.Size = new Size(183, 25);
+            listOfEmployeesFilterBox.TabIndex = 3;
+            listOfEmployeesFilterBox.TextChanged += FilterTextChanged;
+            // 
+            // listOfEmployeesPersonnelNumberFilterRadioButton
+            // 
+            listOfEmployeesPersonnelNumberFilterRadioButton.AutoSize = true;
+            listOfEmployeesPersonnelNumberFilterRadioButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            listOfEmployeesPersonnelNumberFilterRadioButton.ForeColor = Color.Black;
+            listOfEmployeesPersonnelNumberFilterRadioButton.Location = new Point(12, 85);
+            listOfEmployeesPersonnelNumberFilterRadioButton.Name = "listOfEmployeesPersonnelNumberFilterRadioButton";
+            listOfEmployeesPersonnelNumberFilterRadioButton.Size = new Size(117, 21);
+            listOfEmployeesPersonnelNumberFilterRadioButton.TabIndex = 2;
+            listOfEmployeesPersonnelNumberFilterRadioButton.Text = "по таб. номеру";
+            listOfEmployeesPersonnelNumberFilterRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // listOfEmployeesPostFilterRadioButton
+            // 
+            listOfEmployeesPostFilterRadioButton.AutoSize = true;
+            listOfEmployeesPostFilterRadioButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            listOfEmployeesPostFilterRadioButton.ForeColor = Color.Black;
+            listOfEmployeesPostFilterRadioButton.Location = new Point(12, 58);
+            listOfEmployeesPostFilterRadioButton.Name = "listOfEmployeesPostFilterRadioButton";
+            listOfEmployeesPostFilterRadioButton.Size = new Size(109, 21);
+            listOfEmployeesPostFilterRadioButton.TabIndex = 1;
+            listOfEmployeesPostFilterRadioButton.Text = "по должности";
+            listOfEmployeesPostFilterRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // listOfEmployeesLastNameFilterRadioButton
+            // 
+            listOfEmployeesLastNameFilterRadioButton.AutoSize = true;
+            listOfEmployeesLastNameFilterRadioButton.Checked = true;
+            listOfEmployeesLastNameFilterRadioButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            listOfEmployeesLastNameFilterRadioButton.ForeColor = Color.Black;
+            listOfEmployeesLastNameFilterRadioButton.Location = new Point(12, 31);
+            listOfEmployeesLastNameFilterRadioButton.Name = "listOfEmployeesLastNameFilterRadioButton";
+            listOfEmployeesLastNameFilterRadioButton.Size = new Size(98, 21);
+            listOfEmployeesLastNameFilterRadioButton.TabIndex = 0;
+            listOfEmployeesLastNameFilterRadioButton.TabStop = true;
+            listOfEmployeesLastNameFilterRadioButton.Text = "по фамилии";
+            listOfEmployeesLastNameFilterRadioButton.UseVisualStyleBackColor = true;
             // 
             // ListOfEmployeesForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 550);
+            ClientSize = new Size(1050, 610);
+            Controls.Add(listOfEmployeesGroupBox);
             Controls.Add(employeesTable);
             Controls.Add(listOfEmployeesCloseLabel);
             Controls.Add(listOfEmployeesFormName);
@@ -94,6 +165,8 @@
             MouseDown += ThisForm_MouseDown;
             MouseMove += ThisForm_MouseMove;
             ((System.ComponentModel.ISupportInitialize)employeesTable).EndInit();
+            listOfEmployeesGroupBox.ResumeLayout(false);
+            listOfEmployeesGroupBox.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -103,5 +176,10 @@
         private Label listOfEmployeesFormName;
         private Label listOfEmployeesCloseLabel;
         private DataGridView employeesTable;
+        private GroupBox listOfEmployeesGroupBox;
+        private RadioButton listOfEmployeesLastNameFilterRadioButton;
+        private TextBox listOfEmployeesFilterBox;
+        private RadioButton listOfEmployeesPersonnelNumberFilterRadioButton;
+        private RadioButton listOfEmployeesPostFilterRadioButton;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using LibraryApp.Models;
 using Microsoft.Data.Sqlite;
+using System.Data;
 
 namespace LibraryApp.View
 {
@@ -70,7 +71,7 @@ namespace LibraryApp.View
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Не удалось загрузить список сотрудников :" +
+                MessageBox.Show($"Не удалось загрузить список сотрудников:" +
                                 $"\n\"{ex.Message}\"\nОбратитесь к системному администратору для устранения ошибки.",
                                 "Ошибка при работе с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
@@ -84,7 +85,7 @@ namespace LibraryApp.View
             GetEmployees();
 
             employeesTable.DataSource = employeesList;
-           
+
             employeesTable.Columns[0].Visible = false;
             employeesTable.Columns[1].HeaderText = "Фамилия";
             employeesTable.Columns[2].HeaderText = "Имя";
@@ -95,6 +96,38 @@ namespace LibraryApp.View
             employeesTable.Columns[7].HeaderText = "Релевантность";
         }
 
+        // проводим фильтрацию из TextBox
+        private void FilterTextChanged(object sender, EventArgs e)
+        {
+            List<ViewEmployeesModel> filteredList = new();
+
+            if (listOfEmployeesFilterBox.Text == "")
+            {
+                employeesTable.DataSource = employeesList;
+            }
+            else
+            {
+                // по фамилии
+                if (listOfEmployeesLastNameFilterRadioButton.Checked)
+                {
+                    filteredList = employeesList.Where(x => x.Lastname.StartsWith(listOfEmployeesFilterBox.Text, StringComparison.OrdinalIgnoreCase)).ToList();
+                    employeesTable.DataSource = filteredList;
+                }
+                // по должности
+                else if(listOfEmployeesPostFilterRadioButton.Checked)
+                {
+                    filteredList = employeesList.Where(x => x.Post.StartsWith(listOfEmployeesFilterBox.Text, StringComparison.OrdinalIgnoreCase)).ToList();
+                    employeesTable.DataSource = filteredList;
+                }
+                // по табельному номеру
+                else if(listOfEmployeesPersonnelNumberFilterRadioButton.Checked)
+                {
+                    filteredList = employeesList.Where(x => x.PersonnelNumber.ToString().Contains(listOfEmployeesFilterBox.Text)).ToList();
+                    employeesTable.DataSource = filteredList;
+                }
+            }
+        } 
+    
         #region Move the Form
         private void ThisForm_MouseDown(object sender, MouseEventArgs e)
         {

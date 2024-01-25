@@ -34,6 +34,7 @@
             listOfEmployeesCloseLabel = new Label();
             employeesTable = new DataGridView();
             listOfEmployeesGroupBox = new GroupBox();
+            listOfEmployeesIsActiveCheckBox = new CheckBox();
             listOfEmployeesFilterBox = new TextBox();
             listOfEmployeesPersonnelNumberFilterRadioButton = new RadioButton();
             listOfEmployeesPostFilterRadioButton = new RadioButton();
@@ -88,6 +89,7 @@
             // 
             // listOfEmployeesGroupBox
             // 
+            listOfEmployeesGroupBox.Controls.Add(listOfEmployeesIsActiveCheckBox);
             listOfEmployeesGroupBox.Controls.Add(listOfEmployeesFilterBox);
             listOfEmployeesGroupBox.Controls.Add(listOfEmployeesPersonnelNumberFilterRadioButton);
             listOfEmployeesGroupBox.Controls.Add(listOfEmployeesPostFilterRadioButton);
@@ -96,10 +98,26 @@
             listOfEmployeesGroupBox.ForeColor = Color.MidnightBlue;
             listOfEmployeesGroupBox.Location = new Point(794, 65);
             listOfEmployeesGroupBox.Name = "listOfEmployeesGroupBox";
-            listOfEmployeesGroupBox.Size = new Size(211, 166);
+            listOfEmployeesGroupBox.Size = new Size(211, 210);
             listOfEmployeesGroupBox.TabIndex = 3;
             listOfEmployeesGroupBox.TabStop = false;
             listOfEmployeesGroupBox.Text = "Фильтрация";
+            // 
+            // listOfEmployeesIsActiveCheckBox
+            // 
+            listOfEmployeesIsActiveCheckBox.AutoSize = true;
+            listOfEmployeesIsActiveCheckBox.Checked = true;
+            listOfEmployeesIsActiveCheckBox.CheckState = CheckState.Checked;
+            listOfEmployeesIsActiveCheckBox.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            listOfEmployeesIsActiveCheckBox.ForeColor = Color.MidnightBlue;
+            listOfEmployeesIsActiveCheckBox.Location = new Point(30, 164);
+            listOfEmployeesIsActiveCheckBox.Name = "listOfEmployeesIsActiveCheckBox";
+            listOfEmployeesIsActiveCheckBox.Size = new Size(153, 21);
+            listOfEmployeesIsActiveCheckBox.TabIndex = 4;
+            listOfEmployeesIsActiveCheckBox.Tag = "";
+            listOfEmployeesIsActiveCheckBox.Text = "только действующие";
+            listOfEmployeesIsActiveCheckBox.UseVisualStyleBackColor = true;
+            listOfEmployeesIsActiveCheckBox.CheckedChanged += FilterIsActiveChanged;
             // 
             // listOfEmployeesFilterBox
             // 
@@ -157,6 +175,7 @@
             Controls.Add(employeesTable);
             Controls.Add(listOfEmployeesCloseLabel);
             Controls.Add(listOfEmployeesFormName);
+            Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "ListOfEmployeesForm";
@@ -181,5 +200,6 @@
         private TextBox listOfEmployeesFilterBox;
         private RadioButton listOfEmployeesPersonnelNumberFilterRadioButton;
         private RadioButton listOfEmployeesPostFilterRadioButton;
+        private CheckBox listOfEmployeesIsActiveCheckBox;
     }
 }

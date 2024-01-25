@@ -10,7 +10,9 @@ namespace LibraryApp.View
         private SqliteCommand? command;
         private SqliteDataReader? reader;
 
-        private List<ViewEmployeesModel> employeesList = new();
+        private List<ViewEmployeesModel> employeesList = new(); // список всех сотрудников
+        private List<ViewEmployeesModel> activeList = new(); // список только действующих сотрудников
+        private List<ViewEmployeesModel> filteredList = new(); // фильтрованный список
 
         public ListOfEmployeesForm()
         {
@@ -35,12 +37,13 @@ namespace LibraryApp.View
             listOfEmployeesCloseLabel.ForeColor = Color.Black;
         }
 
-        // получаем список сотрудников и заполняем employeesList
+        // получаем список всех сотрудников и заполняем employeesList
         private void GetEmployees()
         {
             employeesList.Clear();
 
-            string query = "SELECT p.Id, p.Lastname, p.Firstname, p.Surname, (SELECT Post FROM Posts WHERE e.PostId = Id), e.PersonnelNumber, p.DateOfBirth, e.IsActive " +
+            string query = "SELECT p.Id, p.Lastname, p.Firstname, p.Surname, " +
+                           "(SELECT Post FROM Posts WHERE e.PostId = Id), e.PersonnelNumber, p.DateOfBirth, e.IsActive " +
                            "FROM Employees e " +
                            "INNER JOIN Persons p " +
                            "ON p.Id = e.PersonId " +
@@ -79,12 +82,15 @@ namespace LibraryApp.View
             DataBase.CloseConnection();
         }
 
-        // заполняем таблицу из employeesList
+        // по умолчанию заполняем таблицу из activeList, который содержит только действующих сотрудников
         private void ViewEmployeesTable()
         {
             GetEmployees();
 
-            employeesTable.DataSource = employeesList;
+            // activeList - фильтрованный employeesList
+            activeList = employeesList.Where(x => x.IsActive.ToString().Contains("действующий")).ToList();
+
+            employeesTable.DataSource = activeList;
 
             employeesTable.Columns[0].Visible = false;
             employeesTable.Columns[1].HeaderText = "Фамилия";
@@ -94,40 +100,76 @@ namespace LibraryApp.View
             employeesTable.Columns[5].HeaderText = "Табельный номер";
             employeesTable.Columns[6].HeaderText = "Дата рождения";
             employeesTable.Columns[7].HeaderText = "Релевантность";
+
+            // таблица только для чтения
+            foreach (DataGridViewBand column in employeesTable.Columns)
+            {
+                column.ReadOnly = true;
+            }
+        }
+
+        // переключаем источник заполнения таблицы по чекбоксу (либо действующие, либо все сотрудники)
+        private void FilterIsActiveChanged(object sender, EventArgs e)
+        {
+            if (listOfEmployeesIsActiveCheckBox.Checked)
+            {
+                employeesTable.DataSource = activeList;
+            }
+            else
+            {
+                employeesTable.DataSource = employeesList;
+            }
         }
 
         // проводим фильтрацию из TextBox
         private void FilterTextChanged(object sender, EventArgs e)
         {
-            List<ViewEmployeesModel> filteredList = new();
-
-            if (listOfEmployeesFilterBox.Text == "")
+            // если поле поиска пустое и галочка не стоит
+            if (listOfEmployeesFilterBox.Text == "" && !listOfEmployeesIsActiveCheckBox.Checked)
             {
                 employeesTable.DataSource = employeesList;
             }
+            // если поле поиска заполняется, тогда фильтруем
             else
             {
                 // по фамилии
-                if (listOfEmployeesLastNameFilterRadioButton.Checked)
+                if (listOfEmployeesLastNameFilterRadioButton.Checked && listOfEmployeesIsActiveCheckBox.Checked)
+                {
+                    filteredList = activeList.Where(x => x.Lastname.StartsWith(listOfEmployeesFilterBox.Text, StringComparison.OrdinalIgnoreCase)).ToList();
+                    employeesTable.DataSource = filteredList;
+                }
+                else if (listOfEmployeesLastNameFilterRadioButton.Checked && !listOfEmployeesIsActiveCheckBox.Checked)
                 {
                     filteredList = employeesList.Where(x => x.Lastname.StartsWith(listOfEmployeesFilterBox.Text, StringComparison.OrdinalIgnoreCase)).ToList();
                     employeesTable.DataSource = filteredList;
                 }
+
                 // по должности
-                else if(listOfEmployeesPostFilterRadioButton.Checked)
+                if (listOfEmployeesPostFilterRadioButton.Checked && listOfEmployeesIsActiveCheckBox.Checked)
+                {
+                    filteredList = activeList.Where(x => x.Post.StartsWith(listOfEmployeesFilterBox.Text, StringComparison.OrdinalIgnoreCase)).ToList();
+                    employeesTable.DataSource = filteredList;
+                }
+                else if (listOfEmployeesPostFilterRadioButton.Checked && !listOfEmployeesIsActiveCheckBox.Checked)
                 {
                     filteredList = employeesList.Where(x => x.Post.StartsWith(listOfEmployeesFilterBox.Text, StringComparison.OrdinalIgnoreCase)).ToList();
                     employeesTable.DataSource = filteredList;
                 }
+
                 // по табельному номеру
-                else if(listOfEmployeesPersonnelNumberFilterRadioButton.Checked)
+                if (listOfEmployeesPersonnelNumberFilterRadioButton.Checked && listOfEmployeesIsActiveCheckBox.Checked)
+                {
+                    filteredList = activeList.Where(x => x.PersonnelNumber.ToString().Contains(listOfEmployeesFilterBox.Text)).ToList();
+                    employeesTable.DataSource = filteredList;
+                }
+                else if (listOfEmployeesPersonnelNumberFilterRadioButton.Checked && !listOfEmployeesIsActiveCheckBox.Checked)
                 {
                     filteredList = employeesList.Where(x => x.PersonnelNumber.ToString().Contains(listOfEmployeesFilterBox.Text)).ToList();
                     employeesTable.DataSource = filteredList;
                 }
             }
-        } 
-    
+        }
+
         #region Move the Form
         private void ThisForm_MouseDown(object sender, MouseEventArgs e)
         {

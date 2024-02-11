@@ -85,6 +85,7 @@
             listOfEmployeesButton.TabIndex = 5;
             listOfEmployeesButton.Text = "Список сотрудников";
             listOfEmployeesButton.UseVisualStyleBackColor = true;
+            listOfEmployeesButton.Click += ListOfEmployeesButtn_Click;
             // 
             // createNewPositionButton
             // 

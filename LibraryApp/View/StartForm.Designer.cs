@@ -176,6 +176,7 @@
             Name = "StartForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Библионикс 0.1";
+            Activated += CancelButton_Click;
             ((System.ComponentModel.ISupportInitialize)hidePasswordPictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();

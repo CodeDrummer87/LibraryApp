@@ -116,8 +116,8 @@ namespace LibraryApp
                 {
                     string query = "INSERT INTO Persons (Firstname, Lastname, Surname, DateOfBirth) " +
                                    "VALUES (@Firstname, @Lastname, @Surname, @DateOfBirth); " +
-                                   "INSERT INTO Employees (PersonId, PersonnelNumber, PostId) " +
-                                   "SELECT Persons.Id, @PersonnelNumber, (SELECT Id FROM Posts WHERE Post = @PostId) FROM Persons " +
+                                   "INSERT INTO Employees (PersonId, PersonnelNumber, PostId, IsActive) " +
+                                   "SELECT Persons.Id, @PersonnelNumber, (SELECT Id FROM Posts WHERE Post = @PostId), @IsActive FROM Persons " +
                                    "WHERE (Firstname, Lastname, Surname, DateOfBirth) = (@Firstname, @Lastname, @Surname, @DateOfBirth); " +
                                    "INSERT INTO Accounts (LoginId, Login, Password) SELECT Persons.Id, @Login, @Password FROM Persons " +
                                    "WHERE (Firstname, Lastname, Surname, DateOfBirth) = (@Firstname, @Lastname, @Surname, @DateOfBirth); ";
@@ -132,6 +132,7 @@ namespace LibraryApp
                         command.Parameters.AddWithValue("@DateOfBirth", createEmployeeDateOfBirthInputBox.Text);
                         command.Parameters.AddWithValue("@PersonnelNumber", createEmployeePersonnelNumberBox.Text);
                         command.Parameters.AddWithValue("@PostId", createEmployeePostInputComboBox.Text);
+                        command.Parameters.AddWithValue("@IsActive", createEmployeeIsActiveCheckBox.Checked ? 1 : 0);
                         command.Parameters.AddWithValue("@Login", createEmployeeLoginInputBox.Text);
                         command.Parameters.AddWithValue("@Password", createEmployeePasswordInputBox.Text);
 
@@ -171,6 +172,8 @@ namespace LibraryApp
                 if (ctrl.GetType() == typeof(TextBox))
                     ctrl.Text = string.Empty;
             }
+            createEmployeePostInputComboBox.SelectedIndex = 0;
+            createEmployeeIsActiveCheckBox.CheckState = CheckState.Checked;
             createEmployeeLastNameInputBox.Focus();
         }
 

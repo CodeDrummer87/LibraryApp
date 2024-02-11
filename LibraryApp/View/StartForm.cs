@@ -1,5 +1,6 @@
 ﻿using LibraryApp.Models;
 using Microsoft.Data.Sqlite;
+using static System.Net.WebRequestMethods;
 
 namespace LibraryApp
 {
@@ -84,6 +85,13 @@ namespace LibraryApp
             }
         }
 
+        private void CancelButton_Click(object? sender, EventArgs e)
+        {
+            loginInputBox.Clear();
+            passwordInputBox.Clear();
+            loginInputBox.Focus();
+        }
+
         // получаем Id аккаунта
         private int GetCurrentLoginId() => Convert.ToInt32(GetCurrentAccountData(loginInputBox.Text).LoginId);
 
@@ -122,13 +130,6 @@ namespace LibraryApp
 
             DataBase.CloseConnection();
             return account;
-        }
-
-        private void CancelButton_Click(object? sender, EventArgs e)
-        {
-            loginInputBox.Clear();
-            passwordInputBox.Clear();
-            loginInputBox.Focus();
         }
 
     }

@@ -1,4 +1,5 @@
 ﻿using LibraryApp.Models;
+using LibraryApp.View;
 using Microsoft.Data.Sqlite;
 
 namespace LibraryApp
@@ -61,10 +62,17 @@ namespace LibraryApp
             exitToStartFormLabel.ForeColor = Color.MidnightBlue;
         }
 
+        // кнопка "Создать сотрудника"
         private void CreateEmployeeButton_Click(object? sender, EventArgs e)
         {
             CreateEmployeeForm employeeForm = new();
             employeeForm.Show();
+        }
+
+        private void ListOfEmployeesButtn_Click(object? sender, EventArgs e)
+        {
+            ListOfEmployeesForm listOfEmployeesForm = new ListOfEmployeesForm();
+            listOfEmployeesForm.Show();
         }
 
         // выводим текущую дату

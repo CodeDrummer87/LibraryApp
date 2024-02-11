@@ -33,14 +33,20 @@
             listOfEmployeesFormName = new Label();
             listOfEmployeesCloseLabel = new Label();
             employeesTable = new DataGridView();
-            listOfEmployeesGroupBox = new GroupBox();
+            listOfEmployeesFilterGroupBox = new GroupBox();
             listOfEmployeesIsActiveCheckBox = new CheckBox();
             listOfEmployeesFilterBox = new TextBox();
             listOfEmployeesPersonnelNumberFilterRadioButton = new RadioButton();
             listOfEmployeesPostFilterRadioButton = new RadioButton();
             listOfEmployeesLastNameFilterRadioButton = new RadioButton();
+            listOfEmployeesBirthdayGroupBox = new GroupBox();
+            listOfEmployeesBirthdayListBox = new ListBox();
+            listOfEmployeesBirthdayOneFilterRadioButton = new RadioButton();
+            listOfEmployeesBirthdayTwoFilterRadioButton = new RadioButton();
+            listOfEmployeesBirthdayThreeFilterRadioButton = new RadioButton();
             ((System.ComponentModel.ISupportInitialize)employeesTable).BeginInit();
-            listOfEmployeesGroupBox.SuspendLayout();
+            listOfEmployeesFilterGroupBox.SuspendLayout();
+            listOfEmployeesBirthdayGroupBox.SuspendLayout();
             SuspendLayout();
             // 
             // listOfEmployeesFormName
@@ -87,21 +93,21 @@
             employeesTable.Size = new Size(718, 497);
             employeesTable.TabIndex = 2;
             // 
-            // listOfEmployeesGroupBox
+            // listOfEmployeesFilterGroupBox
             // 
-            listOfEmployeesGroupBox.Controls.Add(listOfEmployeesIsActiveCheckBox);
-            listOfEmployeesGroupBox.Controls.Add(listOfEmployeesFilterBox);
-            listOfEmployeesGroupBox.Controls.Add(listOfEmployeesPersonnelNumberFilterRadioButton);
-            listOfEmployeesGroupBox.Controls.Add(listOfEmployeesPostFilterRadioButton);
-            listOfEmployeesGroupBox.Controls.Add(listOfEmployeesLastNameFilterRadioButton);
-            listOfEmployeesGroupBox.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold, GraphicsUnit.Point);
-            listOfEmployeesGroupBox.ForeColor = Color.MidnightBlue;
-            listOfEmployeesGroupBox.Location = new Point(794, 65);
-            listOfEmployeesGroupBox.Name = "listOfEmployeesGroupBox";
-            listOfEmployeesGroupBox.Size = new Size(211, 210);
-            listOfEmployeesGroupBox.TabIndex = 3;
-            listOfEmployeesGroupBox.TabStop = false;
-            listOfEmployeesGroupBox.Text = "Фильтрация";
+            listOfEmployeesFilterGroupBox.Controls.Add(listOfEmployeesIsActiveCheckBox);
+            listOfEmployeesFilterGroupBox.Controls.Add(listOfEmployeesFilterBox);
+            listOfEmployeesFilterGroupBox.Controls.Add(listOfEmployeesPersonnelNumberFilterRadioButton);
+            listOfEmployeesFilterGroupBox.Controls.Add(listOfEmployeesPostFilterRadioButton);
+            listOfEmployeesFilterGroupBox.Controls.Add(listOfEmployeesLastNameFilterRadioButton);
+            listOfEmployeesFilterGroupBox.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold, GraphicsUnit.Point);
+            listOfEmployeesFilterGroupBox.ForeColor = Color.MidnightBlue;
+            listOfEmployeesFilterGroupBox.Location = new Point(794, 65);
+            listOfEmployeesFilterGroupBox.Name = "listOfEmployeesFilterGroupBox";
+            listOfEmployeesFilterGroupBox.Size = new Size(211, 210);
+            listOfEmployeesFilterGroupBox.TabIndex = 3;
+            listOfEmployeesFilterGroupBox.TabStop = false;
+            listOfEmployeesFilterGroupBox.Text = "Фильтрация";
             // 
             // listOfEmployeesIsActiveCheckBox
             // 
@@ -166,12 +172,78 @@
             listOfEmployeesLastNameFilterRadioButton.Text = "по фамилии";
             listOfEmployeesLastNameFilterRadioButton.UseVisualStyleBackColor = true;
             // 
+            // listOfEmployeesBirthdayGroupBox
+            // 
+            listOfEmployeesBirthdayGroupBox.Controls.Add(listOfEmployeesBirthdayListBox);
+            listOfEmployeesBirthdayGroupBox.Controls.Add(listOfEmployeesBirthdayOneFilterRadioButton);
+            listOfEmployeesBirthdayGroupBox.Controls.Add(listOfEmployeesBirthdayTwoFilterRadioButton);
+            listOfEmployeesBirthdayGroupBox.Controls.Add(listOfEmployeesBirthdayThreeFilterRadioButton);
+            listOfEmployeesBirthdayGroupBox.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold, GraphicsUnit.Point);
+            listOfEmployeesBirthdayGroupBox.ForeColor = Color.MidnightBlue;
+            listOfEmployeesBirthdayGroupBox.Location = new Point(794, 290);
+            listOfEmployeesBirthdayGroupBox.Name = "listOfEmployeesBirthdayGroupBox";
+            listOfEmployeesBirthdayGroupBox.Size = new Size(211, 276);
+            listOfEmployeesBirthdayGroupBox.TabIndex = 4;
+            listOfEmployeesBirthdayGroupBox.TabStop = false;
+            listOfEmployeesBirthdayGroupBox.Text = "День рождения";
+            // 
+            // listOfEmployeesBirthdayListBox
+            // 
+            listOfEmployeesBirthdayListBox.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            listOfEmployeesBirthdayListBox.FormattingEnabled = true;
+            listOfEmployeesBirthdayListBox.ItemHeight = 17;
+            listOfEmployeesBirthdayListBox.Items.AddRange(new object[] { "(не выбрано)" });
+            listOfEmployeesBirthdayListBox.Location = new Point(12, 129);
+            listOfEmployeesBirthdayListBox.Name = "listOfEmployeesBirthdayListBox";
+            listOfEmployeesBirthdayListBox.Size = new Size(183, 123);
+            listOfEmployeesBirthdayListBox.TabIndex = 3;
+            // 
+            // listOfEmployeesBirthdayOneFilterRadioButton
+            // 
+            listOfEmployeesBirthdayOneFilterRadioButton.AutoSize = true;
+            listOfEmployeesBirthdayOneFilterRadioButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            listOfEmployeesBirthdayOneFilterRadioButton.ForeColor = Color.Black;
+            listOfEmployeesBirthdayOneFilterRadioButton.Location = new Point(12, 89);
+            listOfEmployeesBirthdayOneFilterRadioButton.Name = "listOfEmployeesBirthdayOneFilterRadioButton";
+            listOfEmployeesBirthdayOneFilterRadioButton.Size = new Size(104, 21);
+            listOfEmployeesBirthdayOneFilterRadioButton.TabIndex = 2;
+            listOfEmployeesBirthdayOneFilterRadioButton.Text = "через 1 день";
+            listOfEmployeesBirthdayOneFilterRadioButton.UseVisualStyleBackColor = true;
+            listOfEmployeesBirthdayOneFilterRadioButton.CheckedChanged += ShowBirthdays;
+            // 
+            // listOfEmployeesBirthdayTwoFilterRadioButton
+            // 
+            listOfEmployeesBirthdayTwoFilterRadioButton.AutoSize = true;
+            listOfEmployeesBirthdayTwoFilterRadioButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            listOfEmployeesBirthdayTwoFilterRadioButton.ForeColor = Color.Black;
+            listOfEmployeesBirthdayTwoFilterRadioButton.Location = new Point(12, 62);
+            listOfEmployeesBirthdayTwoFilterRadioButton.Name = "listOfEmployeesBirthdayTwoFilterRadioButton";
+            listOfEmployeesBirthdayTwoFilterRadioButton.Size = new Size(97, 21);
+            listOfEmployeesBirthdayTwoFilterRadioButton.TabIndex = 1;
+            listOfEmployeesBirthdayTwoFilterRadioButton.Text = "через 2 дня";
+            listOfEmployeesBirthdayTwoFilterRadioButton.UseVisualStyleBackColor = true;
+            listOfEmployeesBirthdayTwoFilterRadioButton.CheckedChanged += ShowBirthdays;
+            // 
+            // listOfEmployeesBirthdayThreeFilterRadioButton
+            // 
+            listOfEmployeesBirthdayThreeFilterRadioButton.AutoSize = true;
+            listOfEmployeesBirthdayThreeFilterRadioButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            listOfEmployeesBirthdayThreeFilterRadioButton.ForeColor = Color.Black;
+            listOfEmployeesBirthdayThreeFilterRadioButton.Location = new Point(12, 35);
+            listOfEmployeesBirthdayThreeFilterRadioButton.Name = "listOfEmployeesBirthdayThreeFilterRadioButton";
+            listOfEmployeesBirthdayThreeFilterRadioButton.Size = new Size(97, 21);
+            listOfEmployeesBirthdayThreeFilterRadioButton.TabIndex = 0;
+            listOfEmployeesBirthdayThreeFilterRadioButton.Text = "через 3 дня";
+            listOfEmployeesBirthdayThreeFilterRadioButton.UseVisualStyleBackColor = true;
+            listOfEmployeesBirthdayThreeFilterRadioButton.CheckedChanged += ShowBirthdays;
+            // 
             // ListOfEmployeesForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1050, 610);
-            Controls.Add(listOfEmployeesGroupBox);
+            Controls.Add(listOfEmployeesBirthdayGroupBox);
+            Controls.Add(listOfEmployeesFilterGroupBox);
             Controls.Add(employeesTable);
             Controls.Add(listOfEmployeesCloseLabel);
             Controls.Add(listOfEmployeesFormName);
@@ -184,8 +256,10 @@
             MouseDown += ThisForm_MouseDown;
             MouseMove += ThisForm_MouseMove;
             ((System.ComponentModel.ISupportInitialize)employeesTable).EndInit();
-            listOfEmployeesGroupBox.ResumeLayout(false);
-            listOfEmployeesGroupBox.PerformLayout();
+            listOfEmployeesFilterGroupBox.ResumeLayout(false);
+            listOfEmployeesFilterGroupBox.PerformLayout();
+            listOfEmployeesBirthdayGroupBox.ResumeLayout(false);
+            listOfEmployeesBirthdayGroupBox.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -195,11 +269,16 @@
         private Label listOfEmployeesFormName;
         private Label listOfEmployeesCloseLabel;
         private DataGridView employeesTable;
-        private GroupBox listOfEmployeesGroupBox;
+        private GroupBox listOfEmployeesFilterGroupBox;
         private RadioButton listOfEmployeesLastNameFilterRadioButton;
         private TextBox listOfEmployeesFilterBox;
         private RadioButton listOfEmployeesPersonnelNumberFilterRadioButton;
         private RadioButton listOfEmployeesPostFilterRadioButton;
         private CheckBox listOfEmployeesIsActiveCheckBox;
+        private GroupBox listOfEmployeesBirthdayGroupBox;
+        private RadioButton listOfEmployeesBirthdayTwoFilterRadioButton;
+        private RadioButton listOfEmployeesBirthdayThreeFilterRadioButton;
+        private RadioButton listOfEmployeesBirthdayOneFilterRadioButton;
+        private ListBox listOfEmployeesBirthdayListBox;
     }
 }

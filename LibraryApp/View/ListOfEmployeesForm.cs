@@ -12,13 +12,17 @@ namespace LibraryApp.View
 
         private List<ViewEmployeesModel> employeesList = new(); // список всех сотрудников
         private List<ViewEmployeesModel> activeList = new(); // список только действующих сотрудников
-        private List<ViewEmployeesModel> filteredList = new(); // фильтрованный список
+        private List<ViewEmployeesModel> filteredList = new(); // список сотрудников, фильтрованный по параметрам
+
+        private List<ViewBirthdayModel> birthdayList = new(); // список дней рождения
 
         public ListOfEmployeesForm()
         {
             InitializeComponent();
 
-            ViewEmployeesTable();
+            ViewEmployeesTable(); // заполняем таблицу
+
+            GetBirthdays(); // получаем дни рождения
         }
         private void ListOfEmployeesCloseLabel_Click(object? sender, EventArgs e)
         {
@@ -90,7 +94,7 @@ namespace LibraryApp.View
             // activeList - фильтрованный employeesList
             activeList = employeesList.Where(x => x.IsActive.ToString().Contains("действующий")).ToList();
 
-            employeesTable.DataSource = activeList;
+            employeesTable.DataSource = activeList; // источник данных таблицы - activeList
 
             employeesTable.Columns[0].Visible = false;
             employeesTable.Columns[1].HeaderText = "Фамилия";
@@ -135,38 +139,133 @@ namespace LibraryApp.View
                 // по фамилии
                 if (listOfEmployeesLastNameFilterRadioButton.Checked && listOfEmployeesIsActiveCheckBox.Checked)
                 {
-                    filteredList = activeList.Where(x => x.Lastname.StartsWith(listOfEmployeesFilterBox.Text, StringComparison.OrdinalIgnoreCase)).ToList();
+                    filteredList = activeList.Where(x => x.Lastname.StartsWith(listOfEmployeesFilterBox.Text.Trim(),
+                    StringComparison.OrdinalIgnoreCase)).ToList();
                     employeesTable.DataSource = filteredList;
                 }
                 else if (listOfEmployeesLastNameFilterRadioButton.Checked && !listOfEmployeesIsActiveCheckBox.Checked)
                 {
-                    filteredList = employeesList.Where(x => x.Lastname.StartsWith(listOfEmployeesFilterBox.Text, StringComparison.OrdinalIgnoreCase)).ToList();
+                    filteredList = employeesList.Where(x => x.Lastname.StartsWith(listOfEmployeesFilterBox.Text.Trim(),
+                    StringComparison.OrdinalIgnoreCase)).ToList();
                     employeesTable.DataSource = filteredList;
                 }
 
                 // по должности
                 if (listOfEmployeesPostFilterRadioButton.Checked && listOfEmployeesIsActiveCheckBox.Checked)
                 {
-                    filteredList = activeList.Where(x => x.Post.StartsWith(listOfEmployeesFilterBox.Text, StringComparison.OrdinalIgnoreCase)).ToList();
+                    filteredList = activeList.Where(x => x.Post.StartsWith(listOfEmployeesFilterBox.Text.Trim(),
+                    StringComparison.OrdinalIgnoreCase)).ToList();
                     employeesTable.DataSource = filteredList;
                 }
                 else if (listOfEmployeesPostFilterRadioButton.Checked && !listOfEmployeesIsActiveCheckBox.Checked)
                 {
-                    filteredList = employeesList.Where(x => x.Post.StartsWith(listOfEmployeesFilterBox.Text, StringComparison.OrdinalIgnoreCase)).ToList();
+                    filteredList = employeesList.Where(x => x.Post.StartsWith(listOfEmployeesFilterBox.Text.Trim(),
+                    StringComparison.OrdinalIgnoreCase)).ToList();
                     employeesTable.DataSource = filteredList;
                 }
 
                 // по табельному номеру
                 if (listOfEmployeesPersonnelNumberFilterRadioButton.Checked && listOfEmployeesIsActiveCheckBox.Checked)
                 {
-                    filteredList = activeList.Where(x => x.PersonnelNumber.ToString().Contains(listOfEmployeesFilterBox.Text)).ToList();
+                    filteredList = activeList.Where(x => x.PersonnelNumber.ToString().Contains(listOfEmployeesFilterBox.Text.Trim())).ToList();
                     employeesTable.DataSource = filteredList;
                 }
                 else if (listOfEmployeesPersonnelNumberFilterRadioButton.Checked && !listOfEmployeesIsActiveCheckBox.Checked)
                 {
-                    filteredList = employeesList.Where(x => x.PersonnelNumber.ToString().Contains(listOfEmployeesFilterBox.Text)).ToList();
+                    filteredList = employeesList.Where(x => x.PersonnelNumber.ToString().Contains(listOfEmployeesFilterBox.Text.Trim())).ToList();
                     employeesTable.DataSource = filteredList;
                 }
+            }
+        }
+
+        // получаем дни рождения действующих сотрудников
+        private void GetBirthdays()
+        {
+            string query = "SELECT p.Id, p.Lastname, p.Firstname, p.Surname, p.DateOfBirth " +
+                           "FROM Employees e " +
+                           "INNER JOIN Persons p " +
+                           "ON p.Id = e.PersonId " +
+                           "WHERE IsActive = 1 " +
+                           "ORDER BY p.Lastname";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    birthdayList.Add(new ViewBirthdayModel
+                    {
+                        Id = reader.GetInt32(0),
+                        Lastname = reader.GetString(1),
+                        Firstname = reader.GetString(2),
+                        Surname = reader.GetString(3),
+                        DateOfBirth = reader.GetString(4)
+                    });
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось загрузить список дней рождения:" +
+                                $"\n\"{ex.Message}\"\nОбратитесь к системному администратору для устранения ошибки.",
+                                "Ошибка при работе с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
+
+        // отображаем дни рождения в ListBox по заданному диапазону
+        private void ShowBirthdays(object sender, EventArgs e)
+        {
+            listOfEmployeesBirthdayListBox.Items.Clear();
+
+            var current = DateTime.Today;
+
+            foreach (ViewBirthdayModel item in birthdayList)
+            {
+                var date = Convert.ToDateTime(item.DateOfBirth);
+                var year = current.Month > date.Month || current.Month == date.Month && current.Day > date.Day ? current.Year + 1 : current.Year;
+                var days = (new DateTime(year, date.Month, date.Day) - current).TotalDays;
+
+                // через 3 дня
+                if (listOfEmployeesBirthdayThreeFilterRadioButton.Checked)
+                {
+                    if (days == 4)
+                    {
+                        listOfEmployeesBirthdayListBox.Items.Add(Convert.ToString(item.Lastname + " " 
+                        + item.Firstname.Substring(0, 1) + "." + item.Surname.Substring(0, 1) + "."));
+                    }
+                }
+
+                // через 2 дня
+                else if (listOfEmployeesBirthdayTwoFilterRadioButton.Checked)
+                {
+                    if (days == 3)
+                    {
+                        listOfEmployeesBirthdayListBox.Items.Add(Convert.ToString(item.Lastname + " " 
+                        + item.Firstname.Substring(0, 1) + "." + item.Surname.Substring(0, 1) + "."));
+                    }
+                }
+
+                // через 1 день
+                else if (listOfEmployeesBirthdayOneFilterRadioButton.Checked)
+                {
+                    if (days == 2)
+                    {
+                        listOfEmployeesBirthdayListBox.Items.Add(Convert.ToString(item.Lastname + " " 
+                        + item.Firstname.Substring(0, 1) + "." + item.Surname.Substring(0, 1) + "."));
+                    }
+                }
+            }
+
+            // если подходящих дат нет и в ListBox ничего не добавилось, то отображаем "нет"
+            if (listOfEmployeesBirthdayListBox.Items.Count == 0)
+            {
+                listOfEmployeesBirthdayListBox.Items.Add("(нет)");
             }
         }
 
@@ -190,6 +289,4 @@ namespace LibraryApp.View
         #endregion
     }
 
-
 }
-

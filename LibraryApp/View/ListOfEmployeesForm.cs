@@ -115,21 +115,14 @@ namespace LibraryApp.View
         // переключаем источник заполнения таблицы по чекбоксу (либо действующие, либо все сотрудники)
         private void FilterIsActiveChanged(object sender, EventArgs e)
         {
-            if (listOfEmployeesIsActiveCheckBox.Checked)
-            {
-                employeesTable.DataSource = activeList;
-            }
-            else
-            {
-                employeesTable.DataSource = employeesList;
-            }
+            employeesTable.DataSource = listOfEmployeesIsActiveCheckBox.Checked ? activeList : employeesList;
         }
 
         // проводим фильтрацию из TextBox
         private void FilterTextChanged(object sender, EventArgs e)
         {
             // если поле поиска пустое и галочка не стоит
-            if (listOfEmployeesFilterBox.Text == "" && !listOfEmployeesIsActiveCheckBox.Checked)
+            if (listOfEmployeesFilterBox.Text.Equals(String.Empty) && !listOfEmployeesIsActiveCheckBox.Checked)
             {
                 employeesTable.DataSource = employeesList;
             }

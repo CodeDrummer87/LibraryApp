@@ -110,3 +110,4 @@ C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.
 C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.sourcelink.json
 C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.CreateEmployeeForm.resources
 C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.View.ListOfEmployeesForm.resources
+C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.View.CreatePostForm.resources

@@ -96,6 +96,7 @@
             createNewPositionButton.TabIndex = 6;
             createNewPositionButton.Text = "Создать новую должность";
             createNewPositionButton.UseVisualStyleBackColor = true;
+            createNewPositionButton.Click += CreatePostButton_Click;
             // 
             // listOfPositionsButton
             // 

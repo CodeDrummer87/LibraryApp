@@ -62,17 +62,25 @@ namespace LibraryApp
             exitToStartFormLabel.ForeColor = Color.MidnightBlue;
         }
 
-        // кнопка "Создать сотрудника"
+        // кнопка "Создать аккаунт сотрудника"
         private void CreateEmployeeButton_Click(object? sender, EventArgs e)
         {
             CreateEmployeeForm employeeForm = new();
             employeeForm.Show();
         }
 
+        // кнопка "Список сотрудников"
         private void ListOfEmployeesButtn_Click(object? sender, EventArgs e)
         {
             ListOfEmployeesForm listOfEmployeesForm = new ListOfEmployeesForm();
             listOfEmployeesForm.Show();
+        }
+
+        // кнопка "Создать новую должность"
+        private void CreatePostButton_Click(object? sender, EventArgs e)
+        {
+            CreatePostForm newPostForm = new CreatePostForm();
+            newPostForm.Show();
         }
 
         // выводим текущую дату

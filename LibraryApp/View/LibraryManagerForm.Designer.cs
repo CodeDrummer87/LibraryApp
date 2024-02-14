@@ -106,6 +106,7 @@
             listOfPositionsButton.TabIndex = 7;
             listOfPositionsButton.Text = "Список должностей";
             listOfPositionsButton.UseVisualStyleBackColor = true;
+            listOfPositionsButton.Click += ListOfPostsButton_Click;
             // 
             // currentDateLabel
             // 

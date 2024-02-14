@@ -40,6 +40,21 @@ namespace LibraryApp.View
             ClearForm();
         }
 
+        // проверяем, есть ли более 3-х символов в названии должности
+        private bool CheckPostNameLength()
+        {
+            return createPostNewPostBox.Text.Trim().Length <= 3;
+        }
+
+        // проверяем, есть ли цифры в названии должности
+        private bool CheckPostNameNumberContains(string postName)
+        {
+            foreach (char x in postName)
+                if (Char.IsNumber(x))
+                    return true;
+            return false;
+        }
+
         // проверяем, есть ли должность в базе данных
         private bool CheckPostInDataBase()
         {
@@ -60,39 +75,55 @@ namespace LibraryApp.View
         // создаем новую должность
         public void CreatePost()
         {
-            if (CheckPostInDataBase())
+           if(CheckPostNameLength())
             {
-                MessageBox.Show($"Должность \"{createPostNewPostBox.Text.Trim()}\" уже существует",
+                MessageBox.Show($"Название должности должно содержать больше трёх букв",
                                 "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                ClearForm();
             }
             else
             {
-                string query = "INSERT INTO Posts(Post, IsActive) " +
-                               "VALUES (@Post, @IsActive)";
-
-                try
+                if(CheckPostNameNumberContains(createPostNewPostBox.Text.Trim()))
                 {
-                    command = DataBase.GetConnection().CreateCommand();
-                    command.CommandText = query;
-                    command.Parameters.AddWithValue("@Post", createPostNewPostBox.Text.Trim());
-                    command.Parameters.AddWithValue("@IsActive", createPostIsActiveCheckBox.Checked ? 1 : 0);
-
-                    DataBase.OpenConnection();
-                    command.ExecuteNonQuery();
-
-                    MessageBox.Show($"Должность \"{createPostNewPostBox.Text.Trim()}\" успешно создана",
-                                    "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Название должности не должно содержать цифры",
+                                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show($"Не удалось создать новую должность:\n\"{ex.Message}\"\n" +
-                                    $"Обратитесь к системному администратору для её устранения.",
-                                    "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                }
+                    if (CheckPostInDataBase())
+                    {
+                        MessageBox.Show($"Должность \"{createPostNewPostBox.Text.Trim()}\" уже существует",
+                                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        ClearForm();
+                    }
+                    else
+                    {
+                        string query = "INSERT INTO Posts(Post, IsActive) " +
+                                       "VALUES (@Post, @IsActive)";
 
-                DataBase.CloseConnection();
-                ClearForm();
+                        try
+                        {
+                            command = DataBase.GetConnection().CreateCommand();
+                            command.CommandText = query;
+                            command.Parameters.AddWithValue("@Post", createPostNewPostBox.Text.Trim());
+                            command.Parameters.AddWithValue("@IsActive", createPostIsActiveCheckBox.Checked ? 1 : 0);
+
+                            DataBase.OpenConnection();
+                            command.ExecuteNonQuery();
+
+                            MessageBox.Show($"Должность \"{createPostNewPostBox.Text.Trim()}\" успешно создана",
+                                            "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Не удалось создать новую должность:\n\"{ex.Message}\"\n" +
+                                            $"Обратитесь к системному администратору для её устранения.",
+                                            "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        }
+
+                        DataBase.CloseConnection();
+                        ClearForm();
+                    }
+                }
             }
         }
 

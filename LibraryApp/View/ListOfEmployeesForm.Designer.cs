@@ -66,7 +66,7 @@
             listOfEmployeesCloseLabel.AutoSize = true;
             listOfEmployeesCloseLabel.Font = new Font("Lucida Console", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             listOfEmployeesCloseLabel.ForeColor = Color.Black;
-            listOfEmployeesCloseLabel.Location = new Point(1014, 13);
+            listOfEmployeesCloseLabel.Location = new Point(1014, 14);
             listOfEmployeesCloseLabel.Name = "listOfEmployeesCloseLabel";
             listOfEmployeesCloseLabel.Size = new Size(21, 19);
             listOfEmployeesCloseLabel.TabIndex = 1;

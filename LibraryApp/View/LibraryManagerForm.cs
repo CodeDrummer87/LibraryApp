@@ -83,6 +83,14 @@ namespace LibraryApp
             newPostForm.Show();
         }
 
+        // кнопка "Список должностей"
+        private void ListOfPostsButton_Click(object? sender, EventArgs e)
+        {
+            ListOfPostsForm listOfPostsForm = new ListOfPostsForm();
+            listOfPostsForm.Show();
+        }
+
+
         // выводим текущую дату
         private void GetCurrentDate() => currentDateLabel.Text = "Сегодня " + DateTime.Now.ToLongDateString();
 

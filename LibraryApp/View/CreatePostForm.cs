@@ -11,6 +11,7 @@ namespace LibraryApp.View
         {
             InitializeComponent();
         }
+
         private void CreatePostCloseLabel_Click(object? sender, EventArgs e)
         {
             this.Close();
@@ -79,6 +80,7 @@ namespace LibraryApp.View
             {
                 MessageBox.Show($"Название должности должно содержать больше трёх букв",
                                 "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ClearForm();
             }
             else
             {
@@ -86,6 +88,7 @@ namespace LibraryApp.View
                 {
                     MessageBox.Show($"Название должности не должно содержать цифры",
                                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ClearForm();
                 }
                 else
                 {

@@ -35,6 +35,8 @@ namespace LibraryApp.View
             listOfPostsFormName = new Label();
             postsTable = new DataGridView();
             listOfPostsCloseLabel = new Label();
+            changePostButton = new Button();
+            deletePostButton = new Button();
             ((System.ComponentModel.ISupportInitialize)postsTable).BeginInit();
             SuspendLayout();
             // 
@@ -61,7 +63,7 @@ namespace LibraryApp.View
             postsTable.Name = "postsTable";
             postsTable.RowHeadersVisible = false;
             postsTable.RowTemplate.Height = 25;
-            postsTable.Size = new Size(423, 233);
+            postsTable.Size = new Size(423, 269);
             postsTable.TabIndex = 1;
             // 
             // listOfPostsCloseLabel
@@ -78,11 +80,33 @@ namespace LibraryApp.View
             listOfPostsCloseLabel.MouseEnter += ListOfPostsCloseLabelCloseLabel_MouseEnter;
             listOfPostsCloseLabel.MouseLeave += ListOfPostsCloseLabelCloseLabel_MouseLeave;
             // 
+            // changePostButton
+            // 
+            changePostButton.Enabled = false;
+            changePostButton.Location = new Point(33, 365);
+            changePostButton.Name = "changePostButton";
+            changePostButton.Size = new Size(75, 23);
+            changePostButton.TabIndex = 3;
+            changePostButton.Text = "Изменить";
+            changePostButton.UseVisualStyleBackColor = true;
+            // 
+            // deletePostButton
+            // 
+            deletePostButton.Enabled = false;
+            deletePostButton.Location = new Point(127, 365);
+            deletePostButton.Name = "deletePostButton";
+            deletePostButton.Size = new Size(75, 23);
+            deletePostButton.TabIndex = 4;
+            deletePostButton.Text = "Удалить";
+            deletePostButton.UseVisualStyleBackColor = true;
+            // 
             // ListOfPostsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(490, 450);
+            ClientSize = new Size(490, 430);
+            Controls.Add(deletePostButton);
+            Controls.Add(changePostButton);
             Controls.Add(listOfPostsCloseLabel);
             Controls.Add(postsTable);
             Controls.Add(listOfPostsFormName);
@@ -103,5 +127,7 @@ namespace LibraryApp.View
         private Label listOfPostsFormName;
         private DataGridView postsTable;
         private Label listOfPostsCloseLabel;
+        private Button changePostButton;
+        private Button deletePostButton;
     }
 }

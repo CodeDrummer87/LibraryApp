@@ -110,6 +110,7 @@ namespace LibraryApp.View
             {
                 column.ReadOnly = true;
             }
+            employeesTable.ClearSelection();
         }
 
         // переключаем источник заполнения таблицы по чекбоксу (либо действующие, либо все сотрудники)

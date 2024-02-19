@@ -53,6 +53,7 @@ namespace LibraryApp.View
             // 
             // postsTable
             // 
+            postsTable.AllowUserToResizeRows = false;
             dataGridViewCellStyle1.BackColor = Color.WhiteSmoke;
             postsTable.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             postsTable.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -63,8 +64,11 @@ namespace LibraryApp.View
             postsTable.Name = "postsTable";
             postsTable.RowHeadersVisible = false;
             postsTable.RowTemplate.Height = 25;
+            postsTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             postsTable.Size = new Size(423, 269);
             postsTable.TabIndex = 1;
+            postsTable.CellClick += PostTableCellClick;
+            postsTable.CellLeave += PostTableCellClick;
             // 
             // listOfPostsCloseLabel
             // 
@@ -112,6 +116,8 @@ namespace LibraryApp.View
             Controls.Add(listOfPostsFormName);
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximumSize = new Size(490, 430);
+            MinimumSize = new Size(490, 430);
             Name = "ListOfPostsForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Список должностей";

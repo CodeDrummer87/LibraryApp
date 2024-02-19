@@ -1,5 +1,7 @@
 ﻿using LibraryApp.Models;
 using Microsoft.Data.Sqlite;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LibraryApp.View
 {
@@ -10,6 +12,8 @@ namespace LibraryApp.View
         private SqliteDataReader? reader;
 
         private List<Post> postsList = new();
+
+        bool flag = false;
 
         public ListOfPostsForm()
         {
@@ -80,9 +84,35 @@ namespace LibraryApp.View
             postsTable.Columns[0].Visible = false;
             postsTable.Columns[1].HeaderText = "Должность";
             postsTable.Columns[2].HeaderText = "Релевантность";
+
+            // по-умолчанию таблица недоступна для редактирования
+            foreach (DataGridViewBand column in postsTable.Columns)
+            {
+                column.ReadOnly = true;
+            }
         }
 
-
+        // изменяем активность кнопок "Изменить" и "Удалить" в зависимости от выделения/невыделения строки
+        private void PostTableCellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (postsTable.Rows[e.RowIndex].Selected == true)
+            {
+                if (flag)
+                {
+                    postsTable.Rows[e.RowIndex].Selected = true;
+                    changePostButton.Enabled = true;
+                    deletePostButton.Enabled = true;
+                    flag = !flag;
+                }
+                else if (!flag)
+                {
+                    postsTable.Rows[e.RowIndex].Selected = false;
+                    changePostButton.Enabled = false;
+                    deletePostButton.Enabled = false;
+                    flag = !flag;
+                }
+            }
+        }
 
         #region Move the Form
         private void ThisForm_MouseDown(object sender, MouseEventArgs e)

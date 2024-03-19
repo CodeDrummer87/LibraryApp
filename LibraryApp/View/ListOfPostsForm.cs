@@ -1,7 +1,5 @@
 ﻿using LibraryApp.Models;
 using Microsoft.Data.Sqlite;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LibraryApp.View
 {
@@ -11,7 +9,7 @@ namespace LibraryApp.View
         private SqliteCommand? command;
         private SqliteDataReader? reader;
 
-        private List<Post> postsList = new();
+        private List<Post> postsList = new(); // лист как источник данных таблицы должностей
 
         bool flag = false;
 
@@ -84,12 +82,6 @@ namespace LibraryApp.View
             postsTable.Columns[0].Visible = false;
             postsTable.Columns[1].HeaderText = "Должность";
             postsTable.Columns[2].HeaderText = "Релевантность";
-
-            // по-умолчанию таблица недоступна для редактирования
-            foreach (DataGridViewBand column in postsTable.Columns)
-            {
-                column.ReadOnly = true;
-            }
         }
 
         // изменяем активность кнопок "Изменить" и "Удалить" в зависимости от выделения/невыделения строки
@@ -110,6 +102,72 @@ namespace LibraryApp.View
                     changePostButton.Enabled = false;
                     deletePostButton.Enabled = false;
                     flag = !flag;
+                }
+            }
+        }
+
+        // по нажатию на чекбокс решаем, можно ли редатировать должности
+        private void EditModeChanged(object sender, EventArgs e)
+        {
+            if (listOfPostsEditModeCheckBox.Checked)
+            {
+                foreach (DataGridViewBand row in postsTable.Rows)
+                {
+                    row.ReadOnly = false;
+                }
+
+                changePostButton.Enabled = true;
+                deletePostButton.Enabled = true;
+            }
+            else
+            {
+                foreach (DataGridViewBand row in postsTable.Rows)
+                {
+                    row.ReadOnly = true;
+                }
+            }
+        }
+
+        // удалить запись из таблицы и БД
+        private void DeletePostButton_Click(object sender, EventArgs e)
+        {
+            MessageBoxButtons msb = MessageBoxButtons.YesNo;
+            String message = "Вы действительно хотите удалить должность?";
+            String caption = "Удаление должности";
+
+            if (MessageBox.Show(message, caption, msb) == DialogResult.Yes)
+            {
+                string query = "DELETE FROM Posts WHERE Id = @Id";
+                string id = postsTable.SelectedRows[0].Cells[0].Value.ToString();
+
+                try
+                {
+                    command = DataBase.GetConnection().CreateCommand();
+                    command.CommandText = query;
+                    command.Parameters.AddWithValue("Id", id);
+                    DataBase.OpenConnection();
+                    command.ExecuteNonQuery();
+
+                    DataBase.CloseConnection();
+
+                    BindingSource binding = new BindingSource();
+                    binding.SuspendBinding();
+                    binding.DataSource = postsList;
+                    binding.ResumeBinding();
+
+                    GetPosts();
+
+                    postsTable.DataSource = binding;
+                    postsTable.Refresh();
+
+                    MessageBox.Show("Должность была успешно удалена из базы данных",
+                                    "Удаление должности", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Не удалось удалить должность из базы данных:\n\"{ex.Message}\"\n" +
+                                    $"Обратитесь к системному администратору для её устранения.",
+                                    "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 }
             }
         }

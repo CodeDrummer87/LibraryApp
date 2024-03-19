@@ -37,6 +37,7 @@ namespace LibraryApp.View
             listOfPostsCloseLabel = new Label();
             changePostButton = new Button();
             deletePostButton = new Button();
+            listOfPostsEditModeCheckBox = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)postsTable).BeginInit();
             SuspendLayout();
             // 
@@ -68,7 +69,6 @@ namespace LibraryApp.View
             postsTable.Size = new Size(423, 269);
             postsTable.TabIndex = 1;
             postsTable.CellClick += PostTableCellClick;
-            postsTable.CellLeave += PostTableCellClick;
             // 
             // listOfPostsCloseLabel
             // 
@@ -103,12 +103,27 @@ namespace LibraryApp.View
             deletePostButton.TabIndex = 4;
             deletePostButton.Text = "Удалить";
             deletePostButton.UseVisualStyleBackColor = true;
+            deletePostButton.Click += DeletePostButton_Click;
+            // 
+            // listOfPostsEditModeCheckBox
+            // 
+            listOfPostsEditModeCheckBox.AutoSize = true;
+            listOfPostsEditModeCheckBox.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            listOfPostsEditModeCheckBox.ForeColor = Color.MidnightBlue;
+            listOfPostsEditModeCheckBox.Location = new Point(243, 367);
+            listOfPostsEditModeCheckBox.Name = "listOfPostsEditModeCheckBox";
+            listOfPostsEditModeCheckBox.Size = new Size(143, 21);
+            listOfPostsEditModeCheckBox.TabIndex = 5;
+            listOfPostsEditModeCheckBox.Text = "Режим изменения";
+            listOfPostsEditModeCheckBox.UseVisualStyleBackColor = true;
+            listOfPostsEditModeCheckBox.CheckedChanged += EditModeChanged;
             // 
             // ListOfPostsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(490, 430);
+            Controls.Add(listOfPostsEditModeCheckBox);
             Controls.Add(deletePostButton);
             Controls.Add(changePostButton);
             Controls.Add(listOfPostsCloseLabel);
@@ -121,6 +136,7 @@ namespace LibraryApp.View
             Name = "ListOfPostsForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Список должностей";
+            Load += EditModeChanged;
             MouseDown += ThisForm_MouseDown;
             MouseMove += ThisForm_MouseMove;
             ((System.ComponentModel.ISupportInitialize)postsTable).EndInit();
@@ -135,5 +151,6 @@ namespace LibraryApp.View
         private Label listOfPostsCloseLabel;
         private Button changePostButton;
         private Button deletePostButton;
+        private CheckBox listOfPostsEditModeCheckBox;
     }
 }

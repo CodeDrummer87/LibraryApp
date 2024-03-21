@@ -6,10 +6,13 @@ namespace LibraryApp.View
     public partial class ListOfPostsForm : Form
     {
         private int iFormX, iFormY, iMouseX, iMouseY;
+
         private SqliteCommand? command;
         private SqliteDataReader? reader;
 
         private List<Post> postsList = new(); // лист как источник данных таблицы должностей
+
+        BindingSource binding = new BindingSource(); // привязкой источника через BindingSource
 
         bool flag = false;
 
@@ -128,7 +131,41 @@ namespace LibraryApp.View
             }
         }
 
-        // удалить запись из таблицы и БД
+        // изменяем должность в таблице и БД
+        private void ChangePostButton_CLick(object sender, EventArgs e)
+        {
+            string query = "UPDATE Posts " +
+                           "SET Post = @Post, IsActive = @IsActive " +
+                           "WHERE Id = @Id";
+            string id = postsTable.SelectedRows[0].Cells[0].Value.ToString();
+            
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("Id", id);
+                command.Parameters.AddWithValue("Post", postsTable.SelectedRows[0].Cells[1].Value.ToString());
+                command.Parameters.AddWithValue("IsActive", postsTable.SelectedRows[0].Cells[2].Value.ToString() == "активная" ? 1 : 0);
+
+                DataBase.OpenConnection();
+                command.ExecuteNonQuery();
+
+                DataBase.CloseConnection();
+
+                GetPosts();
+
+                MessageBox.Show("Должность была успешно изменена",
+                                "Изменение должности", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось изменить должность в базе данных:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+        }
+
+        // удаляем должность из таблицы и БД
         private void DeletePostButton_Click(object sender, EventArgs e)
         {
             MessageBoxButtons msb = MessageBoxButtons.YesNo;
@@ -150,7 +187,6 @@ namespace LibraryApp.View
 
                     DataBase.CloseConnection();
 
-                    BindingSource binding = new BindingSource();
                     binding.SuspendBinding();
                     binding.DataSource = postsList;
                     binding.ResumeBinding();
@@ -167,7 +203,7 @@ namespace LibraryApp.View
                 {
                     MessageBox.Show($"Не удалось удалить должность из базы данных:\n\"{ex.Message}\"\n" +
                                     $"Обратитесь к системному администратору для её устранения.",
-                                    "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                    "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 }
             }
         }

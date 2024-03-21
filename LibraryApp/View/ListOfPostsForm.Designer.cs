@@ -93,6 +93,7 @@ namespace LibraryApp.View
             changePostButton.TabIndex = 3;
             changePostButton.Text = "Изменить";
             changePostButton.UseVisualStyleBackColor = true;
+            changePostButton.Click += ChangePostButton_CLick;
             // 
             // deletePostButton
             // 

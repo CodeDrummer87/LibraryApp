@@ -12,9 +12,7 @@ namespace LibraryApp.View
 
         private List<Post> postsList = new(); // лист как источник данных таблицы должностей
 
-        BindingSource binding = new BindingSource(); // привязкой источника через BindingSource
-
-        bool flag = false;
+        bool flag = false; // флаг для работы метода выделения/снятия выделения строки
 
         public ListOfPostsForm()
         {
@@ -23,6 +21,7 @@ namespace LibraryApp.View
             ViewPostsTable();
         }
 
+        #region Window control buttons
         private void ListOfPostsCloseLabelCloseLabel_Click(object? sender, EventArgs e)
         {
             this.Close();
@@ -39,6 +38,8 @@ namespace LibraryApp.View
             listOfPostsCloseLabel.Text = "-";
             listOfPostsCloseLabel.ForeColor = Color.Black;
         }
+
+        #endregion
 
         // получаем список должностей
         private void GetPosts()
@@ -81,27 +82,42 @@ namespace LibraryApp.View
             GetPosts();
 
             postsTable.DataSource = postsList; // источник данных таблицы 
+            postsTable.MultiSelect = false; // нельзя выделять больше одной строки
 
             postsTable.Columns[0].Visible = false;
             postsTable.Columns[1].HeaderText = "Должность";
             postsTable.Columns[2].HeaderText = "Релевантность";
+            postsTable.Columns[3].Visible = false; // не отображать колонку "Удаляемость"
         }
 
-        // изменяем активность кнопок "Изменить" и "Удалить" в зависимости от выделения/невыделения строки
-        private void PostTableCellClick(object sender, DataGridViewCellEventArgs e)
+        // при выборе новой строки она всегда выделена, кнопки "Изменить" и "Удалить" активны
+        private void PostTableSelectionChanged(object sender, EventArgs e)
         {
-            if (postsTable.Rows[e.RowIndex].Selected == true)
+            if (postsTable.CurrentCell.Selected)
+            {
+                flag = true;
+                postsTable.CurrentCell.Selected = true;
+                changePostButton.Enabled = true;
+                deletePostButton.Enabled = true;
+            }
+        }
+
+        // убираем выделение строки или возвращаем его по клику 
+        // изменяем активность кнопок "Изменить" и "Удалить" в зависимости от выделения/невыделения строки
+        private void PostTableMouseUp(object sender, MouseEventArgs e)
+        {
+            if (postsTable.CurrentCell.Selected)
             {
                 if (flag)
                 {
-                    postsTable.Rows[e.RowIndex].Selected = true;
+                    postsTable.CurrentCell.Selected = true;
                     changePostButton.Enabled = true;
                     deletePostButton.Enabled = true;
                     flag = !flag;
                 }
                 else if (!flag)
                 {
-                    postsTable.Rows[e.RowIndex].Selected = false;
+                    postsTable.CurrentCell.Selected = false;
                     changePostButton.Enabled = false;
                     deletePostButton.Enabled = false;
                     flag = !flag;
@@ -138,7 +154,7 @@ namespace LibraryApp.View
                            "SET Post = @Post, IsActive = @IsActive " +
                            "WHERE Id = @Id";
             string id = postsTable.SelectedRows[0].Cells[0].Value.ToString();
-            
+
             try
             {
                 command = DataBase.GetConnection().CreateCommand();
@@ -165,6 +181,24 @@ namespace LibraryApp.View
             }
         }
 
+        // проверяем, удаляемая ли должность
+        private bool IsDeletablePost()
+        {
+            string query = "SELECT IsDeletable FROM Posts WHERE Id = @Id";
+            string id = postsTable.SelectedRows[0].Cells[0].Value.ToString();
+
+            command = DataBase.GetConnection().CreateCommand();
+            command.CommandText = query;
+            command.Parameters.AddWithValue("@Id", id);
+
+            DataBase.OpenConnection();
+            bool answer = Convert.ToBoolean(command.ExecuteScalar());
+
+            DataBase.CloseConnection();
+            return answer;
+        }
+
+
         // удаляем должность из таблицы и БД
         private void DeletePostButton_Click(object sender, EventArgs e)
         {
@@ -174,37 +208,47 @@ namespace LibraryApp.View
 
             if (MessageBox.Show(message, caption, msb) == DialogResult.Yes)
             {
-                string query = "DELETE FROM Posts WHERE Id = @Id";
-                string id = postsTable.SelectedRows[0].Cells[0].Value.ToString();
-
-                try
+                if (IsDeletablePost())
                 {
-                    command = DataBase.GetConnection().CreateCommand();
-                    command.CommandText = query;
-                    command.Parameters.AddWithValue("Id", id);
-                    DataBase.OpenConnection();
-                    command.ExecuteNonQuery();
+                    string query = "DELETE FROM Posts WHERE Id = @Id";
+                    string id = postsTable.SelectedRows[0].Cells[0].Value.ToString();
 
-                    DataBase.CloseConnection();
+                    try
+                    {
+                        command = DataBase.GetConnection().CreateCommand();
+                        command.CommandText = query;
+                        command.Parameters.AddWithValue("Id", id);
+                        DataBase.OpenConnection();
+                        command.ExecuteNonQuery();
 
-                    binding.SuspendBinding();
-                    binding.DataSource = postsList;
-                    binding.ResumeBinding();
+                        DataBase.CloseConnection();
 
-                    GetPosts();
+                        BindingSource binding = new BindingSource(); // для привязки источника через BindingSource
+                        binding.SuspendBinding();
+                        binding.DataSource = postsList;
+                        binding.ResumeBinding();
 
-                    postsTable.DataSource = binding;
-                    postsTable.Refresh();
+                        GetPosts();
 
-                    MessageBox.Show("Должность была успешно удалена из базы данных",
-                                    "Удаление должности", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        postsTable.DataSource = binding;
+                        postsTable.Refresh();
+
+                        MessageBox.Show("Должность была успешно удалена из базы данных",
+                                        "Удаление должности", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Не удалось удалить должность из базы данных:\n\"{ex.Message}\"\n" +
+                                        $"Обратитесь к системному администратору для её устранения.",
+                                        "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show($"Не удалось удалить должность из базы данных:\n\"{ex.Message}\"\n" +
-                                    $"Обратитесь к системному администратору для её устранения.",
-                                    "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    MessageBox.Show("Эту должность удалить нельзя",
+                                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+
             }
         }
 

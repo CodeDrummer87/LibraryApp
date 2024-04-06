@@ -24,6 +24,8 @@ namespace LibraryApp.View
 
             GetBirthdays(); // получаем дни рождения
         }
+
+        #region Window control buttons
         private void ListOfEmployeesCloseLabel_Click(object? sender, EventArgs e)
         {
             this.Close();
@@ -40,6 +42,8 @@ namespace LibraryApp.View
             listOfEmployeesCloseLabel.Text = "-";
             listOfEmployeesCloseLabel.ForeColor = Color.Black;
         }
+
+        #endregion
 
         // получаем список всех сотрудников и заполняем employeesList
         private void GetEmployees()

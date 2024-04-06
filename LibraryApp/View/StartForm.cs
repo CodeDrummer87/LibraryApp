@@ -17,6 +17,7 @@ namespace LibraryApp
             isHiddenPassword = true;
         }
 
+        #region Window control buttons
         private void CloseLabel_Click(object? sender, EventArgs e)
         {
             this.Close();
@@ -32,6 +33,9 @@ namespace LibraryApp
             closeLabel.ForeColor = Color.MidnightBlue;
         }
 
+        #endregion
+
+        // изменяем цвет кнопки скрытия пароля при наведении курсора
         private void PictureBoxMouseEnter(object? sender, EventArgs e)
         {
             PictureBox pic = sender as PictureBox;

@@ -12,6 +12,7 @@ namespace LibraryApp.View
             InitializeComponent();
         }
 
+        #region Window control buttons
         private void CreatePostCloseLabel_Click(object? sender, EventArgs e)
         {
             this.Close();
@@ -28,6 +29,8 @@ namespace LibraryApp.View
             createPostCloseLabel.Text = "-";
             createPostCloseLabel.ForeColor = Color.White;
         }
+
+        #endregion
 
         // кнопка "Создать"
         private void CreatePostButton_Click(object? sender, EventArgs e)
@@ -100,8 +103,8 @@ namespace LibraryApp.View
                     }
                     else
                     {
-                        string query = "INSERT INTO Posts(Post, IsActive) " +
-                                       "VALUES (@Post, @IsActive)";
+                        string query = "INSERT INTO Posts(Post, IsActive, IsDeletable) " +
+                                       "VALUES (@Post, @IsActive, 1)";
 
                         try
                         {

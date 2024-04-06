@@ -14,6 +14,7 @@ namespace LibraryApp
             InitializeComponent();
         }
 
+        #region Window control buttons
         private void CreateEmployeeCloseLabel_Click(object? sender, EventArgs e)
         {
             this.Close();
@@ -31,11 +32,15 @@ namespace LibraryApp
             createEmployeeCloseLabel.ForeColor = Color.Black;
         }
 
+        #endregion
+
+        // кнопка "Создать"
         private void createEmployeeButton_Click(object sender, EventArgs e)
         {
             CreateEmployee();
         }
 
+        // кнопка "Очистить"
         private void ClearFormButton_Click(object? sender, EventArgs e)
         {
             ClearForm();

@@ -54,6 +54,7 @@ namespace LibraryApp.View
             // 
             // postsTable
             // 
+            postsTable.AllowDrop = true;
             postsTable.AllowUserToResizeRows = false;
             dataGridViewCellStyle1.BackColor = Color.WhiteSmoke;
             postsTable.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
@@ -68,7 +69,8 @@ namespace LibraryApp.View
             postsTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             postsTable.Size = new Size(423, 269);
             postsTable.TabIndex = 1;
-            postsTable.CellClick += PostTableCellClick;
+            postsTable.SelectionChanged += PostTableSelectionChanged;
+            postsTable.MouseUp += PostTableMouseUp;
             // 
             // listOfPostsCloseLabel
             // 
@@ -87,7 +89,7 @@ namespace LibraryApp.View
             // changePostButton
             // 
             changePostButton.Enabled = false;
-            changePostButton.Location = new Point(33, 365);
+            changePostButton.Location = new Point(33, 372);
             changePostButton.Name = "changePostButton";
             changePostButton.Size = new Size(75, 23);
             changePostButton.TabIndex = 3;
@@ -98,7 +100,7 @@ namespace LibraryApp.View
             // deletePostButton
             // 
             deletePostButton.Enabled = false;
-            deletePostButton.Location = new Point(127, 365);
+            deletePostButton.Location = new Point(127, 372);
             deletePostButton.Name = "deletePostButton";
             deletePostButton.Size = new Size(75, 23);
             deletePostButton.TabIndex = 4;
@@ -111,7 +113,7 @@ namespace LibraryApp.View
             listOfPostsEditModeCheckBox.AutoSize = true;
             listOfPostsEditModeCheckBox.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             listOfPostsEditModeCheckBox.ForeColor = Color.MidnightBlue;
-            listOfPostsEditModeCheckBox.Location = new Point(243, 367);
+            listOfPostsEditModeCheckBox.Location = new Point(243, 374);
             listOfPostsEditModeCheckBox.Name = "listOfPostsEditModeCheckBox";
             listOfPostsEditModeCheckBox.Size = new Size(143, 21);
             listOfPostsEditModeCheckBox.TabIndex = 5;

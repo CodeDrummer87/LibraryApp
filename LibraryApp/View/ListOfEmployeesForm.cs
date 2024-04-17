@@ -24,6 +24,8 @@ namespace LibraryApp.View
 
             GetBirthdays(); // получаем дни рождения
         }
+
+        #region Window control buttons
         private void ListOfEmployeesCloseLabel_Click(object? sender, EventArgs e)
         {
             this.Close();
@@ -40,6 +42,8 @@ namespace LibraryApp.View
             listOfEmployeesCloseLabel.Text = "-";
             listOfEmployeesCloseLabel.ForeColor = Color.Black;
         }
+
+        #endregion
 
         // получаем список всех сотрудников и заполняем employeesList
         private void GetEmployees()
@@ -110,26 +114,20 @@ namespace LibraryApp.View
             {
                 column.ReadOnly = true;
             }
+            employeesTable.ClearSelection();
         }
 
         // переключаем источник заполнения таблицы по чекбоксу (либо действующие, либо все сотрудники)
         private void FilterIsActiveChanged(object sender, EventArgs e)
         {
-            if (listOfEmployeesIsActiveCheckBox.Checked)
-            {
-                employeesTable.DataSource = activeList;
-            }
-            else
-            {
-                employeesTable.DataSource = employeesList;
-            }
+            employeesTable.DataSource = listOfEmployeesIsActiveCheckBox.Checked ? activeList : employeesList;
         }
 
         // проводим фильтрацию из TextBox
         private void FilterTextChanged(object sender, EventArgs e)
         {
             // если поле поиска пустое и галочка не стоит
-            if (listOfEmployeesFilterBox.Text == "" && !listOfEmployeesIsActiveCheckBox.Checked)
+            if (listOfEmployeesFilterBox.Text.Equals(String.Empty) && !listOfEmployeesIsActiveCheckBox.Checked)
             {
                 employeesTable.DataSource = employeesList;
             }

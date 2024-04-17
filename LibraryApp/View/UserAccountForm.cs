@@ -21,6 +21,7 @@ namespace LibraryApp
             PutCurrentUserData(GetCurrentUserData(currentLoginId));
         }
 
+        #region Window control buttons
         private void UserAccountCloseLabel_Click(object? sender, EventArgs e)
         {
             this.Close();
@@ -38,6 +39,8 @@ namespace LibraryApp
             userAccountCloseLabel.Text = "-";
             userAccountCloseLabel.ForeColor = Color.Black;
         }
+
+        #endregion
 
         // выходим на стартовую форму, если ответить "да"
         private void ExitToStartFormLabel_CLick(object sender, EventArgs e)

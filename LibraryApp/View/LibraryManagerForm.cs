@@ -21,6 +21,7 @@ namespace LibraryApp
             PutCurrentUserData(GetCurrentManagerData(currentLoginId));
         }
 
+        #region Window control buttons
         private void LibraryManagerCloseLabel_Click(object? sender, EventArgs e)
         {
             this.Close();
@@ -38,6 +39,9 @@ namespace LibraryApp
             libraryManagerCloseLabel.Text = "-";
             libraryManagerCloseLabel.ForeColor = Color.Black;
         }
+
+
+        #endregion
 
         // выходим на стартовую форму, если ответить "да"
         private void ExitToStartFormLabel_CLick(object sender, EventArgs e)
@@ -62,18 +66,34 @@ namespace LibraryApp
             exitToStartFormLabel.ForeColor = Color.MidnightBlue;
         }
 
-        // кнопка "Создать сотрудника"
+        // кнопка "Создать аккаунт сотрудника"
         private void CreateEmployeeButton_Click(object? sender, EventArgs e)
         {
             CreateEmployeeForm employeeForm = new();
             employeeForm.Show();
         }
 
+        // кнопка "Список сотрудников"
         private void ListOfEmployeesButtn_Click(object? sender, EventArgs e)
         {
             ListOfEmployeesForm listOfEmployeesForm = new ListOfEmployeesForm();
             listOfEmployeesForm.Show();
         }
+
+        // кнопка "Создать новую должность"
+        private void CreatePostButton_Click(object? sender, EventArgs e)
+        {
+            CreatePostForm newPostForm = new CreatePostForm();
+            newPostForm.Show();
+        }
+
+        // кнопка "Список должностей"
+        private void ListOfPostsButton_Click(object? sender, EventArgs e)
+        {
+            ListOfPostsForm listOfPostsForm = new ListOfPostsForm();
+            listOfPostsForm.Show();
+        }
+
 
         // выводим текущую дату
         private void GetCurrentDate() => currentDateLabel.Text = "Сегодня " + DateTime.Now.ToLongDateString();

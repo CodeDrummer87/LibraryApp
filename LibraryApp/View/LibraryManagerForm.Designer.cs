@@ -100,6 +100,7 @@
             // 
             // listOfPositionsButton
             // 
+            listOfPositionsButton.Cursor = Cursors.Hand;
             listOfPositionsButton.Location = new Point(54, 187);
             listOfPositionsButton.Name = "listOfPositionsButton";
             listOfPositionsButton.Size = new Size(185, 23);

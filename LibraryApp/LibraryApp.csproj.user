@@ -7,6 +7,9 @@
     <Compile Update="View\CreatePostForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="View\EmployeeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="View\LibraryManagerForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -88,6 +88,7 @@ namespace LibraryApp.View
             // 
             // changePostButton
             // 
+            changePostButton.Cursor = Cursors.Hand;
             changePostButton.Enabled = false;
             changePostButton.Location = new Point(33, 372);
             changePostButton.Name = "changePostButton";
@@ -99,6 +100,7 @@ namespace LibraryApp.View
             // 
             // deletePostButton
             // 
+            deletePostButton.Cursor = Cursors.Hand;
             deletePostButton.Enabled = false;
             deletePostButton.Location = new Point(127, 372);
             deletePostButton.Name = "deletePostButton";

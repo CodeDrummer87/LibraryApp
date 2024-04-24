@@ -1,3 +1,5 @@
+using LibraryApp.View;
+
 namespace LibraryApp
 {
     internal static class Program
@@ -6,7 +8,8 @@ namespace LibraryApp
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-            Application.Run(new StartForm());
+            //Application.Run(new StartForm());
+            Application.Run(new EmployeeForm());
         }
     }
 }

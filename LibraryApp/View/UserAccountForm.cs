@@ -15,6 +15,7 @@ namespace LibraryApp
         {
             InitializeComponent();
             GetCurrentDate();
+
             this.currentLoginId = currentLoginId!;
             this.startForm = startForm;
 
@@ -40,9 +41,7 @@ namespace LibraryApp
             userAccountCloseLabel.ForeColor = Color.Black;
         }
 
-        #endregion
-
-        // выходим на стартовую форму, если ответить "да"
+        // кнопка "Выход". Выходим на стартовую форму, если ответить "да"
         private void ExitToStartFormLabel_CLick(object sender, EventArgs e)
         {
             MessageBoxButtons msb = MessageBoxButtons.YesNo;
@@ -64,6 +63,9 @@ namespace LibraryApp
         {
             exitToStartFormLabel.ForeColor = Color.MidnightBlue;
         }
+
+        #endregion
+
 
         // выводим текущую дату
         private void GetCurrentDate() => currentDateLabel.Text = "Сегодня " + DateTime.Now.ToLongDateString();

@@ -30,6 +30,7 @@ namespace LibraryApp.View
         private void EmployeeFormCloseLabel_Click(object? sender, EventArgs e)
         {
             this.Close();
+            startForm.Close();
         }
 
         private void EmployeeFormCloseLabel_MouseEnter(object? sender, EventArgs e)
@@ -44,6 +45,27 @@ namespace LibraryApp.View
             employeeFormCloseLabel.ForeColor = Color.Black;
         }
 
+        // кнопка "Выход". Выходим на стартовую форму, если ответить "да"
+        private void ExitToStartFormLabel_CLick(object sender, EventArgs e)
+        {
+            MessageBoxButtons msb = MessageBoxButtons.YesNo;
+            String message = "Вы действительно хотите выйти?";
+            String caption = "Выход";
+            if (MessageBox.Show(message, caption, msb) == DialogResult.Yes)
+            {
+                this.Close();
+                startForm.Show();
+            }
+        }
+        private void ExitToStartFormLabel_MouseEnter(object sender, EventArgs e)
+        {
+            exitToStartFormLabel.ForeColor = Color.Red;
+        }
+
+        private void ExitToStartFormLabel_MouseLeave(object sender, EventArgs e)
+        {
+            exitToStartFormLabel.ForeColor = Color.MidnightBlue;
+        }
 
         #endregion
 
@@ -160,6 +182,55 @@ namespace LibraryApp.View
                 }
             }
         }
+
+        // удаляем книгу из таблицы и БД
+        private void DeleteBookButton_Click(object sender, EventArgs e)
+        {
+            MessageBoxButtons msb = MessageBoxButtons.YesNo;
+            String message = "Вы действительно хотите удалить эту книгу?";
+            String caption = "Удаление книги";
+
+            if (MessageBox.Show(message, caption, msb) == DialogResult.Yes)
+            {
+               string query = "DELETE FROM Books WHERE Id = @Id";
+               string id = booksTable.SelectedRows[0].Cells[0].Value.ToString();
+                try
+                {
+                    command = DataBase.GetConnection().CreateCommand();
+                    command.CommandText = query;
+                    command.Parameters.AddWithValue("Id", id);
+                    DataBase.OpenConnection();
+                    command.ExecuteNonQuery();
+
+                    DataBase.CloseConnection();
+
+                    BindingSource binding = new BindingSource(); // для привязки источника через BindingSource
+                    binding.SuspendBinding();
+                    binding.DataSource = booksList;
+                    binding.ResumeBinding();
+
+                    GetBooks();
+
+                    booksTable.DataSource = binding;
+                    booksTable.Refresh();
+                    
+                    MessageBox.Show("Книга была успешно удалена из базы данных",
+                                    "Удаление книги", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Не удалось удалить книгу из базы данных:\n\"{ex.Message}\"\n" +
+                                    $"Обратитесь к системному администратору для её устранения.",
+                                    "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                }
+            }
+        }
+
+
+
+
+
 
         #region Move the Form
         private void ThisForm_MouseDown(object sender, MouseEventArgs e)

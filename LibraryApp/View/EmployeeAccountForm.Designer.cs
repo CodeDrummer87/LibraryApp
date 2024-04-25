@@ -38,6 +38,8 @@
             booksAgeLimitFilterRadioButton = new RadioButton();
             booksNameFilterRadioButton = new RadioButton();
             booksAuthorFilterRadioButton = new RadioButton();
+            exitToStartFormLabel = new Label();
+            deleteBookButton = new Button();
             ((System.ComponentModel.ISupportInitialize)booksTable).BeginInit();
             booksFilterGroupBox.SuspendLayout();
             SuspendLayout();
@@ -147,19 +149,47 @@
             booksAuthorFilterRadioButton.Text = "по автору";
             booksAuthorFilterRadioButton.UseVisualStyleBackColor = true;
             // 
-            // EmployeeForm
+            // exitToStartFormLabel
+            // 
+            exitToStartFormLabel.AutoSize = true;
+            exitToStartFormLabel.Cursor = Cursors.Hand;
+            exitToStartFormLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            exitToStartFormLabel.ForeColor = Color.MidnightBlue;
+            exitToStartFormLabel.Location = new Point(1284, 723);
+            exitToStartFormLabel.Name = "exitToStartFormLabel";
+            exitToStartFormLabel.Size = new Size(49, 17);
+            exitToStartFormLabel.TabIndex = 4;
+            exitToStartFormLabel.Text = "Выход";
+            exitToStartFormLabel.Click += ExitToStartFormLabel_CLick;
+            exitToStartFormLabel.MouseEnter += ExitToStartFormLabel_MouseEnter;
+            exitToStartFormLabel.MouseLeave += ExitToStartFormLabel_MouseLeave;
+            // 
+            // deleteBookButton
+            // 
+            deleteBookButton.Cursor = Cursors.Hand;
+            deleteBookButton.Location = new Point(44, 657);
+            deleteBookButton.Name = "deleteBookButton";
+            deleteBookButton.Size = new Size(75, 23);
+            deleteBookButton.TabIndex = 5;
+            deleteBookButton.Text = "Удалить";
+            deleteBookButton.UseVisualStyleBackColor = true;
+            deleteBookButton.Click += DeleteBookButton_Click;
+            // 
+            // EmployeeAccountForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1366, 768);
+            Controls.Add(deleteBookButton);
+            Controls.Add(exitToStartFormLabel);
             Controls.Add(booksFilterGroupBox);
             Controls.Add(booksTable);
             Controls.Add(employeeFormCloseLabel);
             Controls.Add(EmployeeFormName);
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Name = "EmployeeForm";
+            Name = "EmployeeAccountForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Личный кабинет сотрудника";
             MouseDown += ThisForm_MouseDown;
@@ -181,5 +211,7 @@
         private RadioButton booksNameFilterRadioButton;
         private RadioButton booksAgeLimitFilterRadioButton;
         private TextBox booksFilterBox;
+        private Label exitToStartFormLabel;
+        private Button deleteBookButton;
     }
 }

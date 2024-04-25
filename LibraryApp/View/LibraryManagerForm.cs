@@ -42,10 +42,7 @@ namespace LibraryApp
             libraryManagerCloseLabel.ForeColor = Color.Black;
         }
 
-
-        #endregion
-
-        // выходим на стартовую форму, если ответить "да"
+        // кнопка "Выход". Выходим на стартовую форму, если ответить "да"
         private void ExitToStartFormLabel_CLick(object sender, EventArgs e)
         {
             MessageBoxButtons msb = MessageBoxButtons.YesNo;
@@ -67,6 +64,8 @@ namespace LibraryApp
         {
             exitToStartFormLabel.ForeColor = Color.MidnightBlue;
         }
+
+        #endregion
 
         // кнопка "Создать аккаунт сотрудника"
         private void CreateEmployeeButton_Click(object? sender, EventArgs e)

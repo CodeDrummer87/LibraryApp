@@ -3,15 +3,17 @@ using Microsoft.Data.Sqlite;
 
 namespace LibraryApp.View
 {
-    public partial class EmployeeForm : Form
+    public partial class EmployeeAccountForm : Form
     {
         private int iFormX, iFormY, iMouseX, iMouseY;
         private SqliteCommand? command;
         private SqliteDataReader? reader;
 
-        private List<Book> booksList = new(); // лист как источник данных таблицы книг
+        private List<Book> booksList = new(); // список всех книг
+        private List<Book> filteredList = new(); // список книг, фильтрованный по параметрам
 
-        public EmployeeForm()
+
+        public EmployeeAccountForm()
         {
             InitializeComponent();
             ViewBooksTable();
@@ -38,7 +40,7 @@ namespace LibraryApp.View
 
         #endregion
 
-        // получаем список книг 
+        // получаем список книг и заполняем booksList
         private void GetBooks()
         {
             booksList.Clear();
@@ -65,7 +67,7 @@ namespace LibraryApp.View
                         Author = reader.GetString(3),
                         AgeLimit = reader.GetInt32(4),
                         ImagePath = reader.GetString(5),
-                        IsAvailable = reader.GetString(6) == "1" ? "доступная" : "недоступная",
+                        IsAvailable = reader.GetString(6) == "1" ? "доступна" : "недоступна",
                         IsActive = reader.GetString(7) == "1" ? "активная" : "неактивная"
                     });
                 }
@@ -81,7 +83,7 @@ namespace LibraryApp.View
             DataBase.CloseConnection();
         }
 
-        // заполняем таблицу из списка книг
+        // по умолчанию заполняем таблицу из booksList, который содержит все книги
         private void ViewBooksTable()
         {
             GetBooks();
@@ -115,7 +117,42 @@ namespace LibraryApp.View
             // postsTable.Columns[3].Visible = false; // не отображать колонку "Удаляемость"
         }
 
+        // проводим фильтрацию из TextBox
+        private void FilterTextChanged(object sender, EventArgs e)
+        {
+            // если поле поиска пустое
+            if (booksFilterBox.Text.Equals(String.Empty))
+            {
+                // то источник данных таблицы - лист со всеми книгами booksList
+                booksTable.DataSource = booksList;
+            }
+            // если поле поиска заполняется, тогда фильтруем (источник данных - filteredList)
+            else
+            {
+                // по автору
+                if (booksAuthorFilterRadioButton.Checked)
+                {
+                    filteredList = booksList.Where(x => x.Author.StartsWith(booksFilterBox.Text.Trim(),
+                    StringComparison.OrdinalIgnoreCase)).ToList();
+                    booksTable.DataSource = filteredList;
+                }
 
+                // по названию
+                else if (booksNameFilterRadioButton.Checked)
+                {
+                    filteredList = booksList.Where(x => x.Title.Contains(booksFilterBox.Text.Trim(),
+                    StringComparison.OrdinalIgnoreCase)).ToList();
+                    booksTable.DataSource = filteredList;
+                }
+
+                // по возрастным ограничениям
+                else if (booksAgeLimitFilterRadioButton.Checked)
+                {
+                    filteredList = booksList.Where(x => x.AgeLimit.ToString().Contains(booksFilterBox.Text.Trim())).ToList();
+                    booksTable.DataSource = filteredList;
+                }
+            }
+        }
 
         #region Move the Form
         private void ThisForm_MouseDown(object sender, MouseEventArgs e)

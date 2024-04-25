@@ -9,7 +9,7 @@ namespace LibraryApp
         {
             ApplicationConfiguration.Initialize();
             //Application.Run(new StartForm());
-            Application.Run(new EmployeeForm());
+            Application.Run(new EmployeeAccountForm());
         }
     }
 }

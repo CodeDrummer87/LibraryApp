@@ -6,17 +6,24 @@ namespace LibraryApp.View
     public partial class EmployeeAccountForm : Form
     {
         private int iFormX, iFormY, iMouseX, iMouseY;
+
         private SqliteCommand? command;
         private SqliteDataReader? reader;
+
+        private int currentLoginId;
+        private StartForm startForm;
 
         private List<Book> booksList = new(); // список всех книг
         private List<Book> filteredList = new(); // список книг, фильтрованный по параметрам
 
 
-        public EmployeeAccountForm()
+        public EmployeeAccountForm(StartForm startForm, int currentLoginId)
         {
             InitializeComponent();
             ViewBooksTable();
+
+            this.currentLoginId = currentLoginId!;
+            this.startForm = startForm;
         }
 
         #region Window control buttons

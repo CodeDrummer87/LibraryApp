@@ -7,8 +7,10 @@ namespace LibraryApp
     public partial class LibraryManagerForm : Form
     {
         private int iFormX, iFormY, iMouseX, iMouseY;
+
         private SqliteCommand? command;
         private SqliteDataReader? reader;
+
         private int currentLoginId;
         private StartForm startForm;
         public LibraryManagerForm(StartForm startForm, int currentLoginId)

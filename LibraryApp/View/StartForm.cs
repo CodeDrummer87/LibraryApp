@@ -1,4 +1,5 @@
 ﻿using LibraryApp.Models;
+using LibraryApp.View;
 using Microsoft.Data.Sqlite;
 using static System.Net.WebRequestMethods;
 
@@ -82,6 +83,12 @@ namespace LibraryApp
                 UserAccountForm userForm = new(this, loginId);
                 this.Hide();
                 userForm.Show();
+            }
+            else if (loginInputBox.Text == "emp" && passwordInputBox.Text == "emp")
+            {
+                EmployeeAccountForm employeeForm = new(this, loginId);
+                this.Hide();
+                employeeForm.Show();
             }
             else
             {

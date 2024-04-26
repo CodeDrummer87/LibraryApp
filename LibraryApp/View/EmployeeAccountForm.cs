@@ -16,6 +16,7 @@ namespace LibraryApp.View
         private List<Book> booksList = new(); // список всех книг
         private List<Book> filteredList = new(); // список книг, фильтрованный по параметрам
 
+        bool flag = false; // флаг для работы метода выделения/снятия выделения строки
 
         public EmployeeAccountForm(StartForm startForm, int currentLoginId)
         {
@@ -77,7 +78,7 @@ namespace LibraryApp.View
             string query = "SELECT b.Id, b.Title, (SELECT Name FROM Genres WHERE b.GenreId = Id), " +
                            "b.Author, b.AgeLimit, b.ImagePath, b.IsAvailable, b.IsActive " +
                            "FROM Books b " +
-                           "ORDER BY Author";
+                           "ORDER BY Title";
 
             try
             {
@@ -125,7 +126,7 @@ namespace LibraryApp.View
             booksTable.Columns[1].Width = 400;
             booksTable.Columns[1].HeaderText = "Название";
 
-            booksTable.Columns[2].Width = 200;
+            booksTable.Columns[2].Width = 180;
             booksTable.Columns[2].HeaderText = "Жанр";
 
             booksTable.Columns[3].Width = 280;
@@ -142,8 +143,67 @@ namespace LibraryApp.View
 
             booksTable.Columns[7].Width = 100;
             booksTable.Columns[7].HeaderText = "Активность";
+        }
 
-            // postsTable.Columns[3].Visible = false; // не отображать колонку "Удаляемость"
+        // при выборе новой строки в таблице она всегда выделена, кнопки "Добавить", "Изменить", "Удалить" активны
+        private void BooksTableSelectionChanged(object sender, EventArgs e)
+        {
+            if (booksTable.CurrentCell.Selected)
+            {
+                flag = true;
+                booksTable.CurrentCell.Selected = true;
+                addBookButton.Enabled = true;
+                changeBookButton.Enabled = true;
+                deleteBookButton.Enabled = true;
+            }
+        }
+
+        // убираем выделение строки или возвращаем его по клику 
+        // изменяем активность кнопок "Добавить", "Изменить", "Удалить" в зависимости от выделения/невыделения строки
+        private void BooksTableMouseUp(object sender, MouseEventArgs e)
+        {
+            if (booksTable.CurrentCell.Selected)
+            {
+                if (flag)
+                {
+                    booksTable.CurrentCell.Selected = true;
+                    addBookButton.Enabled = true;
+                    changeBookButton.Enabled = true;
+                    deleteBookButton.Enabled = true;
+                    flag = !flag;
+                }
+                else if (!flag)
+                {
+                    booksTable.CurrentCell.Selected = false;
+                    addBookButton.Enabled = false;
+                    changeBookButton.Enabled = false;
+                    deleteBookButton.Enabled = false;
+                    flag = !flag;
+                }
+            }
+        }
+
+        // по нажатию на чекбокс решаем, можно ли редатировать книги
+        private void EditModeChanged(object sender, EventArgs e)
+        {
+            if (EmployeeFormEditModeCheckBox.Checked)
+            {
+                foreach (DataGridViewBand row in booksTable.Rows)
+                {
+                    row.ReadOnly = false;
+                }
+
+                addBookButton.Enabled = true;
+                changeBookButton.Enabled = true;
+                deleteBookButton.Enabled = true;
+            }
+            else
+            {
+                foreach (DataGridViewBand row in booksTable.Rows)
+                {
+                    row.ReadOnly = true;
+                }
+            }
         }
 
         // проводим фильтрацию из TextBox
@@ -183,6 +243,45 @@ namespace LibraryApp.View
             }
         }
 
+        // изменяем данные о книге в таблице и БД
+        private void ChangeBookButton_CLick(object sender, EventArgs e)
+        {
+            string query = "UPDATE Books " +
+                           "SET Title = @Title, GenreId = @GenreId, Author = @Author, " +
+                           "AgeLimit = @AgeLimit, IsAvailable = @IsAvailable, IsActive = @IsActive " +
+                           "WHERE Id = @Id";
+            string id = booksTable.SelectedRows[0].Cells[0].Value.ToString();
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("Id", id);
+                command.Parameters.AddWithValue("Title", booksTable.SelectedRows[0].Cells[1].Value.ToString());
+                // command.Parameters.AddWithValue("GenreId", booksTable.SelectedRows[0].Cells[2].Value.ToString()); // ЗАМЕНИ-ПРИДУМАЙ-СДЕЛАЙ
+                command.Parameters.AddWithValue("Author", booksTable.SelectedRows[0].Cells[3].Value.ToString());
+                command.Parameters.AddWithValue("AgeLimit", booksTable.SelectedRows[0].Cells[4].Value.ToString());
+                command.Parameters.AddWithValue("IsAvailable", booksTable.SelectedRows[0].Cells[6].Value.ToString() == "доступна" ? 1 : 0);
+                command.Parameters.AddWithValue("IsActive", booksTable.SelectedRows[0].Cells[7].Value.ToString() == "активная" ? 1 : 0);
+
+                DataBase.OpenConnection();
+                command.ExecuteNonQuery();
+
+                DataBase.CloseConnection();
+
+                GetBooks();
+
+                MessageBox.Show("Данные о книге были успешно изменены",
+                                "Изменение данных о книге", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось изменить данные о книге в базе данных:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+        }
+
         // удаляем книгу из таблицы и БД
         private void DeleteBookButton_Click(object sender, EventArgs e)
         {
@@ -192,8 +291,8 @@ namespace LibraryApp.View
 
             if (MessageBox.Show(message, caption, msb) == DialogResult.Yes)
             {
-               string query = "DELETE FROM Books WHERE Id = @Id";
-               string id = booksTable.SelectedRows[0].Cells[0].Value.ToString();
+                string query = "DELETE FROM Books WHERE Id = @Id";
+                string id = booksTable.SelectedRows[0].Cells[0].Value.ToString();
                 try
                 {
                     command = DataBase.GetConnection().CreateCommand();
@@ -213,11 +312,11 @@ namespace LibraryApp.View
 
                     booksTable.DataSource = binding;
                     booksTable.Refresh();
-                    
+
                     MessageBox.Show("Книга была успешно удалена из базы данных",
                                     "Удаление книги", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                
+
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Не удалось удалить книгу из базы данных:\n\"{ex.Message}\"\n" +
@@ -226,10 +325,6 @@ namespace LibraryApp.View
                 }
             }
         }
-
-
-
-
 
 
         #region Move the Form

@@ -198,7 +198,6 @@ namespace LibraryApp.View
             return answer;
         }
 
-
         // удаляем должность из таблицы и БД
         private void DeletePostButton_Click(object sender, EventArgs e)
         {

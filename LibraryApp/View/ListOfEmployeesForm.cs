@@ -6,7 +6,7 @@ namespace LibraryApp.View
 {
     public partial class ListOfEmployeesForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY;
+        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
         private SqliteCommand? command;
         private SqliteDataReader? reader;
 

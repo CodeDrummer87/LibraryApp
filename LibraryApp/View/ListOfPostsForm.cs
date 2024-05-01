@@ -5,7 +5,7 @@ namespace LibraryApp.View
 {
     public partial class ListOfPostsForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY;
+        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
 
         private SqliteCommand? command;
         private SqliteDataReader? reader;
@@ -134,9 +134,6 @@ namespace LibraryApp.View
                 {
                     row.ReadOnly = false;
                 }
-
-                changePostButton.Enabled = true;
-                deletePostButton.Enabled = true;
             }
             else
             {

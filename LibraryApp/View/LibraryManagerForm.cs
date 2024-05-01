@@ -6,7 +6,7 @@ namespace LibraryApp
 {
     public partial class LibraryManagerForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY;
+        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
 
         private SqliteCommand? command;
         private SqliteDataReader? reader;

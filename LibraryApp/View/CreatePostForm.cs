@@ -4,7 +4,7 @@ namespace LibraryApp.View
 {
     public partial class CreatePostForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY;
+        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
         private SqliteCommand command;
 
         public CreatePostForm()

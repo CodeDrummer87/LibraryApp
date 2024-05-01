@@ -87,6 +87,7 @@
             booksTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             booksTable.Size = new Size(1283, 521);
             booksTable.TabIndex = 2;
+            booksTable.CellClick += BooksTable_CellClick;
             booksTable.SelectionChanged += BooksTableSelectionChanged;
             booksTable.MouseUp += BooksTableMouseUp;
             // 
@@ -100,7 +101,7 @@
             booksFilterGroupBox.ForeColor = Color.MidnightBlue;
             booksFilterGroupBox.Location = new Point(44, 81);
             booksFilterGroupBox.Name = "booksFilterGroupBox";
-            booksFilterGroupBox.Size = new Size(701, 63);
+            booksFilterGroupBox.Size = new Size(589, 63);
             booksFilterGroupBox.TabIndex = 3;
             booksFilterGroupBox.TabStop = false;
             booksFilterGroupBox.Text = "Фильтрация";
@@ -108,7 +109,7 @@
             // booksFilterBox
             // 
             booksFilterBox.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
-            booksFilterBox.Location = new Point(473, 27);
+            booksFilterBox.Location = new Point(368, 26);
             booksFilterBox.Name = "booksFilterBox";
             booksFilterBox.Size = new Size(205, 25);
             booksFilterBox.TabIndex = 3;
@@ -119,12 +120,12 @@
             booksAgeLimitFilterRadioButton.AutoSize = true;
             booksAgeLimitFilterRadioButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
             booksAgeLimitFilterRadioButton.ForeColor = Color.Black;
-            booksAgeLimitFilterRadioButton.Location = new Point(247, 31);
+            booksAgeLimitFilterRadioButton.Location = new Point(247, 30);
             booksAgeLimitFilterRadioButton.Name = "booksAgeLimitFilterRadioButton";
-            booksAgeLimitFilterRadioButton.Size = new Size(207, 21);
+            booksAgeLimitFilterRadioButton.Size = new Size(98, 21);
             booksAgeLimitFilterRadioButton.TabIndex = 2;
             booksAgeLimitFilterRadioButton.TabStop = true;
-            booksAgeLimitFilterRadioButton.Text = "по возрастным ограничениям";
+            booksAgeLimitFilterRadioButton.Text = "по возрасту";
             booksAgeLimitFilterRadioButton.UseVisualStyleBackColor = true;
             // 
             // booksNameFilterRadioButton
@@ -132,7 +133,7 @@
             booksNameFilterRadioButton.AutoSize = true;
             booksNameFilterRadioButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
             booksNameFilterRadioButton.ForeColor = Color.Black;
-            booksNameFilterRadioButton.Location = new Point(122, 31);
+            booksNameFilterRadioButton.Location = new Point(122, 30);
             booksNameFilterRadioButton.Name = "booksNameFilterRadioButton";
             booksNameFilterRadioButton.Size = new Size(104, 21);
             booksNameFilterRadioButton.TabIndex = 1;
@@ -146,7 +147,7 @@
             booksAuthorFilterRadioButton.Checked = true;
             booksAuthorFilterRadioButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
             booksAuthorFilterRadioButton.ForeColor = Color.Black;
-            booksAuthorFilterRadioButton.Location = new Point(15, 31);
+            booksAuthorFilterRadioButton.Location = new Point(15, 30);
             booksAuthorFilterRadioButton.Name = "booksAuthorFilterRadioButton";
             booksAuthorFilterRadioButton.Size = new Size(86, 21);
             booksAuthorFilterRadioButton.TabIndex = 0;
@@ -160,7 +161,7 @@
             exitToStartFormLabel.Cursor = Cursors.Hand;
             exitToStartFormLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             exitToStartFormLabel.ForeColor = Color.MidnightBlue;
-            exitToStartFormLabel.Location = new Point(1284, 723);
+            exitToStartFormLabel.Location = new Point(1278, 711);
             exitToStartFormLabel.Name = "exitToStartFormLabel";
             exitToStartFormLabel.Size = new Size(49, 17);
             exitToStartFormLabel.TabIndex = 4;

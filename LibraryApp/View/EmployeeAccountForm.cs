@@ -5,7 +5,7 @@ namespace LibraryApp.View
 {
     public partial class EmployeeAccountForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY;
+        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
 
         private SqliteCommand? command;
         private SqliteDataReader? reader;
@@ -16,12 +16,19 @@ namespace LibraryApp.View
         private List<Book> booksList = new(); // список всех книг
         private List<Book> filteredList = new(); // список книг, фильтрованный по параметрам
 
+        private ComboBox genresComboBox = new ComboBox(); // выпадающий список жанров (при редактировании информации о книге)
+
+        int columnIndex = 2;  // индекс столбца в выпадающем списке (столбец жанров #2 в таблице)
+        int rowIndex = 0; // индекс строки в выпадающем списке
+
         bool flag = false; // флаг для работы метода выделения/снятия выделения строки
 
         public EmployeeAccountForm(StartForm startForm, int currentLoginId)
         {
             InitializeComponent();
+
             ViewBooksTable();
+            LoadGenresComboBox();
 
             this.currentLoginId = currentLoginId!;
             this.startForm = startForm;
@@ -121,8 +128,9 @@ namespace LibraryApp.View
             booksTable.DataSource = booksList; // источник данных таблицы 
             booksTable.MultiSelect = false; // нельзя выделять больше одной строки
 
-            booksTable.Columns[0].Visible = false;
+            booksTable.Columns[0].Visible = false; // не отображаем столбец с Id 
 
+            // задаем размеры и наименования столбцов
             booksTable.Columns[1].Width = 400;
             booksTable.Columns[1].HeaderText = "Название";
 
@@ -145,7 +153,7 @@ namespace LibraryApp.View
             booksTable.Columns[7].HeaderText = "Активность";
         }
 
-        // при выборе новой строки в таблице она всегда выделена, кнопки "Добавить", "Изменить", "Удалить" активны
+        // при выборе новой строки в таблице она будет выделена, кнопки "Добавить", "Изменить", "Удалить" активны
         private void BooksTableSelectionChanged(object sender, EventArgs e)
         {
             if (booksTable.CurrentCell.Selected)
@@ -179,29 +187,6 @@ namespace LibraryApp.View
                     changeBookButton.Enabled = false;
                     deleteBookButton.Enabled = false;
                     flag = !flag;
-                }
-            }
-        }
-
-        // по нажатию на чекбокс решаем, можно ли редатировать книги
-        private void EditModeChanged(object sender, EventArgs e)
-        {
-            if (EmployeeFormEditModeCheckBox.Checked)
-            {
-                foreach (DataGridViewBand row in booksTable.Rows)
-                {
-                    row.ReadOnly = false;
-                }
-
-                addBookButton.Enabled = true;
-                changeBookButton.Enabled = true;
-                deleteBookButton.Enabled = true;
-            }
-            else
-            {
-                foreach (DataGridViewBand row in booksTable.Rows)
-                {
-                    row.ReadOnly = true;
                 }
             }
         }
@@ -243,6 +228,131 @@ namespace LibraryApp.View
             }
         }
 
+        // по нажатию на чекбокс решаем, можно ли редатировать данные о книгах
+        private void EditModeChanged(object sender, EventArgs e)
+        {
+            if (EmployeeFormEditModeCheckBox.Checked)
+            {
+                foreach (DataGridViewBand row in booksTable.Rows)
+                {
+                    row.ReadOnly = false;
+                }
+            }
+            else
+            {
+                foreach (DataGridViewBand row in booksTable.Rows)
+                {
+                    row.ReadOnly = true;
+                    genresComboBox.Visible = false;
+                }
+            }
+        }
+
+        // загружаем выпадающий список жанров в таблицу
+        private void LoadGenresComboBox()
+        {
+            LoadGenres();
+
+            // создаем обработчик события (выбор жанров из списка)
+            genresComboBox.SelectedValueChanged += GenresComboBox_SelectedValueChanged;
+
+            // добавляем список в таблицу 
+            booksTable.Controls.Add(genresComboBox);
+        }
+
+        // заполням список жанрами
+        private void LoadGenres()
+        {
+            genresComboBox.Items.Clear();
+            genresComboBox.ResetText();
+
+            string query = "SELECT * FROM Genres ORDER BY Name";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    genresComboBox.Items.Add(new Genre
+                    {
+                        Id = reader.GetInt32(0),
+                        Name = reader.GetString(1)
+                    });
+                }
+                genresComboBox.DisplayMember = "Name";
+                genresComboBox.SelectedIndex = 0;
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось загрузить должности:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для устранения ошибки.",
+                                "Ошибка работы Базы Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
+
+        // показываем выпадающий список при клике по ячейкам
+        private void BooksTable_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // задаем индекс строки
+            rowIndex = e.RowIndex;
+            if (rowIndex < 0) 
+                rowIndex++;
+
+            // получаем прямоугольник ячейки
+            Rectangle rectangle = booksTable.GetCellDisplayRectangle(columnIndex, rowIndex, true);
+
+            // задаем размеры и месторасположение
+            genresComboBox.Size = new Size(rectangle.Width, rectangle.Height);
+            genresComboBox.Location = new Point(rectangle.X, rectangle.Y);
+
+            // если включен режим редактирования
+            if (EmployeeFormEditModeCheckBox.Checked)
+            {
+                // то показываем список
+                genresComboBox.Visible = true;
+            }
+            else
+            {
+                // если выключен, то не показываем
+                genresComboBox.Visible = false;
+            }
+        }
+
+        // выбираем жанра из списка
+        private void GenresComboBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+            // заносим данные в ячейку
+            booksTable[columnIndex, rowIndex].Value = genresComboBox.Text;
+
+            // скрываем список
+            genresComboBox.Visible = false;
+        }
+
+        // получаем номер жанра для записи его в БД в случае редактирования жанра в таблице
+        private string GetGenreId()
+        {
+            string query = "SELECT Id FROM Genres WHERE Name = @Name";
+            string name = booksTable.SelectedRows[0].Cells[2].Value.ToString();
+
+            command = DataBase.GetConnection().CreateCommand();
+            command.CommandText = query;
+            command.Parameters.AddWithValue("@Name", name);
+
+            DataBase.OpenConnection();
+            string genreId = Convert.ToString(command.ExecuteScalar());
+
+            DataBase.CloseConnection();
+            return genreId;
+        }
+
         // изменяем данные о книге в таблице и БД
         private void ChangeBookButton_CLick(object sender, EventArgs e)
         {
@@ -251,6 +361,7 @@ namespace LibraryApp.View
                            "AgeLimit = @AgeLimit, IsAvailable = @IsAvailable, IsActive = @IsActive " +
                            "WHERE Id = @Id";
             string id = booksTable.SelectedRows[0].Cells[0].Value.ToString();
+            string genreId = GetGenreId(); // подставляем Id жанра из таблицы Genres БД
 
             try
             {
@@ -258,7 +369,7 @@ namespace LibraryApp.View
                 command.CommandText = query;
                 command.Parameters.AddWithValue("Id", id);
                 command.Parameters.AddWithValue("Title", booksTable.SelectedRows[0].Cells[1].Value.ToString());
-                // command.Parameters.AddWithValue("GenreId", booksTable.SelectedRows[0].Cells[2].Value.ToString()); // ЗАМЕНИ-ПРИДУМАЙ-СДЕЛАЙ
+                command.Parameters.AddWithValue("GenreId", genreId);
                 command.Parameters.AddWithValue("Author", booksTable.SelectedRows[0].Cells[3].Value.ToString());
                 command.Parameters.AddWithValue("AgeLimit", booksTable.SelectedRows[0].Cells[4].Value.ToString());
                 command.Parameters.AddWithValue("IsAvailable", booksTable.SelectedRows[0].Cells[6].Value.ToString() == "доступна" ? 1 : 0);
@@ -325,7 +436,6 @@ namespace LibraryApp.View
                 }
             }
         }
-
 
         #region Move the Form
         private void ThisForm_MouseDown(object sender, MouseEventArgs e)

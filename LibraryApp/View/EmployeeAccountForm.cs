@@ -357,83 +357,92 @@ namespace LibraryApp.View
         // сохраняем данные о книге в таблице и БД
         private void ChangeBookButton_CLick(object sender, EventArgs e)
         {
-            // если сохраняемая строка не содержит Id, значит книги еще нет в БД - мы добавляем новую книгу
-            // доступ к записи Id в ячейку из интерфейса программы невозможен, Id берется из БД,
-            // соответственно строка без Id по определению содержит новую книгу, которой еще нет в БД
-            if (booksTable.CurrentRow.Cells[0].Value == null)
+            // если строка не имеет пустых ячеек
+            if (!CheckIsNullOrWhiteSpace())
             {
-                string query = "INSERT INTO Books (Title, GenreId, Author, AgeLimit, ImagePath, IsAvailable, IsActive) " +
-                               "VALUES(@Title, @GenreId, @Author, @AgeLimit, @ImagePath, @IsAvailable, @IsActive)";
-
-                string genreId = GetGenreId(); // подставляем Id жанра из таблицы Genres БД
-
-                try
+                // если сохраняемая строка не содержит Id, значит книги еще нет в БД - мы добавляем новую книгу
+                // доступ к записи Id в ячейку из интерфейса программы невозможен, Id берется из БД,
+                // соответственно строка без Id по определению содержит новую книгу, которой еще нет в БД
+                if (booksTable.CurrentRow.Cells[0].Value == null)
                 {
-                    command = DataBase.GetConnection().CreateCommand();
-                    command.CommandText = query;
-                    command.Parameters.AddWithValue("Title", booksTable.SelectedRows[0].Cells[1].Value.ToString().Trim());
-                    command.Parameters.AddWithValue("GenreId", genreId);
-                    command.Parameters.AddWithValue("Author", booksTable.SelectedRows[0].Cells[3].Value.ToString().Trim());
-                    command.Parameters.AddWithValue("AgeLimit", booksTable.SelectedRows[0].Cells[4].Value.ToString());
-                    command.Parameters.AddWithValue("ImagePath", "source\\book_covers\\empty.jpg");
-                    command.Parameters.AddWithValue("IsAvailable", booksTable.SelectedRows[0].Cells[6].Value.ToString() == "доступна" ? 1 : 0);
-                    command.Parameters.AddWithValue("IsActive", booksTable.SelectedRows[0].Cells[7].Value.ToString() == "активная" ? 1 : 0);
+                    string query = "INSERT INTO Books (Title, GenreId, Author, AgeLimit, ImagePath, IsAvailable, IsActive) " +
+                                   "VALUES(@Title, @GenreId, @Author, @AgeLimit, @ImagePath, @IsAvailable, @IsActive)";
 
-                    DataBase.OpenConnection();
-                    command.ExecuteNonQuery();
+                    string genreId = GetGenreId(); // подставляем Id жанра из таблицы Genres БД
 
-                    DataBase.CloseConnection();
+                    try
+                    {
+                        command = DataBase.GetConnection().CreateCommand();
+                        command.CommandText = query;
+                        command.Parameters.AddWithValue("Title", booksTable.SelectedRows[0].Cells[1].Value.ToString().Trim());
+                        command.Parameters.AddWithValue("GenreId", genreId);
+                        command.Parameters.AddWithValue("Author", booksTable.SelectedRows[0].Cells[3].Value.ToString().Trim());
+                        command.Parameters.AddWithValue("AgeLimit", booksTable.SelectedRows[0].Cells[4].Value.ToString());
+                        command.Parameters.AddWithValue("ImagePath", "source\\book_covers\\empty.jpg");
+                        command.Parameters.AddWithValue("IsAvailable", booksTable.SelectedRows[0].Cells[6].Value.ToString() == "доступна" ? 1 : 0);
+                        command.Parameters.AddWithValue("IsActive", booksTable.SelectedRows[0].Cells[7].Value.ToString() == "активная" ? 1 : 0);
 
-                    GetBooks();
-                   
-                    MessageBox.Show("Данные о новой книге были успешно сохранены",
-                                    "Сохранение новой книги", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        DataBase.OpenConnection();
+                        command.ExecuteNonQuery();
+
+                        DataBase.CloseConnection();
+
+                        GetBooks();
+
+                        MessageBox.Show("Данные о новой книге были успешно сохранены",
+                                        "Сохранение новой книги", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Не удалось сохранить данные о новой книге:\n\"{ex.Message}\"\n" +
+                                        $"Обратитесь к системному администратору для её устранения.",
+                                        "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    }
                 }
-                catch (Exception ex)
+                // если сохраняемая строка содержит Id, то пересохраняем книгу с таким Id в БД
+                else
                 {
-                    MessageBox.Show($"Не удалось сохранить данные о новой книге:\n\"{ex.Message}\"\n" +
-                                    $"Обратитесь к системному администратору для её устранения.",
-                                    "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    string query = "UPDATE Books " +
+                               "SET Title = @Title, GenreId = @GenreId, Author = @Author, " +
+                               "AgeLimit = @AgeLimit, IsAvailable = @IsAvailable, IsActive = @IsActive " +
+                               "WHERE Id = @Id";
+                    string id = booksTable.SelectedRows[0].Cells[0].Value.ToString();
+                    string genreId = GetGenreId(); // подставляем Id жанра из таблицы Genres БД
+
+                    try
+                    {
+                        command = DataBase.GetConnection().CreateCommand();
+                        command.CommandText = query;
+                        command.Parameters.AddWithValue("Id", id);
+                        command.Parameters.AddWithValue("Title", booksTable.SelectedRows[0].Cells[1].Value.ToString().Trim());
+                        command.Parameters.AddWithValue("GenreId", genreId);
+                        command.Parameters.AddWithValue("Author", booksTable.SelectedRows[0].Cells[3].Value.ToString().Trim());
+                        command.Parameters.AddWithValue("AgeLimit", booksTable.SelectedRows[0].Cells[4].Value.ToString());
+                        command.Parameters.AddWithValue("IsAvailable", booksTable.SelectedRows[0].Cells[6].Value.ToString() == "доступна" ? 1 : 0);
+                        command.Parameters.AddWithValue("IsActive", booksTable.SelectedRows[0].Cells[7].Value.ToString() == "активная" ? 1 : 0);
+
+                        DataBase.OpenConnection();
+                        command.ExecuteNonQuery();
+
+                        DataBase.CloseConnection();
+
+                        GetBooks();
+
+                        MessageBox.Show("Данные о книге были успешно изменены",
+                                        "Изменение данных о книге", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Не удалось изменить данные о книге в базе данных:\n\"{ex.Message}\"\n" +
+                                        $"Обратитесь к системному администратору для её устранения.",
+                                        "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    }
                 }
             }
-            // если сохраняемая строка содержит Id, то пересохраняем книгу с таким Id в БД
             else
             {
-                string query = "UPDATE Books " +
-                           "SET Title = @Title, GenreId = @GenreId, Author = @Author, " +
-                           "AgeLimit = @AgeLimit, IsAvailable = @IsAvailable, IsActive = @IsActive " +
-                           "WHERE Id = @Id";
-                string id = booksTable.SelectedRows[0].Cells[0].Value.ToString();
-                string genreId = GetGenreId(); // подставляем Id жанра из таблицы Genres БД
-
-                try
-                {
-                    command = DataBase.GetConnection().CreateCommand();
-                    command.CommandText = query;
-                    command.Parameters.AddWithValue("Id", id);
-                    command.Parameters.AddWithValue("Title", booksTable.SelectedRows[0].Cells[1].Value.ToString().Trim());
-                    command.Parameters.AddWithValue("GenreId", genreId);
-                    command.Parameters.AddWithValue("Author", booksTable.SelectedRows[0].Cells[3].Value.ToString().Trim());
-                    command.Parameters.AddWithValue("AgeLimit", booksTable.SelectedRows[0].Cells[4].Value.ToString());
-                    command.Parameters.AddWithValue("IsAvailable", booksTable.SelectedRows[0].Cells[6].Value.ToString() == "доступна" ? 1 : 0);
-                    command.Parameters.AddWithValue("IsActive", booksTable.SelectedRows[0].Cells[7].Value.ToString() == "активная" ? 1 : 0);
-
-                    DataBase.OpenConnection();
-                    command.ExecuteNonQuery();
-
-                    DataBase.CloseConnection();
-
-                    GetBooks();
-
-                    MessageBox.Show("Данные о книге были успешно изменены",
-                                    "Изменение данных о книге", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Не удалось изменить данные о книге в базе данных:\n\"{ex.Message}\"\n" +
-                                    $"Обратитесь к системному администратору для её устранения.",
-                                    "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                }
+                MessageBox.Show($"Заполните все поля перед сохранением",
+                                "Не удается сохранить данные", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
         }
 
@@ -501,7 +510,7 @@ namespace LibraryApp.View
             if (EmployeeFormEditModeCheckBox.Checked)
             {
                 // и если предыдущая книга сохранена
-                if(booksTable.Rows[booksTable.Rows.Count - 1].Cells[0].Value != null)
+                if (booksTable.Rows[booksTable.Rows.Count - 1].Cells[0].Value != null)
                 {
                     BindingSource binding = new BindingSource(); // для привязки источника через BindingSource
                     binding.SuspendBinding();
@@ -520,6 +529,24 @@ namespace LibraryApp.View
                                      "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        // проверяем, все ли ячейки заполнены в строке при сохранении данных о книге
+        private bool CheckIsNullOrWhiteSpace()
+        {
+            bool result = false; // по-умолчанию строка считается заполненной
+
+            for (int i = 1; i <= 7 && i != 5; i++)
+            {
+                // если значение ячейки равно null или содержит только пробелы
+                if (booksTable.CurrentRow.Cells[i].Value == null || String.IsNullOrWhiteSpace(booksTable.CurrentRow.Cells[i].Value.ToString()))
+                {
+                    // то возвращаем значение true и дальше метод сохранения выведет сообщение об ошибке
+                    result = true;
+                    break;
+                }
+            }
+            return result;
         }
 
         #region Move the Form

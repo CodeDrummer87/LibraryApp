@@ -73,6 +73,7 @@
             // 
             // booksTable
             // 
+            booksTable.AllowUserToAddRows = false;
             booksTable.AllowUserToResizeColumns = false;
             booksTable.AllowUserToResizeRows = false;
             dataGridViewCellStyle1.BackColor = Color.WhiteSmoke;
@@ -203,6 +204,7 @@
             addBookButton.TabIndex = 7;
             addBookButton.Text = "Добавить";
             addBookButton.UseVisualStyleBackColor = true;
+            addBookButton.Click += AddBookButton_Click;
             // 
             // changeBookButton
             // 

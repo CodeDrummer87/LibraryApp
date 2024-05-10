@@ -38,11 +38,11 @@
             booksAgeLimitFilterRadioButton = new RadioButton();
             booksNameFilterRadioButton = new RadioButton();
             booksAuthorFilterRadioButton = new RadioButton();
-            exitToStartFormLabel = new Label();
             deleteBookButton = new Button();
             EmployeeFormEditModeCheckBox = new CheckBox();
             addBookButton = new Button();
             changeBookButton = new Button();
+            currentEmployeeName = new Label();
             ((System.ComponentModel.ISupportInitialize)booksTable).BeginInit();
             booksFilterGroupBox.SuspendLayout();
             SuspendLayout();
@@ -157,21 +157,6 @@
             booksAuthorFilterRadioButton.Text = "по автору";
             booksAuthorFilterRadioButton.UseVisualStyleBackColor = true;
             // 
-            // exitToStartFormLabel
-            // 
-            exitToStartFormLabel.AutoSize = true;
-            exitToStartFormLabel.Cursor = Cursors.Hand;
-            exitToStartFormLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            exitToStartFormLabel.ForeColor = Color.MidnightBlue;
-            exitToStartFormLabel.Location = new Point(1278, 711);
-            exitToStartFormLabel.Name = "exitToStartFormLabel";
-            exitToStartFormLabel.Size = new Size(49, 17);
-            exitToStartFormLabel.TabIndex = 4;
-            exitToStartFormLabel.Text = "Выход";
-            exitToStartFormLabel.Click += ExitToStartFormLabel_CLick;
-            exitToStartFormLabel.MouseEnter += ExitToStartFormLabel_MouseEnter;
-            exitToStartFormLabel.MouseLeave += ExitToStartFormLabel_MouseLeave;
-            // 
             // deleteBookButton
             // 
             deleteBookButton.Cursor = Cursors.Hand;
@@ -218,17 +203,32 @@
             changeBookButton.UseVisualStyleBackColor = true;
             changeBookButton.Click += ChangeBookButton_CLick;
             // 
+            // currentEmployeeName
+            // 
+            currentEmployeeName.Cursor = Cursors.Hand;
+            currentEmployeeName.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+            currentEmployeeName.ForeColor = Color.MidnightBlue;
+            currentEmployeeName.Location = new Point(928, 109);
+            currentEmployeeName.Name = "currentEmployeeName";
+            currentEmployeeName.Size = new Size(374, 29);
+            currentEmployeeName.TabIndex = 9;
+            currentEmployeeName.Text = "currentEmployeeName";
+            currentEmployeeName.TextAlign = ContentAlignment.MiddleRight;
+            currentEmployeeName.Click += ExitToStartFormLabel_CLick;
+            currentEmployeeName.MouseEnter += ExitToStartFormLabel_MouseEnter;
+            currentEmployeeName.MouseLeave += ExitToStartFormLabel_MouseLeave;
+            // 
             // EmployeeAccountForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1366, 768);
+            Controls.Add(currentEmployeeName);
             Controls.Add(changeBookButton);
             Controls.Add(addBookButton);
             Controls.Add(EmployeeFormEditModeCheckBox);
             Controls.Add(deleteBookButton);
-            Controls.Add(exitToStartFormLabel);
             Controls.Add(booksFilterGroupBox);
             Controls.Add(booksTable);
             Controls.Add(employeeFormCloseLabel);
@@ -258,10 +258,10 @@
         private RadioButton booksNameFilterRadioButton;
         private RadioButton booksAgeLimitFilterRadioButton;
         private TextBox booksFilterBox;
-        private Label exitToStartFormLabel;
         private Button deleteBookButton;
         private CheckBox EmployeeFormEditModeCheckBox;
         private Button addBookButton;
         private Button changeBookButton;
+        private Label currentEmployeeName;
     }
 }

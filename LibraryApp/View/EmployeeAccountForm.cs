@@ -1,7 +1,6 @@
 ﻿using LibraryApp.Models;
 using Microsoft.Data.Sqlite;
-using System.Windows.Forms;
-
+using System.Data;
 
 namespace LibraryApp.View
 {
@@ -34,6 +33,8 @@ namespace LibraryApp.View
 
             this.currentLoginId = currentLoginId!;
             this.startForm = startForm;
+
+            PutCurrentEmployeeName(GetCurrentEmployeeName(currentLoginId));
         }
 
         #region Window control buttons
@@ -55,7 +56,7 @@ namespace LibraryApp.View
             employeeFormCloseLabel.ForeColor = Color.Black;
         }
 
-        // кнопка "Выход". Выходим на стартовую форму, если ответить "да"
+        // Выходим на стартовую форму, если нажать на ФИО сотрудника и ответить "да"
         private void ExitToStartFormLabel_CLick(object sender, EventArgs e)
         {
             MessageBoxButtons msb = MessageBoxButtons.YesNo;
@@ -69,15 +70,64 @@ namespace LibraryApp.View
         }
         private void ExitToStartFormLabel_MouseEnter(object sender, EventArgs e)
         {
-            exitToStartFormLabel.ForeColor = Color.Red;
+            currentEmployeeName.ForeColor = Color.Red;
         }
 
         private void ExitToStartFormLabel_MouseLeave(object sender, EventArgs e)
         {
-            exitToStartFormLabel.ForeColor = Color.MidnightBlue;
+            currentEmployeeName.ForeColor = Color.MidnightBlue;
         }
 
         #endregion
+
+        // выводим ФИО текущего сотрудника
+        private void PutCurrentEmployeeName(ViewEmployeeNameModel employeeName)
+        {
+            currentEmployeeName.Text = $"{employeeName.Lastname.ToString()} {employeeName.Firstname.ToString()} {employeeName.Surname.ToString()}";
+        }
+
+        // получаем ФИО текущего сотрудника
+        public ViewEmployeeNameModel GetCurrentEmployeeName(int loginId)
+        {
+            ViewEmployeeNameModel employeeNameModel = new();
+
+            string query = "SELECT e.Id, e.PersonId, p.Firstname, p.Lastname, p.Surname " +
+                           "FROM Employees e " +
+                           "INNER JOIN Persons p " +
+                           "ON p.Id = e.PersonId " +
+                           "WHERE e.Id = @Id;";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.Add("@Id", SqliteType.Integer).Value = loginId;
+
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    employeeNameModel = new ViewEmployeeNameModel()
+                    {
+                        Id = reader.GetInt32(0),
+                        PersonId = reader.GetInt32(1),
+                        Firstname = reader.GetString(2),
+                        Lastname = reader.GetString(3),
+                        Surname = reader.GetString(4)
+                    };
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось получить имя текущего сотрудника:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Нет соединения с базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+            DataBase.CloseConnection();
+
+            return employeeNameModel;
+        }
 
         // получаем список книг и заполняем booksList
         private void GetBooks()
@@ -359,8 +409,6 @@ namespace LibraryApp.View
         // проверяем, является ли числом значение в ячейке с ограничением по возрасту
         private void IsDigit_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
-            // сделать, чтобы кнопки Сохранить, удалить, добавить не отображались, пока не включен режим редактирования
-
             // если активная ячейка - ограничение по возрасту
             if (booksTable.CurrentRow.Cells[4] == booksTable.CurrentCell)
             {
@@ -449,9 +497,9 @@ namespace LibraryApp.View
                 else
                 {
                     string query = "UPDATE Books " +
-                               "SET Title = @Title, GenreId = @GenreId, Author = @Author, " +
-                               "AgeLimit = @AgeLimit, IsAvailable = @IsAvailable, IsActive = @IsActive " +
-                               "WHERE Id = @Id";
+                                   "SET Title = @Title, GenreId = @GenreId, Author = @Author, " +
+                                   "AgeLimit = @AgeLimit, IsAvailable = @IsAvailable, IsActive = @IsActive " +
+                                   "WHERE Id = @Id";
                     string id = booksTable.SelectedRows[0].Cells[0].Value.ToString();
                     string genreId = GetGenreId(); // подставляем Id жанра из таблицы Genres БД
 
@@ -515,7 +563,7 @@ namespace LibraryApp.View
                 else
                 {
                     MessageBox.Show($"Сохраните изменения перед созданием новой книги",
-                                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 }
             }
         }
@@ -575,6 +623,41 @@ namespace LibraryApp.View
                     }
                 }
             }
+        }
+
+        private void CheckError_DataError(object sender, DataGridViewDataErrorEventArgs anError)
+        {
+
+            // сделать, чтобы кнопки Сохранить, удалить, добавить не отображались, пока не включен режим редактирования
+
+            MessageBox.Show("Произошла ошибка " + anError.Context.ToString());
+
+            if (anError.Context == DataGridViewDataErrorContexts.Commit)
+            {
+                MessageBox.Show("ошибка фиксации");
+            }
+            if (anError.Context == DataGridViewDataErrorContexts.CurrentCellChange)
+            {
+                MessageBox.Show("Cell change");
+            }
+            if (anError.Context == DataGridViewDataErrorContexts.Parsing)
+            {
+                MessageBox.Show("parsing error");
+            }
+            if (anError.Context == DataGridViewDataErrorContexts.LeaveControl)
+            {
+                MessageBox.Show("leave control error");
+            }
+
+            if ((anError.Exception) is ConstraintException)
+            {
+                DataGridView view = (DataGridView)sender;
+                view.Rows[anError.RowIndex].ErrorText = "an error";
+                view.Rows[anError.RowIndex].Cells[anError.ColumnIndex].ErrorText = "an error";
+
+                anError.ThrowException = false;
+            }
+
         }
 
         #region Move the Form

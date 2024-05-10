@@ -89,6 +89,7 @@
             booksTable.Size = new Size(1283, 521);
             booksTable.TabIndex = 2;
             booksTable.CellClick += BooksTable_CellClick;
+            booksTable.CellValidating += IsDigit_CellValidating;
             booksTable.SelectionChanged += BooksTableSelectionChanged;
             booksTable.MouseUp += BooksTableMouseUp;
             // 
@@ -213,7 +214,7 @@
             changeBookButton.Name = "changeBookButton";
             changeBookButton.Size = new Size(75, 23);
             changeBookButton.TabIndex = 8;
-            changeBookButton.Text = "Изменить";
+            changeBookButton.Text = "Сохранить";
             changeBookButton.UseVisualStyleBackColor = true;
             changeBookButton.Click += ChangeBookButton_CLick;
             // 

@@ -1,5 +1,7 @@
 ﻿using LibraryApp.Models;
 using Microsoft.Data.Sqlite;
+using System.Windows.Forms;
+
 
 namespace LibraryApp.View
 {
@@ -354,6 +356,50 @@ namespace LibraryApp.View
             return genreId;
         }
 
+        // проверяем, является ли числом значение в ячейке с ограничением по возрасту
+        private void IsDigit_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            // сделать, чтобы кнопки Сохранить, удалить, добавить не отображались, пока не включен режим редактирования
+
+            // если активная ячейка - ограничение по возрасту
+            if (booksTable.CurrentRow.Cells[4] == booksTable.CurrentCell)
+            {
+                // получаем её значение
+                string ageLimitEditingValue = booksTable.CurrentRow.Cells[4].EditedFormattedValue.ToString();
+
+                // и проверяем
+                foreach (var item in ageLimitEditingValue)
+                {
+                    if (!Char.IsDigit(item))
+                    {
+                        e.Cancel = true;
+                        MessageBox.Show($"Ограничение по возрасту может быть только числом",
+                                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        booksTable.CurrentRow.Cells[4].Value = "0";
+                        break;
+                    }
+                }
+            }
+        }
+
+        // проверяем, все ли ячейки заполнены в строке при сохранении данных о книге
+        private bool CheckIsNullOrWhiteSpace()
+        {
+            bool result = false; // по-умолчанию строка считается заполненной
+
+            for (int i = 1; i <= 7 && i != 5; i++)
+            {
+                // если значение ячейки равно null или она содержит только пробелы
+                if (booksTable.CurrentRow.Cells[i].Value == null || String.IsNullOrWhiteSpace(booksTable.CurrentRow.Cells[i].Value.ToString()))
+                {
+                    // то возвращаем значение true и дальше уже метод сохранения выведет сообщение об ошибке
+                    result = true;
+                    break;
+                }
+            }
+            return result;
+        }
+
         // сохраняем данные о книге в таблице и БД
         private void ChangeBookButton_CLick(object sender, EventArgs e)
         {
@@ -446,6 +492,34 @@ namespace LibraryApp.View
             }
         }
 
+        // добавляем пустую строку для сохранения новой книги
+        private void AddBookButton_Click(object sender, EventArgs e)
+        {
+            // если включен режим редактирования
+            if (EmployeeFormEditModeCheckBox.Checked)
+            {
+                // и если предыдущая книга сохранена
+                if (booksTable.Rows[booksTable.Rows.Count - 1].Cells[0].Value != null)
+                {
+                    BindingSource binding = new BindingSource(); // для привязки источника через BindingSource
+                    binding.SuspendBinding();
+                    binding.DataSource = booksList;
+                    binding.ResumeBinding();
+
+                    // добавляем новый элемент в источник таблицы
+                    booksList.Add(new Book());
+                    booksTable.DataSource = binding;
+                    // перемещаемся на новую строку
+                    booksTable.CurrentCell = booksTable.Rows[booksTable.Rows.Count - 1].Cells[1];
+                }
+                else
+                {
+                    MessageBox.Show($"Сохраните изменения перед созданием новой книги",
+                                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                }
+            }
+        }
+
         // удаляем книгу из таблицы и БД
         private void DeleteBookButton_Click(object sender, EventArgs e)
         {
@@ -501,52 +575,6 @@ namespace LibraryApp.View
                     }
                 }
             }
-        }
-
-        // добавляем пустую строку для сохранения новой книги
-        private void AddBookButton_Click(object sender, EventArgs e)
-        {
-            // если включен режим редактирования
-            if (EmployeeFormEditModeCheckBox.Checked)
-            {
-                // и если предыдущая книга сохранена
-                if (booksTable.Rows[booksTable.Rows.Count - 1].Cells[0].Value != null)
-                {
-                    BindingSource binding = new BindingSource(); // для привязки источника через BindingSource
-                    binding.SuspendBinding();
-                    binding.DataSource = booksList;
-                    binding.ResumeBinding();
-
-                    // добавляем новый элемент в источник таблицы
-                    booksList.Add(new Book());
-                    booksTable.DataSource = binding;
-                    // перемещаемся на новую строку
-                    booksTable.CurrentCell = booksTable.Rows[booksTable.Rows.Count - 1].Cells[1];
-                }
-                else
-                {
-                    MessageBox.Show($"Сохраните изменения перед созданием новой книги",
-                                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        // проверяем, все ли ячейки заполнены в строке при сохранении данных о книге
-        private bool CheckIsNullOrWhiteSpace()
-        {
-            bool result = false; // по-умолчанию строка считается заполненной
-
-            for (int i = 1; i <= 7 && i != 5; i++)
-            {
-                // если значение ячейки равно null или содержит только пробелы
-                if (booksTable.CurrentRow.Cells[i].Value == null || String.IsNullOrWhiteSpace(booksTable.CurrentRow.Cells[i].Value.ToString()))
-                {
-                    // то возвращаем значение true и дальше метод сохранения выведет сообщение об ошибке
-                    result = true;
-                    break;
-                }
-            }
-            return result;
         }
 
         #region Move the Form

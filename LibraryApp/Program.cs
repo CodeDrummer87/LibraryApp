@@ -1,5 +1,3 @@
-using LibraryApp.View;
-
 namespace LibraryApp
 {
     internal static class Program

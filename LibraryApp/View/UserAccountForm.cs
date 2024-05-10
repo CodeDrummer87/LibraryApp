@@ -120,7 +120,7 @@ namespace LibraryApp
             {
                 MessageBox.Show($"Не удалось получить данные текущего пользователя:\n\"{ex.Message}\"\n" +
                                 $"Обратитесь к системному администратору для её устранения.",
-                                "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
             DataBase.CloseConnection();

@@ -70,7 +70,7 @@ namespace LibraryApp.View
             {
                 MessageBox.Show($"Не удалось загрузить список должностей:" +
                                 $"\n\"{ex.Message}\"\nОбратитесь к системному администратору для устранения ошибки.",
-                                "Ошибка при работе с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
             DataBase.CloseConnection();
@@ -174,7 +174,7 @@ namespace LibraryApp.View
             {
                 MessageBox.Show($"Не удалось изменить должность в базе данных:\n\"{ex.Message}\"\n" +
                                 $"Обратитесь к системному администратору для её устранения.",
-                                "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
         }
 
@@ -236,7 +236,7 @@ namespace LibraryApp.View
                     {
                         MessageBox.Show($"Не удалось удалить должность из базы данных:\n\"{ex.Message}\"\n" +
                                         $"Обратитесь к системному администратору для её устранения.",
-                                        "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                        "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     }
                 }
                 else

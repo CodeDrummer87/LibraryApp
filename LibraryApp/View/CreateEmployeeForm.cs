@@ -78,7 +78,7 @@ namespace LibraryApp
             {
                 MessageBox.Show($"Не удалось загрузить должности:\n\"{ex.Message}\"\n" +
                                 $"Обратитесь к системному администратору для устранения ошибки.",
-                                "Ошибка работы Базы Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
             DataBase.CloseConnection();
@@ -151,7 +151,7 @@ namespace LibraryApp
                     {
                         MessageBox.Show($"Не удалось создать сотрудника:\n\"{ex.Message}\"\n" +
                                         $"Обратитесь к системному администратору для её устранения.",
-                                        "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                        "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     }
 
                     DataBase.CloseConnection();
@@ -166,7 +166,6 @@ namespace LibraryApp
                 createEmployeePersonnelNumberBox.Clear();
                 createEmployeePersonnelNumberBox.Focus();
             }
-
         }
 
         // очищаем форму

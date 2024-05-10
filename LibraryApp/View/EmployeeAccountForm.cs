@@ -19,7 +19,7 @@ namespace LibraryApp.View
 
         private ComboBox genresComboBox = new ComboBox(); // выпадающий список жанров (при редактировании информации о книге)
 
-        int columnIndex = 2;  // индекс столбца в выпадающем списке (столбец жанров #2 в таблице)
+        int columnIndex = 2;  // индекс столбца жанров в выпадающем списке (столбец #2 в таблице)
         int rowIndex = 0; // индекс строки в выпадающем списке
 
         bool flag = false; // флаг для работы метода выделения/снятия выделения строки
@@ -83,7 +83,7 @@ namespace LibraryApp.View
         // выводим ФИО текущего сотрудника
         private void PutCurrentEmployeeName(ViewEmployeeNameModel employeeName)
         {
-            currentEmployeeName.Text = $"{employeeName.Lastname.ToString()} {employeeName.Firstname.ToString()} {employeeName.Surname.ToString()}";
+            currentEmployeeName.Text = $"{employeeName.Lastname} {employeeName.Firstname} {employeeName.Surname}";
         }
 
         // получаем ФИО текущего сотрудника
@@ -122,7 +122,7 @@ namespace LibraryApp.View
             {
                 MessageBox.Show($"Не удалось получить имя текущего сотрудника:\n\"{ex.Message}\"\n" +
                                 $"Обратитесь к системному администратору для её устранения.",
-                                "Нет соединения с базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
             DataBase.CloseConnection();
 
@@ -166,7 +166,7 @@ namespace LibraryApp.View
             {
                 MessageBox.Show($"Не удалось загрузить список книг:" +
                                 $"\n\"{ex.Message}\"\nОбратитесь к системному администратору для устранения ошибки.",
-                                "Ошибка при работе с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
             DataBase.CloseConnection();
@@ -181,9 +181,10 @@ namespace LibraryApp.View
             booksTable.MultiSelect = false; // нельзя выделять больше одной строки
 
             booksTable.Columns[0].Visible = false; // не отображаем столбец с Id 
+            booksTable.Columns[5].Visible = false; // не отображаем столбец c адресом обложки 
 
             // задаем размеры и наименования столбцов
-            booksTable.Columns[1].Width = 400;
+            booksTable.Columns[1].Width = 500;
             booksTable.Columns[1].HeaderText = "Название";
 
             booksTable.Columns[2].Width = 180;
@@ -195,9 +196,6 @@ namespace LibraryApp.View
             booksTable.Columns[4].Width = 100;
             booksTable.Columns[4].HeaderText = "Ограничение по возрасту";
 
-            booksTable.Columns[5].Width = 100;
-            booksTable.Columns[5].HeaderText = "Адрес обложки";
-
             booksTable.Columns[6].Width = 100;
             booksTable.Columns[6].HeaderText = "Доступность";
 
@@ -205,16 +203,27 @@ namespace LibraryApp.View
             booksTable.Columns[7].HeaderText = "Активность";
         }
 
-        // при выборе новой строки в таблице она будет выделена, кнопки "Добавить", "Изменить", "Удалить" активны
+        // при выборе новой строки в таблице она будет выделена, кнопки "Добавить", "Сохранить", "Удалить" активны
         private void BooksTableSelectionChanged(object sender, EventArgs e)
         {
+            // когда строка выбрана
             if (booksTable.CurrentCell.Selected)
             {
                 flag = true;
                 booksTable.CurrentCell.Selected = true;
-                addBookButton.Enabled = true;
-                changeBookButton.Enabled = true;
-                deleteBookButton.Enabled = true;
+
+                // если режим изменения выключен
+                if (!EmployeeFormEditModeCheckBox.Checked)
+                {
+                    // выключаем все кнопки
+                    foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = false; }
+                }
+                // если режим изменения включен
+                else
+                {
+                    // включаем все кнопки
+                    foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = true; }
+                }
             }
         }
 
@@ -224,21 +233,20 @@ namespace LibraryApp.View
         {
             if (booksTable.CurrentCell.Selected)
             {
-                if (flag)
+                if (EmployeeFormEditModeCheckBox.Checked)
                 {
-                    booksTable.CurrentCell.Selected = true;
-                    addBookButton.Enabled = true;
-                    changeBookButton.Enabled = true;
-                    deleteBookButton.Enabled = true;
-                    flag = !flag;
-                }
-                else if (!flag)
-                {
-                    booksTable.CurrentCell.Selected = false;
-                    addBookButton.Enabled = false;
-                    changeBookButton.Enabled = false;
-                    deleteBookButton.Enabled = false;
-                    flag = !flag;
+                    if (flag)
+                    {
+                        booksTable.CurrentCell.Selected = true;
+                        foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = true; }
+                        flag = !flag;
+                    }
+                    else if (!flag)
+                    {
+                        booksTable.CurrentCell.Selected = false;
+                        foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = false; }
+                        flag = !flag;
+                    }
                 }
             }
         }
@@ -258,7 +266,7 @@ namespace LibraryApp.View
                 // по автору
                 if (booksAuthorFilterRadioButton.Checked)
                 {
-                    filteredList = booksList.Where(x => x.Author.StartsWith(booksFilterBox.Text.Trim(),
+                    filteredList = booksList.Where(x => x.Author.Contains(booksFilterBox.Text.Trim(),
                     StringComparison.OrdinalIgnoreCase)).ToList();
                     booksTable.DataSource = filteredList;
                 }
@@ -290,6 +298,7 @@ namespace LibraryApp.View
                     row.ReadOnly = false;
                 }
 
+                foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = true; }
             }
             else
             {
@@ -298,6 +307,8 @@ namespace LibraryApp.View
                     row.ReadOnly = true;
                     genresComboBox.Visible = false;
                 }
+
+                foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = false; }
             }
         }
 
@@ -313,7 +324,7 @@ namespace LibraryApp.View
             booksTable.Controls.Add(genresComboBox);
         }
 
-        // заполням список жанрами
+        // заполням выпадающий список жанрами
         private void LoadGenres()
         {
             genresComboBox.Items.Clear();
@@ -343,9 +354,9 @@ namespace LibraryApp.View
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Не удалось загрузить должности:\n\"{ex.Message}\"\n" +
+                MessageBox.Show($"Не удалось загрузить жанры:\n\"{ex.Message}\"\n" +
                                 $"Обратитесь к системному администратору для устранения ошибки.",
-                                "Ошибка работы Базы Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
             DataBase.CloseConnection();
@@ -379,7 +390,7 @@ namespace LibraryApp.View
             }
         }
 
-        // выбираем жанра из списка
+        // выбираем жанр из списка
         private void GenresComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
             // заносим данные в ячейку
@@ -435,7 +446,7 @@ namespace LibraryApp.View
         {
             bool result = false; // по-умолчанию строка считается заполненной
 
-            for (int i = 1; i <= 7 && i != 5; i++)
+            for (int i = 1; i < booksTable.ColumnCount; i++)
             {
                 // если значение ячейки равно null или она содержит только пробелы
                 if (booksTable.CurrentRow.Cells[i].Value == null || String.IsNullOrWhiteSpace(booksTable.CurrentRow.Cells[i].Value.ToString()))
@@ -449,7 +460,7 @@ namespace LibraryApp.View
         }
 
         // сохраняем данные о книге в таблице и БД
-        private void ChangeBookButton_CLick(object sender, EventArgs e)
+        private void SaveBookButton_CLick(object sender, EventArgs e)
         {
             // если строка не имеет пустых ячеек
             if (!CheckIsNullOrWhiteSpace())
@@ -483,6 +494,8 @@ namespace LibraryApp.View
 
                         GetBooks();
 
+                        booksTable.Refresh();
+
                         MessageBox.Show("Данные о новой книге были успешно сохранены",
                                         "Сохранение новой книги", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -490,7 +503,7 @@ namespace LibraryApp.View
                     {
                         MessageBox.Show($"Не удалось сохранить данные о новой книге:\n\"{ex.Message}\"\n" +
                                         $"Обратитесь к системному администратору для её устранения.",
-                                        "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                        "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     }
                 }
                 // если сохраняемая строка содержит Id, то пересохраняем книгу с таким Id в БД
@@ -520,7 +533,15 @@ namespace LibraryApp.View
 
                         DataBase.CloseConnection();
 
+                        BindingSource binding = new BindingSource(); // для привязки источника через BindingSource
+                        binding.SuspendBinding();
+                        binding.DataSource = booksList;
+                        binding.ResumeBinding();
+
                         GetBooks();
+                        booksTable.DataSource = binding;
+
+                        booksTable.Refresh();
 
                         MessageBox.Show("Данные о книге были успешно изменены",
                                         "Изменение данных о книге", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -529,7 +550,7 @@ namespace LibraryApp.View
                     {
                         MessageBox.Show($"Не удалось изменить данные о книге в базе данных:\n\"{ex.Message}\"\n" +
                                         $"Обратитесь к системному администратору для её устранения.",
-                                        "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                        "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     }
                 }
             }
@@ -619,45 +640,26 @@ namespace LibraryApp.View
                     {
                         MessageBox.Show($"Не удалось удалить книгу из базы данных:\n\"{ex.Message}\"\n" +
                                         $"Обратитесь к системному администратору для её устранения.",
-                                        "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                        "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     }
                 }
             }
         }
 
+        // обрабатываем ошибки при работе с DataGridView
         private void CheckError_DataError(object sender, DataGridViewDataErrorEventArgs anError)
         {
-
-            // сделать, чтобы кнопки Сохранить, удалить, добавить не отображались, пока не включен режим редактирования
-
-            MessageBox.Show("Произошла ошибка " + anError.Context.ToString());
-
-            if (anError.Context == DataGridViewDataErrorContexts.Commit)
-            {
-                MessageBox.Show("ошибка фиксации");
-            }
-            if (anError.Context == DataGridViewDataErrorContexts.CurrentCellChange)
-            {
-                MessageBox.Show("Cell change");
-            }
-            if (anError.Context == DataGridViewDataErrorContexts.Parsing)
-            {
-                MessageBox.Show("parsing error");
-            }
-            if (anError.Context == DataGridViewDataErrorContexts.LeaveControl)
-            {
-                MessageBox.Show("leave control error");
-            }
+            MessageBox.Show($"Произошла ошибка {anError.Context}\nОбратитесь к системному администратору",
+                            "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             if ((anError.Exception) is ConstraintException)
             {
                 DataGridView view = (DataGridView)sender;
-                view.Rows[anError.RowIndex].ErrorText = "an error";
-                view.Rows[anError.RowIndex].Cells[anError.ColumnIndex].ErrorText = "an error";
+                view.Rows[anError.RowIndex].ErrorText = "ошибка";
+                view.Rows[anError.RowIndex].Cells[anError.ColumnIndex].ErrorText = "ошибка";
 
                 anError.ThrowException = false;
             }
-
         }
 
         #region Move the Form

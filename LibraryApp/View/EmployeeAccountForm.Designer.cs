@@ -41,7 +41,7 @@
             deleteBookButton = new Button();
             EmployeeFormEditModeCheckBox = new CheckBox();
             addBookButton = new Button();
-            changeBookButton = new Button();
+            saveBookButton = new Button();
             currentEmployeeName = new Label();
             ((System.ComponentModel.ISupportInitialize)booksTable).BeginInit();
             booksFilterGroupBox.SuspendLayout();
@@ -90,6 +90,7 @@
             booksTable.TabIndex = 2;
             booksTable.CellClick += BooksTable_CellClick;
             booksTable.CellValidating += IsDigit_CellValidating;
+            booksTable.DataError += CheckError_DataError;
             booksTable.SelectionChanged += BooksTableSelectionChanged;
             booksTable.MouseUp += BooksTableMouseUp;
             // 
@@ -192,16 +193,16 @@
             addBookButton.UseVisualStyleBackColor = true;
             addBookButton.Click += AddBookButton_Click;
             // 
-            // changeBookButton
+            // saveBookButton
             // 
-            changeBookButton.Cursor = Cursors.Hand;
-            changeBookButton.Location = new Point(145, 708);
-            changeBookButton.Name = "changeBookButton";
-            changeBookButton.Size = new Size(75, 23);
-            changeBookButton.TabIndex = 8;
-            changeBookButton.Text = "Сохранить";
-            changeBookButton.UseVisualStyleBackColor = true;
-            changeBookButton.Click += ChangeBookButton_CLick;
+            saveBookButton.Cursor = Cursors.Hand;
+            saveBookButton.Location = new Point(145, 708);
+            saveBookButton.Name = "saveBookButton";
+            saveBookButton.Size = new Size(75, 23);
+            saveBookButton.TabIndex = 8;
+            saveBookButton.Text = "Сохранить";
+            saveBookButton.UseVisualStyleBackColor = true;
+            saveBookButton.Click += SaveBookButton_CLick;
             // 
             // currentEmployeeName
             // 
@@ -225,7 +226,7 @@
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1366, 768);
             Controls.Add(currentEmployeeName);
-            Controls.Add(changeBookButton);
+            Controls.Add(saveBookButton);
             Controls.Add(addBookButton);
             Controls.Add(EmployeeFormEditModeCheckBox);
             Controls.Add(deleteBookButton);
@@ -261,7 +262,7 @@
         private Button deleteBookButton;
         private CheckBox EmployeeFormEditModeCheckBox;
         private Button addBookButton;
-        private Button changeBookButton;
+        private Button saveBookButton;
         private Label currentEmployeeName;
     }
 }

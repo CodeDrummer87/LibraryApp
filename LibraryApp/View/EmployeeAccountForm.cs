@@ -156,7 +156,7 @@ namespace LibraryApp.View
                         Author = reader.GetString(3),
                         AgeLimit = reader.GetInt32(4),
                         ImagePath = reader.GetString(5),
-                        IsAvailable = reader.GetString(6) == "1" ? "доступна" : "недоступна",
+                        IsAvailable = reader.GetString(6) == "1" ? "в наличии" : "выдана",
                         IsActive = reader.GetString(7) == "1" ? "активная" : "неактивная"
                     });
                 }
@@ -197,10 +197,10 @@ namespace LibraryApp.View
             booksTable.Columns[4].HeaderText = "Ограничение по возрасту";
 
             booksTable.Columns[6].Width = 100;
-            booksTable.Columns[6].HeaderText = "Доступность";
+            booksTable.Columns[6].HeaderText = "Наличие";
 
             booksTable.Columns[7].Width = 100;
-            booksTable.Columns[7].HeaderText = "Активность";
+            booksTable.Columns[7].HeaderText = "Статус";
         }
 
         // при выборе новой строки в таблице она будет выделена, кнопки "Добавить", "Сохранить", "Удалить" активны
@@ -228,7 +228,7 @@ namespace LibraryApp.View
         }
 
         // убираем выделение строки или возвращаем его по клику 
-        // изменяем активность кнопок "Добавить", "Изменить", "Удалить" в зависимости от выделения/невыделения строки
+        // изменяем активность кнопок "Добавить", "Сохранить", "Удалить" в зависимости от выделения/невыделения строки
         private void BooksTableMouseUp(object sender, MouseEventArgs e)
         {
             if (booksTable.CurrentCell.Selected)
@@ -318,7 +318,7 @@ namespace LibraryApp.View
             LoadGenres();
 
             // создаем обработчик события (выбор жанров из списка)
-            genresComboBox.SelectedValueChanged += GenresComboBox_SelectedValueChanged;
+            genresComboBox.SelectedValueChanged += GenresComboBox_SelectedValueChanged!;
 
             // добавляем список в таблицу 
             booksTable.Controls.Add(genresComboBox);
@@ -404,14 +404,14 @@ namespace LibraryApp.View
         private string GetGenreId()
         {
             string query = "SELECT Id FROM Genres WHERE Name = @Name";
-            string name = booksTable.SelectedRows[0].Cells[2].Value.ToString();
+            string name = booksTable.SelectedRows[0].Cells[2].Value.ToString()!;
 
             command = DataBase.GetConnection().CreateCommand();
             command.CommandText = query;
             command.Parameters.AddWithValue("@Name", name);
 
             DataBase.OpenConnection();
-            string genreId = Convert.ToString(command.ExecuteScalar());
+            string genreId = Convert.ToString(command.ExecuteScalar())!;
 
             DataBase.CloseConnection();
             return genreId;
@@ -424,7 +424,7 @@ namespace LibraryApp.View
             if (booksTable.CurrentRow.Cells[4] == booksTable.CurrentCell)
             {
                 // получаем её значение
-                string ageLimitEditingValue = booksTable.CurrentRow.Cells[4].EditedFormattedValue.ToString();
+                string ageLimitEditingValue = booksTable.CurrentRow.Cells[4].EditedFormattedValue.ToString()!;
 
                 // и проверяем
                 foreach (var item in ageLimitEditingValue)
@@ -448,6 +448,11 @@ namespace LibraryApp.View
 
             for (int i = 1; i < booksTable.ColumnCount; i++)
             {
+               // пропускаем ячейку с адресом обложки при проверке,
+               // т.к. адрес по-молчанию для новой книги пишется сразу в БД, минуя таблицу
+                if (i == 5)
+                    continue;
+
                 // если значение ячейки равно null или она содержит только пробелы
                 if (booksTable.CurrentRow.Cells[i].Value == null || String.IsNullOrWhiteSpace(booksTable.CurrentRow.Cells[i].Value.ToString()))
                 {
@@ -455,6 +460,7 @@ namespace LibraryApp.View
                     result = true;
                     break;
                 }
+                
             }
             return result;
         }
@@ -484,7 +490,7 @@ namespace LibraryApp.View
                         command.Parameters.AddWithValue("Author", booksTable.SelectedRows[0].Cells[3].Value.ToString().Trim());
                         command.Parameters.AddWithValue("AgeLimit", booksTable.SelectedRows[0].Cells[4].Value.ToString());
                         command.Parameters.AddWithValue("ImagePath", "source\\book_covers\\empty.jpg");
-                        command.Parameters.AddWithValue("IsAvailable", booksTable.SelectedRows[0].Cells[6].Value.ToString() == "доступна" ? 1 : 0);
+                        command.Parameters.AddWithValue("IsAvailable", booksTable.SelectedRows[0].Cells[6].Value.ToString() == "в наличии" ? 1 : 0);
                         command.Parameters.AddWithValue("IsActive", booksTable.SelectedRows[0].Cells[7].Value.ToString() == "активная" ? 1 : 0);
 
                         DataBase.OpenConnection();
@@ -513,7 +519,7 @@ namespace LibraryApp.View
                                    "SET Title = @Title, GenreId = @GenreId, Author = @Author, " +
                                    "AgeLimit = @AgeLimit, IsAvailable = @IsAvailable, IsActive = @IsActive " +
                                    "WHERE Id = @Id";
-                    string id = booksTable.SelectedRows[0].Cells[0].Value.ToString();
+                    string id = booksTable.SelectedRows[0].Cells[0].Value.ToString()!;
                     string genreId = GetGenreId(); // подставляем Id жанра из таблицы Genres БД
 
                     try
@@ -525,7 +531,7 @@ namespace LibraryApp.View
                         command.Parameters.AddWithValue("GenreId", genreId);
                         command.Parameters.AddWithValue("Author", booksTable.SelectedRows[0].Cells[3].Value.ToString().Trim());
                         command.Parameters.AddWithValue("AgeLimit", booksTable.SelectedRows[0].Cells[4].Value.ToString());
-                        command.Parameters.AddWithValue("IsAvailable", booksTable.SelectedRows[0].Cells[6].Value.ToString() == "доступна" ? 1 : 0);
+                        command.Parameters.AddWithValue("IsAvailable", booksTable.SelectedRows[0].Cells[6].Value.ToString() == "в наличии" ? 1 : 0);
                         command.Parameters.AddWithValue("IsActive", booksTable.SelectedRows[0].Cells[7].Value.ToString() == "активная" ? 1 : 0);
 
                         DataBase.OpenConnection();
@@ -580,6 +586,10 @@ namespace LibraryApp.View
                     booksTable.DataSource = binding;
                     // перемещаемся на новую строку
                     booksTable.CurrentCell = booksTable.Rows[booksTable.Rows.Count - 1].Cells[1];
+
+                    // по-умолчанию заполняем наличие и статус
+                    booksTable.CurrentRow.Cells[6].Value = "в наличии";
+                    booksTable.CurrentRow.Cells[7].Value = "активная";
                 }
                 else
                 {
@@ -611,7 +621,7 @@ namespace LibraryApp.View
                 if (MessageBox.Show(message, caption, msb) == DialogResult.Yes)
                 {
                     string query = "DELETE FROM Books WHERE Id = @Id";
-                    string id = booksTable.SelectedRows[0].Cells[0].Value.ToString();
+                    string id = booksTable.SelectedRows[0].Cells[0].Value.ToString()!;
                     try
                     {
                         command = DataBase.GetConnection().CreateCommand();

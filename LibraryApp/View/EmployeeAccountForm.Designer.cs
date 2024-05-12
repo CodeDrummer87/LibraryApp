@@ -61,6 +61,7 @@
             // 
             employeeFormCloseLabel.AutoSize = true;
             employeeFormCloseLabel.BackColor = Color.Transparent;
+            employeeFormCloseLabel.Cursor = Cursors.Hand;
             employeeFormCloseLabel.Font = new Font("Lucida Console", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             employeeFormCloseLabel.Location = new Point(1323, 19);
             employeeFormCloseLabel.Name = "employeeFormCloseLabel";

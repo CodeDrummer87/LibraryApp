@@ -75,6 +75,7 @@ namespace LibraryApp.View
             // listOfPostsCloseLabel
             // 
             listOfPostsCloseLabel.AutoSize = true;
+            listOfPostsCloseLabel.Cursor = Cursors.Hand;
             listOfPostsCloseLabel.Font = new Font("Lucida Console", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             listOfPostsCloseLabel.ForeColor = Color.Black;
             listOfPostsCloseLabel.Location = new Point(450, 19);

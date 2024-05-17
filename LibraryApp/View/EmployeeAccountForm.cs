@@ -382,10 +382,14 @@ namespace LibraryApp.View
             {
                 // то показываем список
                 genresComboBox.Visible = true;
+                
+                // если создаем новую книгу, то предлагаем выбрать жанр
+                if(booksTable.CurrentRow.Cells[0].Value == null)
+                    genresComboBox.Text = "Выберите жанр";
             }
             else
             {
-                // если выключен, то не показываем
+                // если режим редактирования выключен, то не показываем
                 genresComboBox.Visible = false;
             }
         }

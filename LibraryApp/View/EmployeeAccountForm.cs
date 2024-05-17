@@ -397,6 +397,9 @@ namespace LibraryApp.View
         // выбираем жанр из списка
         private void GenresComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
+            // сохраняем значение в ячейке, если не закончили её редактирование и переключились на список
+            booksTable.EndEdit();
+
             // заносим данные в ячейку
             booksTable[columnIndex, rowIndex].Value = genresComboBox.Text;
 

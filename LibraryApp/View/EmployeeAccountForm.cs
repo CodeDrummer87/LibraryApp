@@ -348,7 +348,6 @@ namespace LibraryApp.View
                     });
                 }
                 genresComboBox.DisplayMember = "Name";
-                genresComboBox.SelectedIndex = 0;
 
                 reader.Close();
             }
@@ -380,16 +379,24 @@ namespace LibraryApp.View
             // если включен режим редактирования
             if (EmployeeFormEditModeCheckBox.Checked)
             {
-                // то показываем список
-                genresComboBox.Visible = true;
-                
-                // если создаем новую книгу, то предлагаем выбрать жанр
-                if(booksTable.CurrentRow.Cells[0].Value == null)
+                // если создаем новую книгу, то в списке предлагаем выбрать жанр
+                if (booksTable.CurrentRow.Cells[0].Value == null)
+                {
                     genresComboBox.Text = "Выберите жанр";
+                }
+                // если редактируем существующую книгу, то показываем в списке её жанр
+                else
+                {
+                    genresComboBox.Text = booksTable.CurrentRow.Cells[2].Value.ToString();
+                }
+
+                // показываем список
+                genresComboBox.Visible = true;
             }
+            // если режим редактирования выключен
             else
             {
-                // если режим редактирования выключен, то не показываем
+                // то не показываем список
                 genresComboBox.Visible = false;
             }
         }
@@ -449,25 +456,26 @@ namespace LibraryApp.View
         }
 
         // проверяем, все ли ячейки заполнены в строке при сохранении данных о книге
-        private bool CheckIsNullOrWhiteSpace()
+        private bool CheckIsNullOrWhiteSpace(out int emptyIndex)
         {
+            emptyIndex = 0; // по-умолчанию индекс пустой ячейки 0
             bool result = false; // по-умолчанию строка считается заполненной
 
             for (int i = 1; i < booksTable.ColumnCount; i++)
             {
-               // пропускаем ячейку с адресом обложки при проверке,
-               // т.к. адрес по-молчанию для новой книги пишется сразу в БД, минуя таблицу
+                // пропускаем ячейку с адресом обложки при проверке,
+                // т.к. адрес по-молчанию для новой книги пишется сразу в БД, минуя таблицу
                 if (i == 5)
                     continue;
 
                 // если значение ячейки равно null или она содержит только пробелы
-                if (booksTable.CurrentRow.Cells[i].Value == null || String.IsNullOrWhiteSpace(booksTable.CurrentRow.Cells[i].Value.ToString()))
+                if (booksTable.CurrentRow.Cells[i].Value == null || string.IsNullOrWhiteSpace(booksTable.CurrentRow.Cells[i].Value.ToString()))
                 {
                     // то возвращаем значение true и дальше уже метод сохранения выведет сообщение об ошибке
                     result = true;
+                    emptyIndex = i; // в который мы передадим индекс пустой ячейки для вывода названия незаполненного поля
                     break;
                 }
-                
             }
             return result;
         }
@@ -475,8 +483,10 @@ namespace LibraryApp.View
         // сохраняем данные о книге в таблице и БД
         private void SaveBookButton_CLick(object sender, EventArgs e)
         {
+            int index;
+
             // если строка не имеет пустых ячеек
-            if (!CheckIsNullOrWhiteSpace())
+            if (!CheckIsNullOrWhiteSpace(out index))
             {
                 // если сохраняемая строка не содержит Id, значит книги еще нет в БД - мы добавляем новую книгу
                 // доступ к записи Id в ячейку из интерфейса программы невозможен, Id берется из БД,
@@ -569,7 +579,7 @@ namespace LibraryApp.View
             }
             else
             {
-                MessageBox.Show($"Заполните все поля перед сохранением",
+                MessageBox.Show($"Поле \"{booksTable.Columns[index].HeaderText}\" не заполнено",
                                 "Не удается сохранить данные", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
         }

@@ -17,9 +17,9 @@ namespace LibraryApp.View
         private List<Book> booksList = new(); // список всех книг
         private List<Book> filteredList = new(); // список книг, фильтрованный по параметрам
 
-        private ComboBox genresComboBox = new ComboBox(); // выпадающий список жанров (при редактировании информации о книге)
-
-        int columnIndex = 2;  // индекс столбца жанров в выпадающем списке (столбец #2 в таблице)
+        private ComboBox genresComboBox = new ComboBox(); // выпадающий список жанров
+        private ComboBox isAvailableComboBox = new ComboBox(); // выпадающий список наличия книги
+        private ComboBox statusComboBox = new ComboBox(); // выпадающий список статуса книги
         int rowIndex = 0; // индекс строки в выпадающем списке
 
         bool flag = false; // флаг для работы метода выделения/снятия выделения строки
@@ -29,7 +29,7 @@ namespace LibraryApp.View
             InitializeComponent();
 
             ViewBooksTable();
-            LoadGenresComboBox();
+            LoadComboBoxes();
 
             this.currentLoginId = currentLoginId!;
             this.startForm = startForm;
@@ -203,7 +203,7 @@ namespace LibraryApp.View
             booksTable.Columns[7].HeaderText = "Статус";
         }
 
-        // при выборе новой строки в таблице она будет выделена, кнопки "Добавить", "Сохранить", "Удалить" активны
+        // при выборе строки в таблице она будет выделена, кнопки "Добавить", "Сохранить", "Удалить" активны
         private void BooksTableSelectionChanged(object sender, EventArgs e)
         {
             // когда строка выбрана
@@ -293,38 +293,54 @@ namespace LibraryApp.View
         {
             if (EmployeeFormEditModeCheckBox.Checked)
             {
-                foreach (DataGridViewBand row in booksTable.Rows)
-                {
-                    row.ReadOnly = false;
-                }
-
+                // выключить рид-онли строк
+                foreach (DataGridViewBand row in booksTable.Rows) { row.ReadOnly = false; }
+                // включить кнопки
                 foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = true; }
             }
             else
             {
-                foreach (DataGridViewBand row in booksTable.Rows)
-                {
-                    row.ReadOnly = true;
-                    genresComboBox.Visible = false;
-                }
+                // включить рид-онли строк
+                foreach (DataGridViewBand row in booksTable.Rows) { row.ReadOnly = true; }
 
+                // выключить выпадающие списки
+                genresComboBox.Visible = false;
+                isAvailableComboBox.Visible = false;
+                statusComboBox.Visible = false;
+
+                // выключить кнопки
                 foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = false; }
             }
         }
 
-        // загружаем выпадающий список жанров в таблицу
-        private void LoadGenresComboBox()
+        // загружаем выпадающие списки в таблицу
+        private void LoadComboBoxes()
         {
+            // заполняем список жанров
             LoadGenres();
 
-            // создаем обработчик события (выбор жанров из списка)
-            genresComboBox.SelectedValueChanged += GenresComboBox_SelectedValueChanged!;
+            // заполняем список наличия книги
+            string[] isAvailableItems = { "в наличии", "выдана" };
+            isAvailableComboBox.Items.AddRange(isAvailableItems);
+            isAvailableComboBox.SelectedIndex = 0;
 
-            // добавляем список в таблицу 
+            // заполняем список статуса книги
+            string[] statusItems = { "активная", "неактивная" };
+            statusComboBox.Items.AddRange(statusItems);
+            statusComboBox.SelectedIndex = 0;
+
+            // создаем обработчик события (выбор элементов из списка)
+            genresComboBox.SelectedValueChanged += ComboBox_SelectedValueChanged!;
+            isAvailableComboBox.SelectedValueChanged += ComboBox_SelectedValueChanged!;
+            statusComboBox.SelectedValueChanged += ComboBox_SelectedValueChanged!;
+
+            // добавляем списки в таблицу 
             booksTable.Controls.Add(genresComboBox);
+            booksTable.Controls.Add(isAvailableComboBox);
+            booksTable.Controls.Add(statusComboBox);
         }
 
-        // заполням выпадающий список жанрами
+        // заполням выпадающий список жанров из БД
         private void LoadGenres()
         {
             genresComboBox.Items.Clear();
@@ -361,7 +377,7 @@ namespace LibraryApp.View
             DataBase.CloseConnection();
         }
 
-        // показываем выпадающий список при клике по ячейкам
+        // показываем выпадающие списки при клике по ячейкам
         private void BooksTable_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             // задаем индекс строки
@@ -369,12 +385,19 @@ namespace LibraryApp.View
             if (rowIndex < 0)
                 rowIndex++;
 
-            // получаем прямоугольник ячейки
-            Rectangle rectangle = booksTable.GetCellDisplayRectangle(columnIndex, rowIndex, true);
+            // получаем прямоугольники ячеек со списками
+            Rectangle genresRectangle = booksTable.GetCellDisplayRectangle(2, rowIndex, true);
+            Rectangle availableRectangle = booksTable.GetCellDisplayRectangle(6, rowIndex, true);
+            Rectangle statusRectangle = booksTable.GetCellDisplayRectangle(7, rowIndex, true);
 
-            // задаем размеры и месторасположение
-            genresComboBox.Size = new Size(rectangle.Width, rectangle.Height);
-            genresComboBox.Location = new Point(rectangle.X, rectangle.Y);
+            // задаем размеры и месторасположение списков
+            genresComboBox.Size = new Size(genresRectangle.Width, genresRectangle.Height);
+            isAvailableComboBox.Size = new Size(availableRectangle.Width, availableRectangle.Height);
+            statusComboBox.Size = new Size(statusRectangle.Width, statusRectangle.Height);
+
+            genresComboBox.Location = new Point(genresRectangle.X, genresRectangle.Y);
+            isAvailableComboBox.Location = new Point(availableRectangle.X, availableRectangle.Y);
+            statusComboBox.Location = new Point(statusRectangle.X, statusRectangle.Y);
 
             // если включен режим редактирования
             if (EmployeeFormEditModeCheckBox.Checked)
@@ -384,34 +407,44 @@ namespace LibraryApp.View
                 {
                     genresComboBox.Text = "Выберите жанр";
                 }
-                // если редактируем существующую книгу, то показываем в списке её жанр
+                // если редактируем существующую книгу, то показываем в списках текущие значения
                 else
                 {
                     genresComboBox.Text = booksTable.CurrentRow.Cells[2].Value.ToString();
+                    isAvailableComboBox.Text = booksTable.CurrentRow.Cells[6].Value.ToString();
+                    statusComboBox.Text = booksTable.CurrentRow.Cells[7].Value.ToString();
                 }
 
-                // показываем список
+                // показываем списки
                 genresComboBox.Visible = true;
+                isAvailableComboBox.Visible = true;
+                statusComboBox.Visible = true;
             }
             // если режим редактирования выключен
             else
             {
-                // то не показываем список
+                // то не показываем списки
                 genresComboBox.Visible = false;
+                isAvailableComboBox.Visible = false;
+                statusComboBox.Visible = false;
             }
         }
 
-        // выбираем жанр из списка
-        private void GenresComboBox_SelectedValueChanged(object sender, EventArgs e)
+        // выбираем значение из списка
+        private void ComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
             // сохраняем значение в ячейке, если не закончили её редактирование и переключились на список
             booksTable.EndEdit();
 
             // заносим данные в ячейку
-            booksTable[columnIndex, rowIndex].Value = genresComboBox.Text;
+            booksTable[2, rowIndex].Value = genresComboBox.Text;
+            booksTable[6, rowIndex].Value = isAvailableComboBox.Text;
+            booksTable[7, rowIndex].Value = statusComboBox.Text;
 
             // скрываем список
             genresComboBox.Visible = false;
+            isAvailableComboBox.Visible = false;
+            statusComboBox.Visible = false;
         }
 
         // получаем номер жанра для записи его в БД в случае редактирования жанра в таблице
@@ -438,7 +471,7 @@ namespace LibraryApp.View
             if (booksTable.CurrentRow.Cells[4] == booksTable.CurrentCell)
             {
                 // получаем её значение
-                string ageLimitEditingValue = booksTable.CurrentRow.Cells[4].EditedFormattedValue.ToString()!;
+                string ageLimitEditingValue = booksTable.CurrentCell.EditedFormattedValue.ToString()!;
 
                 // и проверяем
                 foreach (var item in ageLimitEditingValue)
@@ -448,7 +481,7 @@ namespace LibraryApp.View
                         e.Cancel = true;
                         MessageBox.Show($"Ограничение по возрасту может быть только числом",
                                         "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                        booksTable.CurrentRow.Cells[4].Value = "0";
+                        booksTable.CurrentCell.Value = "0";
                         break;
                     }
                 }
@@ -605,8 +638,8 @@ namespace LibraryApp.View
                     booksTable.CurrentCell = booksTable.Rows[booksTable.Rows.Count - 1].Cells[1];
 
                     // по-умолчанию заполняем наличие и статус
-                    booksTable.CurrentRow.Cells[6].Value = "в наличии";
-                    booksTable.CurrentRow.Cells[7].Value = "активная";
+                    isAvailableComboBox.SelectedIndex = 0;
+                    statusComboBox.SelectedIndex = 0;
                 }
                 else
                 {

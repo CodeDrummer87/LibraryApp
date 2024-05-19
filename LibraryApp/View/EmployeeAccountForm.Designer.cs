@@ -173,6 +173,7 @@
             // EmployeeFormEditModeCheckBox
             // 
             EmployeeFormEditModeCheckBox.AutoSize = true;
+            EmployeeFormEditModeCheckBox.Cursor = Cursors.Hand;
             EmployeeFormEditModeCheckBox.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             EmployeeFormEditModeCheckBox.ForeColor = Color.MidnightBlue;
             EmployeeFormEditModeCheckBox.Location = new Point(366, 710);

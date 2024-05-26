@@ -317,6 +317,7 @@ namespace LibraryApp.View
             {
                 // выключить рид-онли строк
                 foreach (DataGridViewBand row in booksTable.Rows) { row.ReadOnly = false; }
+
                 // включить кнопки
                 foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = true; }
             }
@@ -326,9 +327,7 @@ namespace LibraryApp.View
                 foreach (DataGridViewBand row in booksTable.Rows) { row.ReadOnly = true; }
 
                 // выключить выпадающие списки
-                genresComboBox.Visible = false;
-                isAvailableComboBox.Visible = false;
-                statusComboBox.Visible = false;
+                foreach (Control ctrl in booksTable.Controls.OfType<ComboBox>()) { ctrl.Visible = false; }
 
                 // выключить кнопки
                 foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = false; }
@@ -428,12 +427,10 @@ namespace LibraryApp.View
                 if (EmployeeFormEditModeCheckBox.Checked)
                 {
                     // показываем списки
-                    genresComboBox.Visible = true;
-                    isAvailableComboBox.Visible = true;
-                    statusComboBox.Visible = true;
+                    foreach (Control ctrl in booksTable.Controls.OfType<ComboBox>()) { ctrl.Visible = true; }
 
                     // если создаем новую книгу, то в списке предлагаем выбрать жанр
-                    if (booksTable.CurrentRow.Cells[0].Value is null)
+                    if (booksTable.CurrentRow.Cells[0].Value is null && booksTable.CurrentRow.Cells[2].Value is null)
                     {
                         genresComboBox.Text = "Выберите жанр";
                     }
@@ -449,9 +446,7 @@ namespace LibraryApp.View
                 else
                 {
                     // то не показываем списки
-                    genresComboBox.Visible = false;
-                    isAvailableComboBox.Visible = false;
-                    statusComboBox.Visible = false;
+                    foreach (Control ctrl in booksTable.Controls.OfType<ComboBox>()) { ctrl.Visible = false; }
                 }
             }
         }
@@ -468,9 +463,7 @@ namespace LibraryApp.View
             booksTable[7, rowIndex].Value = statusComboBox.Text;
 
             // скрываем список
-            genresComboBox.Visible = false;
-            isAvailableComboBox.Visible = false;
-            statusComboBox.Visible = false;
+            foreach (Control ctrl in booksTable.Controls.OfType<ComboBox>()) { ctrl.Visible = false; }
         }
 
         // получаем номер жанра для записи его в БД в случае редактирования жанра в таблице
@@ -693,6 +686,9 @@ namespace LibraryApp.View
                 if (booksTable.CurrentRow.Cells[0].Value is null)
                 {
                     booksTable.Rows.RemoveAt(booksTable.CurrentRow.Index);
+
+                    foreach (Control ctrl in booksTable.Controls.OfType<ComboBox>()) { ctrl.Visible = false; }
+
                     booksTable.Refresh();
                 }
                 // если удаляемая строка содержит Id, то удаляем книгу с таким Id из БД и обновляем таблицу
@@ -720,6 +716,8 @@ namespace LibraryApp.View
                             GetBooks();
 
                             Binding();
+
+                            foreach (Control ctrl in booksTable.Controls.OfType<ComboBox>()) { ctrl.Visible = false; }
 
                             booksTable.Refresh();
 

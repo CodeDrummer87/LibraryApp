@@ -1,6 +1,6 @@
 ﻿using LibraryApp.Models;
+using LibraryApp.View;
 using Microsoft.Data.Sqlite;
-using static System.Net.WebRequestMethods;
 
 namespace LibraryApp
 {
@@ -83,6 +83,12 @@ namespace LibraryApp
                 this.Hide();
                 userForm.Show();
             }
+            else if (loginInputBox.Text == "emp" && passwordInputBox.Text == "emp")
+            {
+                EmployeeAccountForm employeeForm = new(this, loginId);
+                this.Hide();
+                employeeForm.Show();
+            }
             else
             {
                 MessageBox.Show("Неверный логин или пароль", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -129,7 +135,7 @@ namespace LibraryApp
             {
                 MessageBox.Show($"Ошибка:\n\"{ex.Message}\"\n" +
                                 $"Обратитесь к системному администратору для её устранения.",
-                                "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
             DataBase.CloseConnection();

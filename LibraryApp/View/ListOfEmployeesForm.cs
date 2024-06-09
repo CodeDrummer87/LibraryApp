@@ -6,7 +6,7 @@ namespace LibraryApp.View
 {
     public partial class ListOfEmployeesForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY;
+        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
         private SqliteCommand? command;
         private SqliteDataReader? reader;
 
@@ -84,7 +84,7 @@ namespace LibraryApp.View
             {
                 MessageBox.Show($"Не удалось загрузить список сотрудников:" +
                                 $"\n\"{ex.Message}\"\nОбратитесь к системному администратору для устранения ошибки.",
-                                "Ошибка при работе с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
             DataBase.CloseConnection();
@@ -210,7 +210,7 @@ namespace LibraryApp.View
             {
                 MessageBox.Show($"Не удалось загрузить список дней рождения:" +
                                 $"\n\"{ex.Message}\"\nОбратитесь к системному администратору для устранения ошибки.",
-                                "Ошибка при работе с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
             DataBase.CloseConnection();

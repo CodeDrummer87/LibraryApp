@@ -75,6 +75,7 @@ namespace LibraryApp.View
             // listOfPostsCloseLabel
             // 
             listOfPostsCloseLabel.AutoSize = true;
+            listOfPostsCloseLabel.Cursor = Cursors.Hand;
             listOfPostsCloseLabel.Font = new Font("Lucida Console", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
             listOfPostsCloseLabel.ForeColor = Color.Black;
             listOfPostsCloseLabel.Location = new Point(450, 19);
@@ -88,6 +89,7 @@ namespace LibraryApp.View
             // 
             // changePostButton
             // 
+            changePostButton.Cursor = Cursors.Hand;
             changePostButton.Enabled = false;
             changePostButton.Location = new Point(33, 372);
             changePostButton.Name = "changePostButton";
@@ -99,6 +101,7 @@ namespace LibraryApp.View
             // 
             // deletePostButton
             // 
+            deletePostButton.Cursor = Cursors.Hand;
             deletePostButton.Enabled = false;
             deletePostButton.Location = new Point(127, 372);
             deletePostButton.Name = "deletePostButton";

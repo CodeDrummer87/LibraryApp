@@ -6,9 +6,11 @@ namespace LibraryApp
 {
     public partial class LibraryManagerForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY;
+        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
+
         private SqliteCommand? command;
         private SqliteDataReader? reader;
+
         private int currentLoginId;
         private StartForm startForm;
         public LibraryManagerForm(StartForm startForm, int currentLoginId)
@@ -40,10 +42,7 @@ namespace LibraryApp
             libraryManagerCloseLabel.ForeColor = Color.Black;
         }
 
-
-        #endregion
-
-        // выходим на стартовую форму, если ответить "да"
+        // кнопка "Выход". Выходим на стартовую форму, если ответить "да"
         private void ExitToStartFormLabel_CLick(object sender, EventArgs e)
         {
             MessageBoxButtons msb = MessageBoxButtons.YesNo;
@@ -65,6 +64,8 @@ namespace LibraryApp
         {
             exitToStartFormLabel.ForeColor = Color.MidnightBlue;
         }
+
+        #endregion
 
         // кнопка "Создать аккаунт сотрудника"
         private void CreateEmployeeButton_Click(object? sender, EventArgs e)
@@ -144,7 +145,7 @@ namespace LibraryApp
             {
                 MessageBox.Show($"Не удалось получить данные текущего управляющего:\n\"{ex.Message}\"\n" +
                                 $"Обратитесь к системному администратору для её устранения.",
-                                "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
             DataBase.CloseConnection();

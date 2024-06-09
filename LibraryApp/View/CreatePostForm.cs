@@ -4,7 +4,7 @@ namespace LibraryApp.View
 {
     public partial class CreatePostForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY;
+        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
         private SqliteCommand command;
 
         public CreatePostForm()
@@ -123,7 +123,7 @@ namespace LibraryApp.View
                         {
                             MessageBox.Show($"Не удалось создать новую должность:\n\"{ex.Message}\"\n" +
                                             $"Обратитесь к системному администратору для её устранения.",
-                                            "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                            "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                         }
 
                         DataBase.CloseConnection();

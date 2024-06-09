@@ -5,7 +5,7 @@ namespace LibraryApp
 {
     public partial class UserAccountForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY;
+        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
         private SqliteCommand? command;
         private SqliteDataReader? reader;
         private int currentLoginId;
@@ -15,6 +15,7 @@ namespace LibraryApp
         {
             InitializeComponent();
             GetCurrentDate();
+
             this.currentLoginId = currentLoginId!;
             this.startForm = startForm;
 
@@ -40,9 +41,7 @@ namespace LibraryApp
             userAccountCloseLabel.ForeColor = Color.Black;
         }
 
-        #endregion
-
-        // выходим на стартовую форму, если ответить "да"
+        // кнопка "Выход". Выходим на стартовую форму, если ответить "да"
         private void ExitToStartFormLabel_CLick(object sender, EventArgs e)
         {
             MessageBoxButtons msb = MessageBoxButtons.YesNo;
@@ -64,6 +63,9 @@ namespace LibraryApp
         {
             exitToStartFormLabel.ForeColor = Color.MidnightBlue;
         }
+
+        #endregion
+
 
         // выводим текущую дату
         private void GetCurrentDate() => currentDateLabel.Text = "Сегодня " + DateTime.Now.ToLongDateString();
@@ -118,7 +120,7 @@ namespace LibraryApp
             {
                 MessageBox.Show($"Не удалось получить данные текущего пользователя:\n\"{ex.Message}\"\n" +
                                 $"Обратитесь к системному администратору для её устранения.",
-                                "Нет соединения с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
             DataBase.CloseConnection();

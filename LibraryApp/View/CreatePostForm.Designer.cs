@@ -86,6 +86,7 @@
             // 
             // createPostButton
             // 
+            createPostButton.Cursor = Cursors.Hand;
             createPostButton.Location = new Point(41, 164);
             createPostButton.Name = "createPostButton";
             createPostButton.Size = new Size(75, 23);
@@ -96,6 +97,7 @@
             // 
             // ClearFormButton
             // 
+            ClearFormButton.Cursor = Cursors.Hand;
             ClearFormButton.Location = new Point(133, 164);
             ClearFormButton.Name = "ClearFormButton";
             ClearFormButton.Size = new Size(75, 23);

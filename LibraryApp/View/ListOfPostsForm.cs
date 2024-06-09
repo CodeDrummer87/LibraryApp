@@ -5,7 +5,7 @@ namespace LibraryApp.View
 {
     public partial class ListOfPostsForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY;
+        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
 
         private SqliteCommand? command;
         private SqliteDataReader? reader;
@@ -70,7 +70,7 @@ namespace LibraryApp.View
             {
                 MessageBox.Show($"Не удалось загрузить список должностей:" +
                                 $"\n\"{ex.Message}\"\nОбратитесь к системному администратору для устранения ошибки.",
-                                "Ошибка при работе с Базой Данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
 
             DataBase.CloseConnection();
@@ -134,9 +134,6 @@ namespace LibraryApp.View
                 {
                     row.ReadOnly = false;
                 }
-
-                changePostButton.Enabled = true;
-                deletePostButton.Enabled = true;
             }
             else
             {
@@ -177,7 +174,7 @@ namespace LibraryApp.View
             {
                 MessageBox.Show($"Не удалось изменить должность в базе данных:\n\"{ex.Message}\"\n" +
                                 $"Обратитесь к системному администратору для её устранения.",
-                                "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
         }
 
@@ -197,7 +194,6 @@ namespace LibraryApp.View
             DataBase.CloseConnection();
             return answer;
         }
-
 
         // удаляем должность из таблицы и БД
         private void DeletePostButton_Click(object sender, EventArgs e)
@@ -240,7 +236,7 @@ namespace LibraryApp.View
                     {
                         MessageBox.Show($"Не удалось удалить должность из базы данных:\n\"{ex.Message}\"\n" +
                                         $"Обратитесь к системному администратору для её устранения.",
-                                        "Нет соединения с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                        "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     }
                 }
                 else

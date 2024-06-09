@@ -93,7 +93,6 @@
             booksTable.CellValidating += IsDigit_CellValidating;
             booksTable.DataError += CheckError_DataError;
             booksTable.SelectionChanged += BooksTableSelectionChanged;
-            booksTable.MouseUp += BooksTableMouseUp;
             // 
             // booksFilterGroupBox
             // 

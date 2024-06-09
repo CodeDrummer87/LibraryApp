@@ -208,57 +208,23 @@ namespace LibraryApp.View
         // при выборе строки в таблице она будет выделена, кнопки "Добавить", "Сохранить", "Удалить" активны
         private void BooksTableSelectionChanged(object sender, EventArgs e)
         {
-            // если в таблице есть строки
-            if (booksTable.Rows.Count >= 1)
+            // если в таблице есть строки и строка выбрана
+            if (booksTable.Rows.Count >= 1 && booksTable.CurrentCell.Selected)
             {
-                // когда строка выбрана
-                if (booksTable.CurrentCell.Selected)
-                {
-                    flag = true;
-                    booksTable.CurrentCell.Selected = true;
+                flag = true;
+                booksTable.CurrentCell.Selected = true;
 
-                    // если режим изменения выключен
-                    if (!EmployeeFormEditModeCheckBox.Checked)
-                    {
-                        // выключаем все кнопки
-                        foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = false; }
-                    }
-                    // если режим изменения включен
-                    else
-                    {
-                        // включаем все кнопки
-                        foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = true; }
-                    }
+                // если режим изменения выключен
+                if (!EmployeeFormEditModeCheckBox.Checked)
+                {
+                    // выключаем все кнопки
+                    foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = false; }
                 }
-            }
-        }
-
-        // убираем выделение строки или возвращаем его по клику 
-        // изменяем активность кнопок "Добавить", "Сохранить", "Удалить" в зависимости от выделения/невыделения строки
-        private void BooksTableMouseUp(object sender, MouseEventArgs e)
-        {
-            // если в таблице есть строки
-            if (booksTable.Rows.Count >= 1)
-            {
-                // если строка выделена
-                if (booksTable.CurrentCell.Selected)
+                // если режим изменения включен
+                else
                 {
-                    // если включен режим редактирования
-                    if (EmployeeFormEditModeCheckBox.Checked)
-                    {
-                        if (flag)
-                        {
-                            booksTable.CurrentCell.Selected = true;
-                            foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = true; }
-                            flag = !flag;
-                        }
-                        else if (!flag)
-                        {
-                            booksTable.CurrentCell.Selected = false;
-                            foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = false; }
-                            flag = !flag;
-                        }
-                    }
+                    // включаем все кнопки
+                    foreach (Control ctrls in Controls.OfType<Button>()) { ctrls.Enabled = true; }
                 }
             }
         }
@@ -541,109 +507,105 @@ namespace LibraryApp.View
         // сохраняем данные о книге в таблице и БД
         private void SaveBookButton_CLick(object sender, EventArgs e)
         {
-            // если в таблице есть строки
-            if (booksTable.Rows.Count >= 1)
+            // если таблица пустая или ни одной строки не выделено, то сохранение не работает
+            if (booksTable.Rows.Count == 0 || booksTable.SelectedRows.Count == 0)
+                return;
+
+            int index; // индекс незаполненной ячейки
+
+            // если строка не имеет пустых ячеек
+            if (!CheckIsNullOrWhiteSpace(out index))
             {
-                // если строка выделена
-                if (booksTable.CurrentCell.Selected)
+                // если аналогичной книги нет в БД
+                if (!CheckBookInDataBase())
                 {
-                    int index; // индекс незаполненной ячейки
-
-                    // если строка не имеет пустых ячеек
-                    if (!CheckIsNullOrWhiteSpace(out index))
+                    // если сохраняемая строка не содержит Id, значит книги еще нет в БД
+                    // сохраняем новую книгу
+                    if (booksTable.CurrentRow.Cells[0].Value is null)
                     {
-                        // если аналогичной книги нет в БД
-                        if (!CheckBookInDataBase())
+                        string query = "INSERT INTO Books (Title, GenreId, Author, AgeLimit, ImagePath, IsAvailable, IsActive) " +
+                                       "VALUES(@Title, @GenreId, @Author, @AgeLimit, @ImagePath, @IsAvailable, @IsActive)";
+
+                        string genreId = GetGenreId(); // подставляем Id жанра из таблицы Genres БД
+
+                        try
                         {
-                            // если сохраняемая строка не содержит Id, значит книги еще нет в БД
-                            // сохраняем новую книгу
-                            if (booksTable.CurrentRow.Cells[0].Value is null)
-                            {
-                                string query = "INSERT INTO Books (Title, GenreId, Author, AgeLimit, ImagePath, IsAvailable, IsActive) " +
-                                               "VALUES(@Title, @GenreId, @Author, @AgeLimit, @ImagePath, @IsAvailable, @IsActive)";
+                            command = DataBase.GetConnection().CreateCommand();
+                            command.CommandText = query;
+                            command.Parameters.AddWithValue("Title", booksTable.SelectedRows[0].Cells[1].Value.ToString().Trim());
+                            command.Parameters.AddWithValue("GenreId", genreId);
+                            command.Parameters.AddWithValue("Author", booksTable.SelectedRows[0].Cells[3].Value.ToString().Trim());
+                            command.Parameters.AddWithValue("AgeLimit", booksTable.SelectedRows[0].Cells[4].Value.ToString());
+                            command.Parameters.AddWithValue("ImagePath", "source\\book_covers\\empty.jpg");
+                            command.Parameters.AddWithValue("IsAvailable", booksTable.SelectedRows[0].Cells[6].Value.ToString() == "в наличии" ? 1 : 0);
+                            command.Parameters.AddWithValue("IsActive", booksTable.SelectedRows[0].Cells[7].Value.ToString() == "активная" ? 1 : 0);
 
-                                string genreId = GetGenreId(); // подставляем Id жанра из таблицы Genres БД
+                            DataBase.OpenConnection();
+                            command.ExecuteNonQuery();
 
-                                try
-                                {
-                                    command = DataBase.GetConnection().CreateCommand();
-                                    command.CommandText = query;
-                                    command.Parameters.AddWithValue("Title", booksTable.SelectedRows[0].Cells[1].Value.ToString().Trim());
-                                    command.Parameters.AddWithValue("GenreId", genreId);
-                                    command.Parameters.AddWithValue("Author", booksTable.SelectedRows[0].Cells[3].Value.ToString().Trim());
-                                    command.Parameters.AddWithValue("AgeLimit", booksTable.SelectedRows[0].Cells[4].Value.ToString());
-                                    command.Parameters.AddWithValue("ImagePath", "source\\book_covers\\empty.jpg");
-                                    command.Parameters.AddWithValue("IsAvailable", booksTable.SelectedRows[0].Cells[6].Value.ToString() == "в наличии" ? 1 : 0);
-                                    command.Parameters.AddWithValue("IsActive", booksTable.SelectedRows[0].Cells[7].Value.ToString() == "активная" ? 1 : 0);
+                            DataBase.CloseConnection();
 
-                                    DataBase.OpenConnection();
-                                    command.ExecuteNonQuery();
-
-                                    DataBase.CloseConnection();
-
-                                    MessageBox.Show("Данные о новой книге были успешно сохранены",
-                                                    "Сохранение новой книги", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                }
-                                catch (Exception ex)
-                                {
-                                    MessageBox.Show($"Не удалось сохранить данные о новой книге:\n\"{ex.Message}\"\n" +
-                                                    $"Обратитесь к системному администратору для её устранения.",
-                                                    "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                                }
-                            }
-                            // если сохраняемая строка содержит Id, то пересохраняем книгу с таким Id в БД
-                            else
-                            {
-                                string query = "UPDATE Books " +
-                                               "SET Title = @Title, GenreId = @GenreId, Author = @Author, " +
-                                               "AgeLimit = @AgeLimit, IsAvailable = @IsAvailable, IsActive = @IsActive " +
-                                               "WHERE Id = @Id";
-                                string id = booksTable.SelectedRows[0].Cells[0].Value.ToString()!;
-                                string genreId = GetGenreId(); // подставляем Id жанра из таблицы Genres БД
-
-                                try
-                                {
-                                    command = DataBase.GetConnection().CreateCommand();
-                                    command.CommandText = query;
-                                    command.Parameters.AddWithValue("Id", id);
-                                    command.Parameters.AddWithValue("Title", booksTable.SelectedRows[0].Cells[1].Value.ToString().Trim());
-                                    command.Parameters.AddWithValue("GenreId", genreId);
-                                    command.Parameters.AddWithValue("Author", booksTable.SelectedRows[0].Cells[3].Value.ToString().Trim());
-                                    command.Parameters.AddWithValue("AgeLimit", booksTable.SelectedRows[0].Cells[4].Value.ToString());
-                                    command.Parameters.AddWithValue("IsAvailable", booksTable.SelectedRows[0].Cells[6].Value.ToString() == "в наличии" ? 1 : 0);
-                                    command.Parameters.AddWithValue("IsActive", booksTable.SelectedRows[0].Cells[7].Value.ToString() == "активная" ? 1 : 0);
-
-                                    DataBase.OpenConnection();
-                                    command.ExecuteNonQuery();
-
-                                    DataBase.CloseConnection();
-
-                                    MessageBox.Show("Данные о книге были успешно изменены",
-                                                    "Изменение данных о книге", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                }
-                                catch (Exception ex)
-                                {
-                                    MessageBox.Show($"Не удалось изменить данные о книге в базе данных:\n\"{ex.Message}\"\n" +
-                                                    $"Обратитесь к системному администратору для её устранения.",
-                                                    "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                                }
-                            }
+                            MessageBox.Show("Данные о новой книге были успешно сохранены",
+                                            "Сохранение новой книги", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
-                        // если в точности такая же книга есть в БД
-                        else
+                        catch (Exception ex)
                         {
-                            MessageBox.Show($"Книга с такими атрибутами уже существует",
-                                            "Не удается сохранить данные", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            MessageBox.Show($"Не удалось сохранить данные о новой книге:\n\"{ex.Message}\"\n" +
+                                            $"Обратитесь к системному администратору для её устранения.",
+                                            "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                         }
-
                     }
+                    // если сохраняемая строка содержит Id, то пересохраняем книгу с таким Id в БД
                     else
                     {
-                        MessageBox.Show($"Поле \"{booksTable.Columns[index].HeaderText}\" не заполнено",
-                                        "Не удается сохранить данные", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        string query = "UPDATE Books " +
+                                       "SET Title = @Title, GenreId = @GenreId, Author = @Author, " +
+                                       "AgeLimit = @AgeLimit, IsAvailable = @IsAvailable, IsActive = @IsActive " +
+                                       "WHERE Id = @Id";
+                        string id = booksTable.SelectedRows[0].Cells[0].Value.ToString()!;
+                        string genreId = GetGenreId(); // подставляем Id жанра из таблицы Genres БД
+
+                        try
+                        {
+                            command = DataBase.GetConnection().CreateCommand();
+                            command.CommandText = query;
+                            command.Parameters.AddWithValue("Id", id);
+                            command.Parameters.AddWithValue("Title", booksTable.SelectedRows[0].Cells[1].Value.ToString().Trim());
+                            command.Parameters.AddWithValue("GenreId", genreId);
+                            command.Parameters.AddWithValue("Author", booksTable.SelectedRows[0].Cells[3].Value.ToString().Trim());
+                            command.Parameters.AddWithValue("AgeLimit", booksTable.SelectedRows[0].Cells[4].Value.ToString());
+                            command.Parameters.AddWithValue("IsAvailable", booksTable.SelectedRows[0].Cells[6].Value.ToString() == "в наличии" ? 1 : 0);
+                            command.Parameters.AddWithValue("IsActive", booksTable.SelectedRows[0].Cells[7].Value.ToString() == "активная" ? 1 : 0);
+
+                            DataBase.OpenConnection();
+                            command.ExecuteNonQuery();
+
+                            DataBase.CloseConnection();
+
+                            MessageBox.Show("Данные о книге были успешно изменены",
+                                            "Изменение данных о книге", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Не удалось изменить данные о книге в базе данных:\n\"{ex.Message}\"\n" +
+                                            $"Обратитесь к системному администратору для её устранения.",
+                                            "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        }
                     }
                 }
+                // если в точности такая же книга есть в БД
+                else
+                {
+                    MessageBox.Show($"Книга с такими атрибутами уже существует",
+                                    "Не удается сохранить данные", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                }
             }
+            else
+            {
+                MessageBox.Show($"Поле \"{booksTable.Columns[index].HeaderText}\" не заполнено",
+                                "Не удается сохранить данные", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
         }
 
         // добавляем пустую строку для сохранения новой книги
@@ -676,74 +638,18 @@ namespace LibraryApp.View
         // удаляем книгу из таблицы и БД
         private void DeleteBookButton_Click(object sender, EventArgs e)
         {
-            // если в таблице есть строки
-            if (booksTable.Rows.Count >= 1)
+            // если таблица пустая или ни одной строки не выделено, то удаление не работает
+            if (booksTable.Rows.Count == 0 || booksTable.SelectedRows.Count == 0)
+                return;
+
+            // если удаляемая строка не содержит Id
+            if (booksTable.CurrentRow.Cells[0].Value is null)
             {
-                // если строка выделена
-                if (booksTable.CurrentCell.Selected)
+                // если поля "Название" и "Автор" не пустые
+                if (booksTable.SelectedRows[0].Cells[1].Value is not null && booksTable.SelectedRows[0].Cells[3].Value is not null)
                 {
-                    // если удаляемая строка не содержит Id
-                    if (booksTable.CurrentRow.Cells[0].Value is null)
-                    {
-                        // если поля "Название" и "Автор" не пустые
-                        if (booksTable.SelectedRows[0].Cells[1].Value is not null && booksTable.SelectedRows[0].Cells[3].Value is not null)
-                        {
-                            // если аналогичная книга есть в БД, удаляем из БД книгу с такими названием и автором
-                            if (CheckBookInDataBase())
-                            {
-                                MessageBoxButtons msb = MessageBoxButtons.YesNo;
-                                MessageBoxIcon icn = MessageBoxIcon.Question;
-                                String message = "Вы действительно хотите удалить эту книгу?";
-                                String caption = "Удаление книги";
-
-                                if (MessageBox.Show(message, caption, msb, icn) == DialogResult.Yes)
-                                {
-                                    string query = "DELETE FROM Books WHERE Title = @Title AND Author = @Author";
-                                    try
-                                    {
-                                        command = DataBase.GetConnection().CreateCommand();
-                                        command.CommandText = query;
-                                        command.Parameters.AddWithValue("Title", booksTable.SelectedRows[0].Cells[1].Value.ToString());
-                                        command.Parameters.AddWithValue("Author", booksTable.SelectedRows[0].Cells[3].Value.ToString());
-                                        DataBase.OpenConnection();
-                                        command.ExecuteNonQuery();
-
-                                        DataBase.CloseConnection();
-
-                                        booksTable.Rows.RemoveAt(booksTable.CurrentRow.Index);
-
-                                        foreach (Control ctrl in booksTable.Controls.OfType<ComboBox>()) { ctrl.Visible = false; }
-
-                                        MessageBox.Show("Книга была удалена из базы данных",
-                                                        "Удаление книги", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    }
-
-                                    catch (Exception ex)
-                                    {
-                                        MessageBox.Show($"Не удалось удалить книгу из базы данных:\n\"{ex.Message}\"\n" +
-                                                        $"Обратитесь к системному администратору для её устранения.",
-                                                        "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                                    }
-                                }
-                            }
-                            // если аналогичной книги нет в БД, просто удаляем строку
-                            else
-                            {
-                                booksTable.Rows.RemoveAt(booksTable.CurrentRow.Index);
-
-                                foreach (Control ctrl in booksTable.Controls.OfType<ComboBox>()) { ctrl.Visible = false; }
-                            }
-                        }
-                        // если строка пустая, просто удаляем строку
-                        else
-                        {
-                            booksTable.Rows.RemoveAt(booksTable.CurrentRow.Index);
-
-                            foreach (Control ctrl in booksTable.Controls.OfType<ComboBox>()) { ctrl.Visible = false; }
-                        }
-                    }
-                    // если удаляемая строка содержит Id, то удаляем книгу с таким Id из БД
-                    else
+                    // если аналогичная книга есть в БД, удаляем из БД книгу с такими названием и автором
+                    if (CheckBookInDataBase())
                     {
                         MessageBoxButtons msb = MessageBoxButtons.YesNo;
                         MessageBoxIcon icn = MessageBoxIcon.Question;
@@ -752,13 +658,14 @@ namespace LibraryApp.View
 
                         if (MessageBox.Show(message, caption, msb, icn) == DialogResult.Yes)
                         {
-                            string query = "DELETE FROM Books WHERE Id = @Id";
-                            string id = booksTable.SelectedRows[0].Cells[0].Value.ToString()!;
+                            string query = "DELETE FROM Books WHERE Title = @Title AND Author = @Author";
+
                             try
                             {
                                 command = DataBase.GetConnection().CreateCommand();
                                 command.CommandText = query;
-                                command.Parameters.AddWithValue("Id", id);
+                                command.Parameters.AddWithValue("Title", booksTable.SelectedRows[0].Cells[1].Value.ToString());
+                                command.Parameters.AddWithValue("Author", booksTable.SelectedRows[0].Cells[3].Value.ToString());
                                 DataBase.OpenConnection();
                                 command.ExecuteNonQuery();
 
@@ -771,7 +678,6 @@ namespace LibraryApp.View
                                 MessageBox.Show("Книга была удалена из базы данных",
                                                 "Удаление книги", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
-
                             catch (Exception ex)
                             {
                                 MessageBox.Show($"Не удалось удалить книгу из базы данных:\n\"{ex.Message}\"\n" +
@@ -779,6 +685,58 @@ namespace LibraryApp.View
                                                 "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                             }
                         }
+                    }
+                    // если аналогичной книги нет в БД, просто удаляем строку
+                    else
+                    {
+                        booksTable.Rows.RemoveAt(booksTable.CurrentRow.Index);
+
+                        foreach (Control ctrl in booksTable.Controls.OfType<ComboBox>()) { ctrl.Visible = false; }
+                    }
+                }
+                // если строка пустая, просто удаляем строку
+                else
+                {
+                    booksTable.Rows.RemoveAt(booksTable.CurrentRow.Index);
+
+                    foreach (Control ctrl in booksTable.Controls.OfType<ComboBox>()) { ctrl.Visible = false; }
+                }
+            }
+            // если удаляемая строка содержит Id, то удаляем книгу с таким Id из БД
+            else
+            {
+                MessageBoxButtons msb = MessageBoxButtons.YesNo;
+                MessageBoxIcon icn = MessageBoxIcon.Question;
+                String message = "Вы действительно хотите удалить эту книгу?";
+                String caption = "Удаление книги";
+
+                if (MessageBox.Show(message, caption, msb, icn) == DialogResult.Yes)
+                {
+                    string query = "DELETE FROM Books WHERE Id = @Id";
+                    string id = booksTable.SelectedRows[0].Cells[0].Value.ToString()!;
+
+                    try
+                    {
+                        command = DataBase.GetConnection().CreateCommand();
+                        command.CommandText = query;
+                        command.Parameters.AddWithValue("Id", id);
+                        DataBase.OpenConnection();
+                        command.ExecuteNonQuery();
+
+                        DataBase.CloseConnection();
+
+                        booksTable.Rows.RemoveAt(booksTable.CurrentRow.Index);
+
+                        foreach (Control ctrl in booksTable.Controls.OfType<ComboBox>()) { ctrl.Visible = false; }
+
+                        MessageBox.Show("Книга была удалена из базы данных",
+                                        "Удаление книги", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Не удалось удалить книгу из базы данных:\n\"{ex.Message}\"\n" +
+                                        $"Обратитесь к системному администратору для её устранения.",
+                                        "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     }
                 }
             }

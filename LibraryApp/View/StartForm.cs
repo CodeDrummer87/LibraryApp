@@ -17,6 +17,25 @@ namespace LibraryApp
             isHiddenPassword = true;
         }
 
+        private void StartForm_Load(object? sender, EventArgs e)
+        {
+            // create the ToolTip and associate with the Form container
+            ToolTip toolTip = new ToolTip();
+
+            // set up the delays for the ToolTip
+            toolTip.AutoPopDelay = 5000;
+            toolTip.InitialDelay = 500;
+            toolTip.ReshowDelay = 500;
+
+            // force the ToolTip text to be displayed whether or not the form is active
+            toolTip.ShowAlways = true;
+
+            // set up the ToolTip text 
+            toolTip.SetToolTip(hidePasswordPictureBox, "Показать или скрыть пароль");
+            toolTip.SetToolTip(createAccountPictureBox, "Регистрация нового пользователя");
+
+        }
+
         #region Window control buttons
         private void CloseLabel_Click(object? sender, EventArgs e)
         {
@@ -35,7 +54,7 @@ namespace LibraryApp
 
         #endregion
 
-        // изменяем цвет кнопки скрытия пароля при наведении курсора
+        // change PictureBox color on hover
         private void PictureBoxMouseEnter(object? sender, EventArgs e)
         {
             PictureBox pic = sender as PictureBox;
@@ -46,6 +65,14 @@ namespace LibraryApp
         {
             PictureBox pic = sender as PictureBox;
             pic.BackColor = Color.OldLace;
+        }
+
+        // open the registration form
+        private void CreateAccountPictureBox_Click(object? sender, EventArgs e)
+        {
+            RegForm regForm = new(this);
+            this.Hide();
+            regForm.Show();
         }
 
         // скрываем или показывамем пароль в поле ввода по нажатию кнопки

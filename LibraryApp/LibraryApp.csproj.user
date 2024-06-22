@@ -19,6 +19,9 @@
     <Compile Update="View\ListOfPostsForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="View\RegForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="View\StartForm.cs">
       <SubType>Form</SubType>
     </Compile>

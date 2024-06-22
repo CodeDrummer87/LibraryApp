@@ -113,3 +113,4 @@ C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.
 C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.View.CreatePostForm.resources
 C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.View.ListOfPostsForm.resources
 C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.View.EmployeeAccountForm.resources
+C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.View.RegForm.resources

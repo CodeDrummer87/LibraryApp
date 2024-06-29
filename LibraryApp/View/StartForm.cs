@@ -75,7 +75,7 @@ namespace LibraryApp
             regForm.Show();
         }
 
-        // скрываем или показывамем пароль в поле ввода по нажатию кнопки
+        // hide or show the password in the input field 
         private void HidePasswordPictureBox_Click(object? sender, EventArgs e)
         {
             if (isHiddenPassword)
@@ -129,10 +129,10 @@ namespace LibraryApp
             loginInputBox.Focus();
         }
 
-        // получаем Id аккаунта
+        // get account Id
         private int GetCurrentLoginId() => Convert.ToInt32(GetCurrentAccountData(loginInputBox.Text).LoginId);
 
-        // получаем данные аккаунта
+        // get account data
         public Account GetCurrentAccountData(string login)
         {
             Account account = new();

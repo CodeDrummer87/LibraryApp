@@ -1,10 +1,12 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using LibraryApp.Models;
+using Microsoft.Data.Sqlite;
 
 namespace LibraryApp.View
 {
     public partial class RegForm : Form
     {
         private int iFormX, iFormY, iMouseX, iMouseY; // form positioning coordinates
+
         private SqliteCommand command;
 
         private StartForm startForm;
@@ -36,27 +38,43 @@ namespace LibraryApp.View
 
         #endregion
 
-        // clear button
-        private void ClearRegFormButton_Click(object? sender, EventArgs e)
+        // create-button
+        private void CreateAccountButton_Click(object? sender, EventArgs e)
         {
-            ClearRegForm();
+            string message = String.Empty;
+
+            if (regFormPasswordInputBox.Text == regFormConfirmPasswordInputBox.Text)
+            {
+                Person person = new()
+                {
+                    Firstname = regFormFirstNameInputBox.Text,
+                    Lastname = regFormLastNameInputBox.Text,
+                    Surname = regFormSurNameInputBox.Text,
+                    DateOfBirth = regFormDateOfBirthInputBox.Text                
+                }; 
+
+               
+                AccountActions act = new AccountActions();
+                message = act.CreateNewAccount(regFormLoginInputBox.Text, regFormPasswordInputBox.Text, person);
+            }
+            else
+            {
+                MessageBox.Show($"Проверьте правильность ввода пароля",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            MessageBox.Show($"\n\"{message}\"\n",
+                               "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-
-
-
-
-
-
-        // clearing the form
-        private void ClearRegForm()
+        // clear-button
+        private void ClearRegFormButton_Click(object? sender, EventArgs e)
         {
             foreach (Control ctrl in Controls)
             {
                 if (ctrl.GetType() == typeof(TextBox))
                     ctrl.Text = string.Empty;
             }
-         
             regFormLastNameInputBox.Focus();
         }
 

@@ -43,8 +43,10 @@
             regFormLoginLabel = new Label();
             regFormPasswordInputBox = new TextBox();
             regFormPasswordLabel = new Label();
-            createUserButton = new Button();
+            createAccountButton = new Button();
             ClearRegFormButton = new Button();
+            regFormConfirmPasswordInputBox = new TextBox();
+            regFormConfirmPasswordLabel = new Label();
             SuspendLayout();
             // 
             // regFormCloseLabel
@@ -180,7 +182,7 @@
             regFormPasswordInputBox.BackColor = Color.WhiteSmoke;
             regFormPasswordInputBox.Location = new Point(176, 189);
             regFormPasswordInputBox.Name = "regFormPasswordInputBox";
-            regFormPasswordInputBox.Size = new Size(100, 23);
+            regFormPasswordInputBox.Size = new Size(140, 23);
             regFormPasswordInputBox.TabIndex = 12;
             // 
             // regFormPasswordLabel
@@ -195,15 +197,16 @@
             regFormPasswordLabel.TabIndex = 13;
             regFormPasswordLabel.Text = "Пароль";
             // 
-            // createUserButton
+            // createAccountButton
             // 
-            createUserButton.Cursor = Cursors.Hand;
-            createUserButton.Location = new Point(46, 268);
-            createUserButton.Name = "createUserButton";
-            createUserButton.Size = new Size(75, 23);
-            createUserButton.TabIndex = 14;
-            createUserButton.Text = "Создать";
-            createUserButton.UseVisualStyleBackColor = true;
+            createAccountButton.Cursor = Cursors.Hand;
+            createAccountButton.Location = new Point(46, 268);
+            createAccountButton.Name = "createAccountButton";
+            createAccountButton.Size = new Size(75, 23);
+            createAccountButton.TabIndex = 14;
+            createAccountButton.Text = "Создать";
+            createAccountButton.UseVisualStyleBackColor = true;
+            createAccountButton.Click += CreateAccountButton_Click;
             // 
             // ClearRegFormButton
             // 
@@ -216,6 +219,25 @@
             ClearRegFormButton.UseVisualStyleBackColor = true;
             ClearRegFormButton.Click += ClearRegFormButton_Click;
             // 
+            // regFormConfirmPasswordInputBox
+            // 
+            regFormConfirmPasswordInputBox.Location = new Point(347, 189);
+            regFormConfirmPasswordInputBox.Name = "regFormConfirmPasswordInputBox";
+            regFormConfirmPasswordInputBox.Size = new Size(140, 23);
+            regFormConfirmPasswordInputBox.TabIndex = 16;
+            // 
+            // regFormConfirmPasswordLabel
+            // 
+            regFormConfirmPasswordLabel.AutoSize = true;
+            regFormConfirmPasswordLabel.BackColor = Color.Transparent;
+            regFormConfirmPasswordLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            regFormConfirmPasswordLabel.ForeColor = Color.MidnightBlue;
+            regFormConfirmPasswordLabel.Location = new Point(347, 169);
+            regFormConfirmPasswordLabel.Name = "regFormConfirmPasswordLabel";
+            regFormConfirmPasswordLabel.Size = new Size(140, 17);
+            regFormConfirmPasswordLabel.TabIndex = 17;
+            regFormConfirmPasswordLabel.Text = "Подтвердите пароль";
+            // 
             // RegForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -223,8 +245,10 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(800, 461);
+            Controls.Add(regFormConfirmPasswordLabel);
+            Controls.Add(regFormConfirmPasswordInputBox);
             Controls.Add(ClearRegFormButton);
-            Controls.Add(createUserButton);
+            Controls.Add(createAccountButton);
             Controls.Add(regFormPasswordLabel);
             Controls.Add(regFormPasswordInputBox);
             Controls.Add(regFormLoginLabel);
@@ -268,7 +292,9 @@
         private Label regFormLoginLabel;
         private TextBox regFormPasswordInputBox;
         private Label regFormPasswordLabel;
-        private Button createUserButton;
+        private Button createAccountButton;
         private Button ClearRegFormButton;
+        private TextBox regFormConfirmPasswordInputBox;
+        private Label regFormConfirmPasswordLabel;
     }
 }

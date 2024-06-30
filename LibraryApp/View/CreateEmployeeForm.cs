@@ -94,7 +94,7 @@ namespace LibraryApp
         private bool CheckPersonnelNumberInDataBase()
         {
             string query = "SELECT COUNT(PersonnelNumber) " +
-                            "FROM Employees WHERE PersonnelNumber = @PersonnelNumber";
+                           "FROM Employees WHERE PersonnelNumber = @PersonnelNumber";
 
             command = DataBase.GetConnection().CreateCommand();
             command.CommandText = query;

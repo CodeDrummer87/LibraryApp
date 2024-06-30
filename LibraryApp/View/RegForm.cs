@@ -8,6 +8,7 @@ namespace LibraryApp.View
         private int iFormX, iFormY, iMouseX, iMouseY; // form positioning coordinates
 
         private SqliteCommand command;
+        private SqliteDataReader reader;
 
         private StartForm startForm;
 
@@ -38,44 +39,112 @@ namespace LibraryApp.View
 
         #endregion
 
+        // checking for empty fields before account registration
+        private bool CheckEmptyFields()
+        {
+            foreach (Control ctrl in Controls)
+            {
+                if (ctrl.GetType() == typeof(TextBox) && string.IsNullOrWhiteSpace(ctrl.Text))
+                {
+                    MessageBox.Show("Для создания акканта необходимо заполнить все поля",
+                                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // checking for duplicate login in the database before registration
+        private bool CheckInputedLogin(string login)
+        {
+            string query = "SELECT * FROM Accounts WHERE login = @login";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@login", login);
+
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+
+                return reader.HasRows; // gets a value indicating whether the reader contains one or more lines
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка работы с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+            return false;
+        }
+
         // create-button
         private void CreateAccountButton_Click(object? sender, EventArgs e)
         {
             string message = String.Empty;
 
-            if (regFormPasswordInputBox.Text == regFormConfirmPasswordInputBox.Text)
+            string inputedLogin = regFormLoginInputBox.Text.ToLower().Trim();
+            string inputedPassword = regFormPasswordInputBox.Text.ToLower().Trim();
+            string confirmedPassword = regFormConfirmPasswordInputBox.Text.ToLower().Trim();
+
+            // if there are empty fields, a message is displayed
+            if (!CheckEmptyFields())
+                return;
+
+            // if the passwords don't match, a message is displayed
+            if (inputedPassword != confirmedPassword)
+            {
+                MessageBox.Show("Проверьте правильность ввода пароля",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // if the login has not been created before, then we'll register an account
+            if (!CheckInputedLogin(inputedLogin))
             {
                 Person person = new()
                 {
-                    Firstname = regFormFirstNameInputBox.Text,
-                    Lastname = regFormLastNameInputBox.Text,
-                    Surname = regFormSurNameInputBox.Text,
-                    DateOfBirth = regFormDateOfBirthInputBox.Text                
-                }; 
+                    Firstname = regFormFirstNameInputBox.Text.Trim(),
+                    Lastname = regFormLastNameInputBox.Text.Trim(),
+                    Surname = regFormSurNameInputBox.Text.Trim(),
+                    DateOfBirth = regFormDateOfBirthInputBox.Text.Trim()
+                };
 
-               
                 AccountActions act = new AccountActions();
-                message = act.CreateNewAccount(regFormLoginInputBox.Text, regFormPasswordInputBox.Text, person);
+                message = act.CreateNewAccount(inputedLogin, inputedPassword, person);
             }
             else
             {
-                MessageBox.Show($"Проверьте правильность ввода пароля",
+                MessageBox.Show($"Аккаунт с логином \"{inputedLogin}\" уже существует.\n" +
+                                $"Пожалуйста, выберите другой логин",
                                 "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
-            MessageBox.Show($"\n\"{message}\"\n",
-                               "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"\n{message}\n",
+                            "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            ClearForm();
         }
 
-        // clear-button
-        private void ClearRegFormButton_Click(object? sender, EventArgs e)
+        // сlear all form fields
+        private void ClearForm()
         {
             foreach (Control ctrl in Controls)
             {
                 if (ctrl.GetType() == typeof(TextBox))
                     ctrl.Text = string.Empty;
             }
+
             regFormLastNameInputBox.Focus();
+        }
+
+        // clear-button
+        private void ClearRegFormButton_Click(object? sender, EventArgs e)
+        {
+            ClearForm();
         }
 
         #region Move the Form

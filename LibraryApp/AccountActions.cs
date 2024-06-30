@@ -86,7 +86,7 @@ namespace LibraryApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Не удалось создать новый аккаунт:\n\"{ex.Message}\"\n" +
+                MessageBox.Show($"Не удалось создать запись в таблице Accounts. Ошибка:\n\"{ex.Message}\"\n" +
                                 $"Обратитесь к системному администратору для её устранения.",
                                 "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
@@ -123,7 +123,7 @@ namespace LibraryApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка:\n\"{ex.Message}\"\n" +
+                MessageBox.Show($"Не удалось создать новый аккаунт:\n\"{ex.Message}\"\n" +
                 $"Обратитесь к системному администратору для её устранения.",
                 "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }

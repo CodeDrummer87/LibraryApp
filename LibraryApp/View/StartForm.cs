@@ -9,30 +9,34 @@ namespace LibraryApp
         private SqliteCommand command;
         private SqliteDataReader reader;
 
+        private AccountActions account;
+
         private bool isHiddenPassword;
 
         public StartForm()
         {
             InitializeComponent();
+
+            account = new AccountActions();
             isHiddenPassword = true;
         }
 
         private void StartForm_Load(object? sender, EventArgs e)
         {
             // create the ToolTip and associate with the Form container
-            ToolTip toolTip = new ToolTip();
+            ToolTip hintToolTip = new ToolTip();
 
             // set up the delays for the ToolTip
-            toolTip.AutoPopDelay = 5000;
-            toolTip.InitialDelay = 500;
-            toolTip.ReshowDelay = 500;
+            hintToolTip.AutoPopDelay = 5000;
+            hintToolTip.InitialDelay = 500;
+            hintToolTip.ReshowDelay = 500;
 
             // force the ToolTip text to be displayed whether or not the form is active
-            toolTip.ShowAlways = true;
+            hintToolTip.ShowAlways = true;
 
             // set up the ToolTip text 
-            toolTip.SetToolTip(hidePasswordPictureBox, "Показать или скрыть пароль");
-            toolTip.SetToolTip(createAccountPictureBox, "Регистрация нового пользователя");
+            hintToolTip.SetToolTip(hidePasswordPictureBox, "Показать или скрыть пароль");
+            hintToolTip.SetToolTip(createAccountPictureBox, "Регистрация нового пользователя");
 
         }
 
@@ -92,35 +96,90 @@ namespace LibraryApp
             }
         }
 
+        // сhecking for empty login and password fields
+        private bool CheckEmptyInput(TextBox inputField)
+        {
+            TextBox field = inputField;
+            int VisibleTime = 1500;
+
+            ToolTip emptyToolTip = new ToolTip();
+            if (String.IsNullOrWhiteSpace(inputField.Text))
+            {
+                emptyToolTip.Show("Поле не заполнено", field, 10, 15, VisibleTime);
+                return true;
+            }
+
+            return false;
+        }
+
+        // authorization at the button-click
         private void AuthButton_Click(object? sender, EventArgs e)
         {
-            // временный код передачи Id пользователя
-            int loginId = GetCurrentLoginId();
+            // if the login or password is not filled in
+            if (CheckEmptyInput(loginInputBox) || CheckEmptyInput(passwordInputBox))
+                return;
 
-            if (loginInputBox.Text == "admin" && passwordInputBox.Text == "admin")
-            {
+            string inputedLogin = loginInputBox.Text.ToLower().Trim();
+            string inputedPassword = passwordInputBox.Text.ToLower().Trim();
 
-                LibraryManagerForm ManagerForm = new(this, loginId);
-                this.Hide();
-                ManagerForm.Show();
-            }
-            else if (loginInputBox.Text == "user" && passwordInputBox.Text == "user")
+            Account accountDb = account.GetCurrentAccountData(inputedLogin);
+
+            if (accountDb != null && (accountDb.Password == account.GetHash(inputedPassword, accountDb.Salt)))
             {
-                UserAccountForm userForm = new(this, loginId);
-                this.Hide();
-                userForm.Show();
-            }
-            else if (loginInputBox.Text == "emp" && passwordInputBox.Text == "emp")
-            {
-                EmployeeAccountForm employeeForm = new(this, loginId);
-                this.Hide();
-                employeeForm.Show();
+                // find out the role of the account
+                if (account.CheckReaderData(accountDb.LoginId))
+                {
+                    UserAccountForm userForm = new UserAccountForm(this, accountDb.LoginId);
+                    this.Hide();
+                    userForm.Show();
+                }
+                else if (account.CheckAdminData(accountDb.LoginId))
+                {
+                    LibraryManagerForm ManagerForm = new LibraryManagerForm(this, accountDb.LoginId);
+                    this.Hide();
+                    ManagerForm.Show();
+                }
+                else if (account.CheckEmployeeData(accountDb.LoginId))
+                {
+                    EmployeeAccountForm employeeForm = new EmployeeAccountForm(this, accountDb.LoginId);
+                    this.Hide();
+                    employeeForm.Show();
+                } 
             }
             else
             {
-                MessageBox.Show("Неверный логин или пароль", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Неверный пароль",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        // временный код передачи Id пользователя
+        //int loginId = GetCurrentLoginId();
+
+        //    if (loginInputBox.Text == "admin" && passwordInputBox.Text == "admin")
+        //    {
+
+        //        LibraryManagerForm ManagerForm = new(this, loginId);
+        //        this.Hide();
+        //        ManagerForm.Show();
+        //    }
+        //    else if (loginInputBox.Text == "user" && passwordInputBox.Text == "user")
+        //    {
+        //        UserAccountForm userForm = new(this, loginId);
+        //        this.Hide();
+        //        userForm.Show();
+        //    }
+        //    else if (loginInputBox.Text == "emp" && passwordInputBox.Text == "emp")
+        //    {
+        //        EmployeeAccountForm employeeForm = new(this, loginId);
+        //        this.Hide();
+        //        employeeForm.Show();
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Неверный логин или пароль", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+
 
         private void CancelButton_Click(object? sender, EventArgs e)
         {
@@ -130,44 +189,9 @@ namespace LibraryApp
         }
 
         // get account Id
-        private int GetCurrentLoginId() => Convert.ToInt32(GetCurrentAccountData(loginInputBox.Text).LoginId);
-
-        // get account data
-        public Account GetCurrentAccountData(string login)
-        {
-            Account account = new();
-
-            string query = "SELECT * FROM Accounts WHERE Login=@login";
-
-            try
-            {
-                command = DataBase.GetConnection().CreateCommand();
-                command.CommandText = query;
-                command.Parameters.AddWithValue("@login", login);
-                DataBase.OpenConnection();
-                reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    account = new Account
-                    {
-                        Id = reader.GetInt32(0),
-                        LoginId = reader.GetInt32(1),
-                        Login = reader.GetString(2),
-                        Password = reader.GetString(3),
-                    };
-                }
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка:\n\"{ex.Message}\"\n" +
-                                $"Обратитесь к системному администратору для её устранения.",
-                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-            }
-
-            DataBase.CloseConnection();
-            return account;
-        }
-
+        // private int GetCurrentLoginId() => Convert.ToInt32(GetCurrentAccountData(loginInputBox.Text).LoginId);
     }
 }
+
+
+

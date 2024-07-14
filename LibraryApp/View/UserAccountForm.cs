@@ -6,8 +6,10 @@ namespace LibraryApp
     public partial class UserAccountForm : Form
     {
         private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
+
         private SqliteCommand? command;
         private SqliteDataReader? reader;
+
         private int currentLoginId;
         private StartForm startForm;
 
@@ -73,8 +75,8 @@ namespace LibraryApp
         // выводим имя, дату рождения, номер читательского билета и кол-во книг текущего пользователя
         private void PutCurrentUserData(ViewReaderModel reader)
         {
-            currentUserName.Text = $"{reader.Lastname.ToString()} {reader.Firstname.ToString()} {reader.Surname.ToString()}";
-            currentDateOfBirth.Text = $"Дата рождения: {reader.DateOfBirth.ToString()}";
+            currentUserName.Text = $"{reader.Lastname} {reader.Firstname} {reader.Surname}";
+            currentDateOfBirth.Text = $"Дата рождения: {reader.DateOfBirth}";
             currentLibraryCardNumber.Text = reader.libraryCardNumber.ToString();
             currentTotalBooks.Text = reader.TotalBooks.ToString();
         }
@@ -88,7 +90,7 @@ namespace LibraryApp
                            "FROM Readers r " +
                            "INNER JOIN Persons p " +
                            "ON p.Id = r.PersonalId " +
-                           "WHERE r.Id = @Id";
+                           "WHERE r.PersonalId = @Id";
 
             try
             {

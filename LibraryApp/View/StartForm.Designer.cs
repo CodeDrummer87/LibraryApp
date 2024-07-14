@@ -19,6 +19,7 @@
 
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartForm));
             appName = new Label();
             loginInputBox = new TextBox();
@@ -31,8 +32,10 @@
             closeLabel = new Label();
             hidePasswordPictureBox = new PictureBox();
             createAccountPictureBox = new PictureBox();
+            startFormErrorProvider = new ErrorProvider(components);
             ((System.ComponentModel.ISupportInitialize)hidePasswordPictureBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)createAccountPictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)startFormErrorProvider).BeginInit();
             SuspendLayout();
             // 
             // appName
@@ -170,6 +173,10 @@
             createAccountPictureBox.MouseEnter += PictureBoxMouseEnter;
             createAccountPictureBox.MouseLeave += PictureBoxMouseLeave;
             // 
+            // startFormErrorProvider
+            // 
+            startFormErrorProvider.ContainerControl = this;
+            // 
             // StartForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -199,6 +206,7 @@
             Load += StartForm_Load;
             ((System.ComponentModel.ISupportInitialize)hidePasswordPictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)createAccountPictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)startFormErrorProvider).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -216,5 +224,6 @@
         private Label closeLabel;
         private PictureBox hidePasswordPictureBox;
         private PictureBox createAccountPictureBox;
+        private ErrorProvider startFormErrorProvider;
     }
 }

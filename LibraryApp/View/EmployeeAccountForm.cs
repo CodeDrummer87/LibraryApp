@@ -97,7 +97,7 @@ namespace LibraryApp.View
                            "FROM Employees e " +
                            "INNER JOIN Persons p " +
                            "ON p.Id = e.PersonId " +
-                           "WHERE e.Id = @Id;";
+                           "WHERE e.PersonId = @Id;";
 
             try
             {

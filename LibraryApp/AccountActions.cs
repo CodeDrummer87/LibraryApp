@@ -1,6 +1,7 @@
 ﻿using LibraryApp.Models;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Data.Sqlite;
+using System.Net;
 using System.Security.Cryptography;
 
 namespace LibraryApp
@@ -8,6 +9,7 @@ namespace LibraryApp
     public class AccountActions
     {
         private SqliteCommand command;
+        private SqliteDataReader reader;
 
         // writing data to the Readers table
         private void SetReadersData(Person person)
@@ -132,5 +134,125 @@ namespace LibraryApp
 
             return message;
         }
+
+        // get account data
+        public Account GetCurrentAccountData(string login)
+        {
+            Account account = new();
+
+            string query = "SELECT * FROM Accounts WHERE Login=@login";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@login", login);
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    account = new Account
+                    {
+                        Id = reader.GetInt32(0),
+                        LoginId = reader.GetInt32(1),
+                        Login = reader.GetString(2),
+                        Password = reader.GetString(3),
+                        Salt = (byte[])reader[4]
+                    };
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+            return account;
+        }
+
+        // Checking Id in the Readers table for authorization direction
+        public bool CheckReaderData(int Id)
+        {
+            string query = "SELECT * FROM Readers WHERE PersonalId = @Id";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@Id", Id);
+
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+
+                return reader.HasRows; // gets a value indicating whether the reader contains one or more lines
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка работы с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+            return false;
+        }
+
+        // Checking Id in the Employess table for authorization direction
+        public bool CheckEmployeeData(int Id)
+        {
+            string query = "SELECT * FROM Employees WHERE PersonId = @Id";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@Id", Id);
+
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+
+                return reader.HasRows; // gets a value indicating whether the reader contains one or more lines
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка работы с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+            return false;
+        }
+
+        // Checking Admin int the Employess table for authorization direction
+        public bool CheckAdminData(int Id)
+        {
+            string query = "SELECT * FROM Employees WHERE PersonId = @Id AND PostId = 4";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@Id", Id);
+
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+
+                return reader.HasRows; // gets a value indicating whether the reader contains one or more lines
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка работы с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+            return false;
+        }
     }
+
 }

@@ -1,14 +1,10 @@
 ﻿using LibraryApp.Models;
 using LibraryApp.View;
-using Microsoft.Data.Sqlite;
 
 namespace LibraryApp
 {
     public partial class StartForm : Form
     {
-        private SqliteCommand command;
-        private SqliteDataReader reader;
-
         private AccountActions account;
 
         private bool isHiddenPassword;
@@ -115,13 +111,23 @@ namespace LibraryApp
         // authorization at the button-click
         private void AuthButton_Click(object? sender, EventArgs e)
         {
-            // if the login or password is not filled in
-            if (CheckEmptyInput(loginInputBox) || CheckEmptyInput(passwordInputBox))
-                return;
-
             string inputedLogin = loginInputBox.Text.ToLower().Trim();
             string inputedPassword = passwordInputBox.Text.ToLower().Trim();
 
+            // if the login or password has not been entered
+            if (CheckEmptyInput(loginInputBox) || CheckEmptyInput(passwordInputBox))
+                return;
+
+            // if an incorrect login was entered
+            if (!account.CheckInputedLogin(inputedLogin))
+            {
+                MessageBox.Show($"Аккаунта с логином \"{inputedLogin}\" не существует.\n" +
+                                $"Пожалуйста, введите корректный логин",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // if everything was entered correctly
             Account accountDb = account.GetCurrentAccountData(inputedLogin);
 
             if (accountDb != null && (accountDb.Password == account.GetHash(inputedPassword, accountDb.Salt)))
@@ -144,7 +150,7 @@ namespace LibraryApp
                     EmployeeAccountForm employeeForm = new EmployeeAccountForm(this, accountDb.LoginId);
                     this.Hide();
                     employeeForm.Show();
-                } 
+                }
             }
             else
             {
@@ -153,34 +159,7 @@ namespace LibraryApp
             }
         }
 
-        // временный код передачи Id пользователя
-        //int loginId = GetCurrentLoginId();
-
-        //    if (loginInputBox.Text == "admin" && passwordInputBox.Text == "admin")
-        //    {
-
-        //        LibraryManagerForm ManagerForm = new(this, loginId);
-        //        this.Hide();
-        //        ManagerForm.Show();
-        //    }
-        //    else if (loginInputBox.Text == "user" && passwordInputBox.Text == "user")
-        //    {
-        //        UserAccountForm userForm = new(this, loginId);
-        //        this.Hide();
-        //        userForm.Show();
-        //    }
-        //    else if (loginInputBox.Text == "emp" && passwordInputBox.Text == "emp")
-        //    {
-        //        EmployeeAccountForm employeeForm = new(this, loginId);
-        //        this.Hide();
-        //        employeeForm.Show();
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("Неверный логин или пароль", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //    }
-
-
+        // cancel-button
         private void CancelButton_Click(object? sender, EventArgs e)
         {
             loginInputBox.Clear();
@@ -188,10 +167,5 @@ namespace LibraryApp
             loginInputBox.Focus();
         }
 
-        // get account Id
-        // private int GetCurrentLoginId() => Convert.ToInt32(GetCurrentAccountData(loginInputBox.Text).LoginId);
     }
 }
-
-
-

@@ -47,6 +47,7 @@
             ClearRegFormButton = new Button();
             regFormConfirmPasswordInputBox = new TextBox();
             regFormConfirmPasswordLabel = new Label();
+            exitToStartFormLabel = new Label();
             SuspendLayout();
             // 
             // regFormCloseLabel
@@ -238,6 +239,22 @@
             regFormConfirmPasswordLabel.TabIndex = 17;
             regFormConfirmPasswordLabel.Text = "Подтвердите пароль";
             // 
+            // exitToStartFormLabel
+            // 
+            exitToStartFormLabel.AutoSize = true;
+            exitToStartFormLabel.BackColor = Color.Transparent;
+            exitToStartFormLabel.Cursor = Cursors.Hand;
+            exitToStartFormLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            exitToStartFormLabel.ForeColor = Color.MidnightBlue;
+            exitToStartFormLabel.Location = new Point(40, 410);
+            exitToStartFormLabel.Name = "exitToStartFormLabel";
+            exitToStartFormLabel.Size = new Size(49, 17);
+            exitToStartFormLabel.TabIndex = 18;
+            exitToStartFormLabel.Text = "Выход";
+            exitToStartFormLabel.Click += ExitToStartFormLabel_CLick;
+            exitToStartFormLabel.MouseEnter += ExitToStartFormLabel_MouseEnter;
+            exitToStartFormLabel.MouseLeave += ExitToStartFormLabel_MouseLeave;
+            // 
             // RegForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -245,6 +262,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(800, 461);
+            Controls.Add(exitToStartFormLabel);
             Controls.Add(regFormConfirmPasswordLabel);
             Controls.Add(regFormConfirmPasswordInputBox);
             Controls.Add(ClearRegFormButton);
@@ -296,5 +314,6 @@
         private Button ClearRegFormButton;
         private TextBox regFormConfirmPasswordInputBox;
         private Label regFormConfirmPasswordLabel;
+        private Label exitToStartFormLabel;
     }
 }

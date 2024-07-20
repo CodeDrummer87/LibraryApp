@@ -1,7 +1,6 @@
 ﻿using LibraryApp.Models;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Data.Sqlite;
-using System.Net;
 using System.Security.Cryptography;
 
 namespace LibraryApp
@@ -34,6 +33,38 @@ namespace LibraryApp
             catch (Exception ex)
             {
                 MessageBox.Show($"Не удалось создать запись в таблице Readers. Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
+
+        // writing data to the Employees table
+        private void SetEmployeesData(Person person, Employee employee)
+        {
+            string query = "INSERT INTO Employees (PersonId, PersonnelNumber, PostId, IsActive) " +
+                           "SELECT Persons.Id, @PersonnelNumber, (SELECT Id FROM Posts WHERE Post = @PostId), @IsActive FROM Persons " +
+                           "WHERE (Firstname, Lastname, Surname, DateOfBirth) = (@Firstname, @Lastname, @Surname, @DateOfBirth); ";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@Firstname", person.Firstname);
+                command.Parameters.AddWithValue("@Lastname", person.Lastname);
+                command.Parameters.AddWithValue("@Surname", person.Surname);
+                command.Parameters.AddWithValue("@DateOfBirth", person.DateOfBirth);
+                command.Parameters.AddWithValue("@PersonnelNumber", employee.PersonnelNumber);
+                command.Parameters.AddWithValue("@PostId", employee.PostId);
+                command.Parameters.AddWithValue("@IsActive", employee.IsActive ? 1 : 0);
+
+                DataBase.OpenConnection();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось создать запись в таблице Employees. Ошибка:\n\"{ex.Message}\"\n" +
                                 $"Обратитесь к системному администратору для её устранения.",
                                 "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
@@ -96,8 +127,9 @@ namespace LibraryApp
             DataBase.CloseConnection();
         }
 
-        // writing data to the database and creating a reader account
-        public string CreateNewAccount(string login, string password, Person person)
+        // writing data to the database and creating an account
+        // this method is called from the RegForm or CreateEmployeeForm
+        public string CreateNewAccount(string login, string password, Person person, Employee? employee = null)
         {
             string message = String.Empty;
 
@@ -116,7 +148,17 @@ namespace LibraryApp
                 DataBase.OpenConnection();
                 if (command.ExecuteNonQuery() == 1)
                 {
-                    SetReadersData(person);
+                    // if we register an employee
+                    if (employee is not null)
+                    {
+                        SetEmployeesData(person, employee);
+                    }
+                    // or register a reader
+                    else
+                    {
+                        SetReadersData(person);
+                    }
+
                     SetAccountData(login, password, person);
 
                     message = $"Аккаунт для {login} зарегистрирован";
@@ -173,7 +215,34 @@ namespace LibraryApp
             return account;
         }
 
-        // Checking Id in the Readers table for authorization direction
+        // checking the presence of a login in the database before registration or authorization
+        public bool CheckInputedLogin(string login)
+        {
+            string query = "SELECT * FROM Accounts WHERE login = @login";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@login", login);
+
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+
+                return reader.HasRows; // gets a value indicating whether the reader contains one or more lines
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка работы с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+            return false;
+        }
+
+        // checking Id in the Readers table for authorization direction
         public bool CheckReaderData(int Id)
         {
             string query = "SELECT * FROM Readers WHERE PersonalId = @Id";
@@ -200,7 +269,7 @@ namespace LibraryApp
             return false;
         }
 
-        // Checking Id in the Employess table for authorization direction
+        // checking Id in the Employess table for authorization direction
         public bool CheckEmployeeData(int Id)
         {
             string query = "SELECT * FROM Employees WHERE PersonId = @Id";
@@ -227,7 +296,7 @@ namespace LibraryApp
             return false;
         }
 
-        // Checking Admin int the Employess table for authorization direction
+        // checking Admin int the Employess table for authorization direction
         public bool CheckAdminData(int Id)
         {
             string query = "SELECT * FROM Employees WHERE PersonId = @Id AND PostId = 4";

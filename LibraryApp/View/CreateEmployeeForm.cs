@@ -5,13 +5,18 @@ namespace LibraryApp
 {
     public partial class CreateEmployeeForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
+        private int iFormX, iFormY, iMouseX, iMouseY; // form positioning coordinates
+
         private SqliteCommand command;
         private SqliteDataReader reader;
+
+        private AccountActions account;
 
         public CreateEmployeeForm()
         {
             InitializeComponent();
+
+            account = new AccountActions();
         }
 
         #region Window control buttons
@@ -34,19 +39,80 @@ namespace LibraryApp
 
         #endregion
 
-        // кнопка "Создать"
+        // create-button
         private void createEmployeeButton_Click(object sender, EventArgs e)
         {
-            CreateEmployee();
+            string message = String.Empty;
+
+            string inputedLogin = createEmployeeLoginInputBox.Text.ToLower().Trim();
+            string inputedPassword = createEmployeePasswordInputBox.Text.ToLower().Trim();
+
+            // if the personnel number is not a number
+            if (!CheckPersonnelNumberIsNumber())
+            {
+                MessageBox.Show("Недопустимый формат табельного номера. Необходимо использовать только цифры",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                createEmployeePersonnelNumberBox.Clear();
+                createEmployeePersonnelNumberBox.Focus();
+
+                return;
+            }
+
+            // if the personnel number is already in the database
+            if (CheckPersonnelNumberInDataBase())
+            {
+                MessageBox.Show($"Сотрудник с табельным номером {createEmployeePersonnelNumberBox.Text} уже существует",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                createEmployeePersonnelNumberBox.Clear();
+                createEmployeePersonnelNumberBox.Focus();
+
+                return;
+            }
+
+            // if the entered login is not in the database, create a new employee
+            if (!account.CheckInputedLogin(inputedLogin))
+            {
+                Person person = new()
+                {
+                    Firstname = createEmployeeFirstNameInputBox.Text.Trim(),
+                    Lastname = createEmployeeLastNameInputBox.Text.Trim(),
+                    Surname = createEmployeeSurNameInputBox.Text.Trim(),
+                    DateOfBirth = createEmployeeDateOfBirthInputBox.Text.Trim()
+                };
+
+                Employee employee = new()
+                {
+                    PersonnelNumber = createEmployeePersonnelNumberBox.Text.Trim(),
+                    PostId = createEmployeePostInputComboBox.Text.Trim(),
+                    IsActive = Convert.ToBoolean(createEmployeeIsActiveCheckBox.Checked ? 1 : 0)
+                };
+
+                message = account.CreateNewAccount(inputedLogin, inputedPassword, person, employee);
+
+            }
+            else
+            {
+                MessageBox.Show($"Аккаунт с логином \"{inputedLogin}\" уже существует.\n" +
+                                $"Пожалуйста, выберите другой логин",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            MessageBox.Show($"\n{message}\n",
+                            "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            ClearForm();
         }
 
-        // кнопка "Очистить"
+        // clear-button
         private void ClearFormButton_Click(object? sender, EventArgs e)
         {
             ClearForm();
         }
 
-        // для списка должностей
+        // for the list of positions
         private void LoadPosts(object? sender, EventArgs e)
         {
             createEmployeePostInputComboBox.Items.Clear();
@@ -84,13 +150,13 @@ namespace LibraryApp
             DataBase.CloseConnection();
         }
 
-        // проверяем, является ли табельный номер числом
+        // check if the personnel number is a number
         private bool CheckPersonnelNumberIsNumber()
         {
             return int.TryParse(createEmployeePersonnelNumberBox.Text, out _);
         }
 
-        // проверяем, есть ли табельный номер в базе данных
+        // check if the personnel number is in the database
         private bool CheckPersonnelNumberInDataBase()
         {
             string query = "SELECT COUNT(PersonnelNumber) " +
@@ -107,68 +173,7 @@ namespace LibraryApp
             return answer;
         }
 
-        // создаем нового сотрудника
-        public void CreateEmployee()
-        {
-            if (CheckPersonnelNumberIsNumber())
-            {
-                if (CheckPersonnelNumberInDataBase())
-                {
-                    MessageBox.Show($"Сотрудник с табельным номером {createEmployeePersonnelNumberBox.Text} уже существует",
-                                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    string query = "INSERT INTO Persons (Firstname, Lastname, Surname, DateOfBirth) " +
-                                   "VALUES (@Firstname, @Lastname, @Surname, @DateOfBirth); " +
-                                   "INSERT INTO Employees (PersonId, PersonnelNumber, PostId, IsActive) " +
-                                   "SELECT Persons.Id, @PersonnelNumber, (SELECT Id FROM Posts WHERE Post = @PostId), @IsActive FROM Persons " +
-                                   "WHERE (Firstname, Lastname, Surname, DateOfBirth) = (@Firstname, @Lastname, @Surname, @DateOfBirth); " +
-                                   "INSERT INTO Accounts (LoginId, Login, Password) SELECT Persons.Id, @Login, @Password FROM Persons " +
-                                   "WHERE (Firstname, Lastname, Surname, DateOfBirth) = (@Firstname, @Lastname, @Surname, @DateOfBirth); ";
-
-                    try
-                    {
-                        command = DataBase.GetConnection().CreateCommand();
-                        command.CommandText = query;
-                        command.Parameters.AddWithValue("@Firstname", createEmployeeFirstNameInputBox.Text);
-                        command.Parameters.AddWithValue("@Lastname", createEmployeeLastNameInputBox.Text);
-                        command.Parameters.AddWithValue("@Surname", createEmployeeSurNameInputBox.Text);
-                        command.Parameters.AddWithValue("@DateOfBirth", createEmployeeDateOfBirthInputBox.Text);
-                        command.Parameters.AddWithValue("@PersonnelNumber", createEmployeePersonnelNumberBox.Text);
-                        command.Parameters.AddWithValue("@PostId", createEmployeePostInputComboBox.Text);
-                        command.Parameters.AddWithValue("@IsActive", createEmployeeIsActiveCheckBox.Checked ? 1 : 0);
-                        command.Parameters.AddWithValue("@Login", createEmployeeLoginInputBox.Text);
-                        command.Parameters.AddWithValue("@Password", createEmployeePasswordInputBox.Text);
-
-                        DataBase.OpenConnection();
-                        command.ExecuteNonQuery();
-
-                        MessageBox.Show($"Сотрудник с табельным номером {createEmployeePersonnelNumberBox.Text} создан",
-                                        "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Не удалось создать сотрудника:\n\"{ex.Message}\"\n" +
-                                        $"Обратитесь к системному администратору для её устранения.",
-                                        "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                    }
-
-                    DataBase.CloseConnection();
-                    ClearForm();
-                }
-            }
-            else
-            {
-                MessageBox.Show("Недопустимый формат табельного номера. Необходимо использовать только цифры",
-                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                createEmployeePersonnelNumberBox.Clear();
-                createEmployeePersonnelNumberBox.Focus();
-            }
-        }
-
-        // очищаем форму
+        // clear the form
         private void ClearForm()
         {
             foreach (Control ctrl in Controls)

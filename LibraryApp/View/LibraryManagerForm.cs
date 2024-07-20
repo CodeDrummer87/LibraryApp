@@ -6,12 +6,13 @@ namespace LibraryApp
 {
     public partial class LibraryManagerForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
+        private int iFormX, iFormY, iMouseX, iMouseY; // form positioning coordinates
 
         private SqliteCommand? command;
         private SqliteDataReader? reader;
 
         private int currentLoginId;
+
         private StartForm startForm;
         public LibraryManagerForm(StartForm startForm, int currentLoginId)
         {
@@ -67,45 +68,44 @@ namespace LibraryApp
 
         #endregion
 
-        // кнопка "Создать аккаунт сотрудника"
+        // "сreate employee account" button
         private void CreateEmployeeButton_Click(object? sender, EventArgs e)
         {
             CreateEmployeeForm employeeForm = new();
             employeeForm.Show();
         }
 
-        // кнопка "Список сотрудников"
+        // "list of employees" button
         private void ListOfEmployeesButtn_Click(object? sender, EventArgs e)
         {
             ListOfEmployeesForm listOfEmployeesForm = new ListOfEmployeesForm();
             listOfEmployeesForm.Show();
         }
 
-        // кнопка "Создать новую должность"
+        // "create a new post" button
         private void CreatePostButton_Click(object? sender, EventArgs e)
         {
             CreatePostForm newPostForm = new CreatePostForm();
             newPostForm.Show();
         }
 
-        // кнопка "Список должностей"
+        // "list of positions" button
         private void ListOfPostsButton_Click(object? sender, EventArgs e)
         {
             ListOfPostsForm listOfPostsForm = new ListOfPostsForm();
             listOfPostsForm.Show();
         }
 
-
-        // выводим текущую дату
+        // display the current date
         private void GetCurrentDate() => currentDateLabel.Text = "Сегодня " + DateTime.Now.ToLongDateString();
 
-        // выводим имя текущего управляющего
+        // display the name of the current manager
         private void PutCurrentUserData(ViewManagerModel manager)
         {
-            currentManagerNameLabel.Text = $"Управляющий: {manager.Lastname.ToString()} {manager.Firstname.ToString()} {manager.Surname.ToString()}";
+            currentManagerNameLabel.Text = $"Управляющий: {manager.Lastname} {manager.Firstname} {manager.Surname}";
         }
 
-        // получаем данные текущего управляющего
+        // get the data of the current manager
         public ViewManagerModel GetCurrentManagerData(int loginId)
         {
             ViewManagerModel model = new();

@@ -1,5 +1,4 @@
 ﻿using LibraryApp.Models;
-using Microsoft.Data.Sqlite;
 
 namespace LibraryApp.View
 {
@@ -7,15 +6,16 @@ namespace LibraryApp.View
     {
         private int iFormX, iFormY, iMouseX, iMouseY; // form positioning coordinates
 
-        private SqliteCommand command;
-        private SqliteDataReader reader;
-
         private StartForm startForm;
+
+        private AccountActions account;
 
         public RegForm(StartForm startForm)
         {
             InitializeComponent();
+
             this.startForm = startForm;
+            account = new AccountActions();
         }
 
         #region Window control buttons
@@ -37,6 +37,29 @@ namespace LibraryApp.View
             regFormCloseLabel.ForeColor = Color.Black;
         }
 
+        // return to the start form
+        private void ExitToStartFormLabel_CLick(object sender, EventArgs e)
+        {
+            MessageBoxButtons msb = MessageBoxButtons.YesNo;
+            MessageBoxIcon icn = MessageBoxIcon.Question;
+            String message = "Вы действительно хотите выйти?";
+            String caption = "Выход";
+            if (MessageBox.Show(message, caption, msb, icn) == DialogResult.Yes)
+            {
+                this.Close();
+                startForm.Show();
+            }
+        }
+        private void ExitToStartFormLabel_MouseEnter(object sender, EventArgs e)
+        {
+            exitToStartFormLabel.ForeColor = Color.Red;
+        }
+
+        private void ExitToStartFormLabel_MouseLeave(object sender, EventArgs e)
+        {
+            exitToStartFormLabel.ForeColor = Color.MidnightBlue;
+        }
+
         #endregion
 
         // checking for empty fields before account registration
@@ -46,39 +69,12 @@ namespace LibraryApp.View
             {
                 if (ctrl.GetType() == typeof(TextBox) && string.IsNullOrWhiteSpace(ctrl.Text))
                 {
-                    MessageBox.Show("Для создания акканта необходимо заполнить все поля",
+                    MessageBox.Show("Перед созданием акканта необходимо заполнить все поля",
                                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     return false;
                 }
             }
             return true;
-        }
-
-        // checking for duplicate login in the database before registration
-        private bool CheckInputedLogin(string login)
-        {
-            string query = "SELECT * FROM Accounts WHERE login = @login";
-
-            try
-            {
-                command = DataBase.GetConnection().CreateCommand();
-                command.CommandText = query;
-                command.Parameters.AddWithValue("@login", login);
-
-                DataBase.OpenConnection();
-                reader = command.ExecuteReader();
-
-                return reader.HasRows; // gets a value indicating whether the reader contains one or more lines
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка:\n\"{ex.Message}\"\n" +
-                                $"Обратитесь к системному администратору для её устранения.",
-                                "Ошибка работы с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-            }
-
-            DataBase.CloseConnection();
-            return false;
         }
 
         // create-button
@@ -103,7 +99,7 @@ namespace LibraryApp.View
             }
 
             // if the login has not been created before, then we'll register an account
-            if (!CheckInputedLogin(inputedLogin))
+            if (!account.CheckInputedLogin(inputedLogin))
             {
                 Person person = new()
                 {
@@ -113,8 +109,7 @@ namespace LibraryApp.View
                     DateOfBirth = regFormDateOfBirthInputBox.Text.Trim()
                 };
 
-                AccountActions act = new AccountActions();
-                message = act.CreateNewAccount(inputedLogin, inputedPassword, person);
+                message = account.CreateNewAccount(inputedLogin, inputedPassword, person);
             }
             else
             {
@@ -126,6 +121,7 @@ namespace LibraryApp.View
 
             MessageBox.Show($"\n{message}\n",
                             "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
             ClearForm();
         }
 

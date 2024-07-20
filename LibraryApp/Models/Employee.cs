@@ -4,8 +4,8 @@
     {
         public int? Id { get; set; }
         public int? PersonlId { get; set; }
-        public int? PersonnelNumber { get; set; }
-        public int? PostId { get; set; }
+        public string? PersonnelNumber { get; set; }
+        public string? PostId { get; set; }
         public bool IsActive { get; set; }
     }
 }

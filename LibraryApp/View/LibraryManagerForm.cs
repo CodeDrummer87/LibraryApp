@@ -43,7 +43,7 @@ namespace LibraryApp
             libraryManagerCloseLabel.ForeColor = Color.Black;
         }
 
-        // кнопка "Выход". Выходим на стартовую форму, если ответить "да"
+        // exit-button. We exit to the starting form if we answer "yes"
         private void ExitToStartFormLabel_CLick(object sender, EventArgs e)
         {
             MessageBoxButtons msb = MessageBoxButtons.YesNo;

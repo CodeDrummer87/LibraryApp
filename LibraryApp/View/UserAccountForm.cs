@@ -5,7 +5,7 @@ namespace LibraryApp
 {
     public partial class UserAccountForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
+        private int iFormX, iFormY, iMouseX, iMouseY; // form positioning coordinates
 
         private SqliteCommand? command;
         private SqliteDataReader? reader;
@@ -43,7 +43,7 @@ namespace LibraryApp
             userAccountCloseLabel.ForeColor = Color.Black;
         }
 
-        // кнопка "Выход". Выходим на стартовую форму, если ответить "да"
+        // exit-button. We exit to the starting form if we answer "yes"
         private void ExitToStartFormLabel_CLick(object sender, EventArgs e)
         {
             MessageBoxButtons msb = MessageBoxButtons.YesNo;
@@ -68,11 +68,10 @@ namespace LibraryApp
 
         #endregion
 
-
-        // выводим текущую дату
+        // display the current date
         private void GetCurrentDate() => currentDateLabel.Text = "Сегодня " + DateTime.Now.ToLongDateString();
 
-        // выводим имя, дату рождения, номер читательского билета и кол-во книг текущего пользователя
+        // display the name, date of birth, library card number and number of books of the current user
         private void PutCurrentUserData(ViewReaderModel reader)
         {
             currentUserName.Text = $"{reader.Lastname} {reader.Firstname} {reader.Surname}";
@@ -81,7 +80,7 @@ namespace LibraryApp
             currentTotalBooks.Text = reader.TotalBooks.ToString();
         }
 
-        // получаем данные текущего пользователя
+        // get the current user's data
         public ViewReaderModel GetCurrentUserData(int loginId)
         {
             ViewReaderModel model = new();

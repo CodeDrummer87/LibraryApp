@@ -106,10 +106,13 @@ namespace LibraryApp.View
                     Firstname = regFormFirstNameInputBox.Text.Trim(),
                     Lastname = regFormLastNameInputBox.Text.Trim(),
                     Surname = regFormSurNameInputBox.Text.Trim(),
-                    DateOfBirth = regFormDateOfBirthInputBox.Text.Trim()
+                    DateOfBirth = regFormDateOfBirthInputBox.Text.Trim(),
+                    Login = inputedLogin,
+                    Password = inputedPassword
+
                 };
 
-                message = account.CreateNewAccount(inputedLogin, inputedPassword, person);
+                message = account.CreateNewAccount(person);
             }
             else
             {

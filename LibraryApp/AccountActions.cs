@@ -94,21 +94,22 @@ namespace LibraryApp
         }
 
         // writing data to the Accounts table
-        private void SetAccountData(string login, string password, Person person)
+        private void SetAccountData(Person person, int role)
         {
             byte[] salt = GetSalt();
-            string pswdHash = GetHash(password, salt);
+            string pswdHash = GetHash(person.Password, salt);
 
-            string query = "INSERT INTO Accounts (LoginId, Login, Password, Salt) SELECT Persons.Id, @Login, @Password, @Salt FROM Persons " +
+            string query = "INSERT INTO Accounts (LoginId, Login, Password, Salt, Role) SELECT Persons.Id, @Login, @Password, @Salt, @Role FROM Persons " +
                            "WHERE (Firstname, Lastname, Surname, DateOfBirth) = (@Firstname, @Lastname, @Surname, @DateOfBirth); ";
 
             try
             {
                 command = DataBase.GetConnection().CreateCommand();
                 command.CommandText = query;
-                command.Parameters.AddWithValue("@Login", login);
+                command.Parameters.AddWithValue("@Login", person.Login);
                 command.Parameters.AddWithValue("@Password", pswdHash);
                 command.Parameters.AddWithValue("@Salt", salt);
+                command.Parameters.AddWithValue("@Role", role);
                 command.Parameters.AddWithValue("@Firstname", person.Firstname);
                 command.Parameters.AddWithValue("@Lastname", person.Lastname);
                 command.Parameters.AddWithValue("@Surname", person.Surname);
@@ -129,7 +130,7 @@ namespace LibraryApp
 
         // writing data to the database and creating an account
         // this method is called from the RegForm or CreateEmployeeForm
-        public string CreateNewAccount(string login, string password, Person person, Employee? employee = null)
+        public string CreateNewAccount(Person person, int role = 1, Employee? employee = null)
         {
             string message = String.Empty;
 
@@ -159,9 +160,9 @@ namespace LibraryApp
                         SetReadersData(person);
                     }
 
-                    SetAccountData(login, password, person);
+                    SetAccountData(person, role);
 
-                    message = $"Аккаунт для {login} зарегистрирован";
+                    message = $"Аккаунт для {person.Login} зарегистрирован";
                 }
                 else message = "Ошибка регистрации";
             }
@@ -199,7 +200,8 @@ namespace LibraryApp
                         LoginId = reader.GetInt32(1),
                         Login = reader.GetString(2),
                         Password = reader.GetString(3),
-                        Salt = (byte[])reader[4]
+                        Salt = (byte[])reader[4],
+                        Role = reader.GetInt32(5)
                     };
                 }
                 reader.Close();
@@ -236,91 +238,12 @@ namespace LibraryApp
                 MessageBox.Show($"Ошибка:\n\"{ex.Message}\"\n" +
                                 $"Обратитесь к системному администратору для её устранения.",
                                 "Ошибка работы с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return false;
             }
-
-            DataBase.CloseConnection();
-            return false;
-        }
-
-        // checking Id in the Readers table for authorization direction
-        public bool CheckReaderData(int Id)
-        {
-            string query = "SELECT * FROM Readers WHERE PersonalId = @Id";
-
-            try
+            finally
             {
-                command = DataBase.GetConnection().CreateCommand();
-                command.CommandText = query;
-                command.Parameters.AddWithValue("@Id", Id);
-
-                DataBase.OpenConnection();
-                reader = command.ExecuteReader();
-
-                return reader.HasRows; // gets a value indicating whether the reader contains one or more lines
+                DataBase.CloseConnection();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка:\n\"{ex.Message}\"\n" +
-                                $"Обратитесь к системному администратору для её устранения.",
-                                "Ошибка работы с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-            }
-
-            DataBase.CloseConnection();
-            return false;
-        }
-
-        // checking Id in the Employess table for authorization direction
-        public bool CheckEmployeeData(int Id)
-        {
-            string query = "SELECT * FROM Employees WHERE PersonId = @Id";
-
-            try
-            {
-                command = DataBase.GetConnection().CreateCommand();
-                command.CommandText = query;
-                command.Parameters.AddWithValue("@Id", Id);
-
-                DataBase.OpenConnection();
-                reader = command.ExecuteReader();
-
-                return reader.HasRows; // gets a value indicating whether the reader contains one or more lines
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка:\n\"{ex.Message}\"\n" +
-                                $"Обратитесь к системному администратору для её устранения.",
-                                "Ошибка работы с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-            }
-
-            DataBase.CloseConnection();
-            return false;
-        }
-
-        // checking Admin int the Employess table for authorization direction
-        public bool CheckAdminData(int Id)
-        {
-            string query = "SELECT * FROM Employees WHERE PersonId = @Id AND PostId = 4";
-
-            try
-            {
-                command = DataBase.GetConnection().CreateCommand();
-                command.CommandText = query;
-                command.Parameters.AddWithValue("@Id", Id);
-
-                DataBase.OpenConnection();
-                reader = command.ExecuteReader();
-
-                return reader.HasRows; // gets a value indicating whether the reader contains one or more lines
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка:\n\"{ex.Message}\"\n" +
-                                $"Обратитесь к системному администратору для её устранения.",
-                                "Ошибка работы с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-            }
-
-            DataBase.CloseConnection();
-            return false;
         }
     }
 

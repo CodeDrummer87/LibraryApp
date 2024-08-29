@@ -174,7 +174,7 @@
             createEmployeeButton.TabIndex = 13;
             createEmployeeButton.Text = "Создать";
             createEmployeeButton.UseVisualStyleBackColor = true;
-            createEmployeeButton.Click += createEmployeeButton_Click;
+            createEmployeeButton.Click += СreateEmployeeButton_Click;
             // 
             // createEmployeeCloseLabel
             // 

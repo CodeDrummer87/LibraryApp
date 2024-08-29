@@ -9,6 +9,8 @@ namespace LibraryApp
 
         private bool isHiddenPassword;
 
+        enum AccountRole { Reader = 1, Employee = 2, Admin = 3 }; // account roles for authorization direction
+
         public StartForm()
         {
             InitializeComponent();
@@ -133,23 +135,24 @@ namespace LibraryApp
             if (accountDb != null && (accountDb.Password == account.GetHash(inputedPassword, accountDb.Salt)))
             {
                 // find out the role of the account
-                if (account.CheckReaderData(accountDb.LoginId))
+
+                if (accountDb.Role == (int)AccountRole.Reader)
                 {
                     UserAccountForm userForm = new UserAccountForm(this, accountDb.LoginId);
                     this.Hide();
                     userForm.Show();
                 }
-                else if (account.CheckAdminData(accountDb.LoginId))
-                {
-                    LibraryManagerForm ManagerForm = new LibraryManagerForm(this, accountDb.LoginId);
-                    this.Hide();
-                    ManagerForm.Show();
-                }
-                else if (account.CheckEmployeeData(accountDb.LoginId))
+                else if (accountDb.Role == (int)AccountRole.Employee)
                 {
                     EmployeeAccountForm employeeForm = new EmployeeAccountForm(this, accountDb.LoginId);
                     this.Hide();
                     employeeForm.Show();
+                }
+                else if (accountDb.Role == (int)AccountRole.Admin)
+                {
+                    LibraryManagerForm ManagerForm = new LibraryManagerForm(this, accountDb.LoginId);
+                    this.Hide();
+                    ManagerForm.Show();
                 }
             }
             else

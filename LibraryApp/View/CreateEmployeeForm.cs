@@ -40,12 +40,14 @@ namespace LibraryApp
         #endregion
 
         // create-button
-        private void createEmployeeButton_Click(object sender, EventArgs e)
+        private void СreateEmployeeButton_Click(object sender, EventArgs e)
         {
             string message = String.Empty;
 
             string inputedLogin = createEmployeeLoginInputBox.Text.ToLower().Trim();
             string inputedPassword = createEmployeePasswordInputBox.Text.ToLower().Trim();
+
+            int role = createEmployeePostInputComboBox.Text == "Управляющий" ? 3 : 2;
 
             // if the personnel number is not a number
             if (!CheckPersonnelNumberIsNumber())
@@ -79,7 +81,9 @@ namespace LibraryApp
                     Firstname = createEmployeeFirstNameInputBox.Text.Trim(),
                     Lastname = createEmployeeLastNameInputBox.Text.Trim(),
                     Surname = createEmployeeSurNameInputBox.Text.Trim(),
-                    DateOfBirth = createEmployeeDateOfBirthInputBox.Text.Trim()
+                    DateOfBirth = createEmployeeDateOfBirthInputBox.Text.Trim(),
+                    Login = inputedLogin,
+                    Password = inputedPassword
                 };
 
                 Employee employee = new()
@@ -89,7 +93,7 @@ namespace LibraryApp
                     IsActive = Convert.ToBoolean(createEmployeeIsActiveCheckBox.Checked ? 1 : 0)
                 };
 
-                message = account.CreateNewAccount(inputedLogin, inputedPassword, person, employee);
+                message = account.CreateNewAccount(person, role, employee);
 
             }
             else

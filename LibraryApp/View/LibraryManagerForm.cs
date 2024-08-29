@@ -47,9 +47,10 @@ namespace LibraryApp
         private void ExitToStartFormLabel_CLick(object sender, EventArgs e)
         {
             MessageBoxButtons msb = MessageBoxButtons.YesNo;
+            MessageBoxIcon icn = MessageBoxIcon.Question;
             String message = "Вы действительно хотите выйти?";
             String caption = "Выход";
-            if (MessageBox.Show(message, caption, msb) == DialogResult.Yes)
+            if (MessageBox.Show(message, caption, msb, icn) == DialogResult.Yes)
             {
                 this.Close();
                 startForm.Show();

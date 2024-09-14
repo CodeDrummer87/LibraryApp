@@ -19,6 +19,7 @@
 
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartForm));
             appName = new Label();
             loginInputBox = new TextBox();
@@ -30,7 +31,11 @@
             appVersion = new Label();
             closeLabel = new Label();
             hidePasswordPictureBox = new PictureBox();
+            createAccountPictureBox = new PictureBox();
+            startFormErrorProvider = new ErrorProvider(components);
             ((System.ComponentModel.ISupportInitialize)hidePasswordPictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)createAccountPictureBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)startFormErrorProvider).BeginInit();
             SuspendLayout();
             // 
             // appName
@@ -152,6 +157,26 @@
             hidePasswordPictureBox.MouseEnter += PictureBoxMouseEnter;
             hidePasswordPictureBox.MouseLeave += PictureBoxMouseLeave;
             // 
+            // createAccountPictureBox
+            // 
+            createAccountPictureBox.BackColor = Color.OldLace;
+            createAccountPictureBox.BorderStyle = BorderStyle.FixedSingle;
+            createAccountPictureBox.Cursor = Cursors.Hand;
+            createAccountPictureBox.Image = Properties.Resources.create_account;
+            createAccountPictureBox.Location = new Point(459, 140);
+            createAccountPictureBox.Name = "createAccountPictureBox";
+            createAccountPictureBox.Size = new Size(23, 23);
+            createAccountPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            createAccountPictureBox.TabIndex = 10;
+            createAccountPictureBox.TabStop = false;
+            createAccountPictureBox.Click += CreateAccountPictureBox_Click;
+            createAccountPictureBox.MouseEnter += PictureBoxMouseEnter;
+            createAccountPictureBox.MouseLeave += PictureBoxMouseLeave;
+            // 
+            // startFormErrorProvider
+            // 
+            startFormErrorProvider.ContainerControl = this;
+            // 
             // StartForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -159,6 +184,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(600, 361);
+            Controls.Add(createAccountPictureBox);
             Controls.Add(hidePasswordPictureBox);
             Controls.Add(closeLabel);
             Controls.Add(appVersion);
@@ -177,7 +203,10 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Библионикс 0.1";
             Activated += CancelButton_Click;
+            Load += StartForm_Load;
             ((System.ComponentModel.ISupportInitialize)hidePasswordPictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)createAccountPictureBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)startFormErrorProvider).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -194,5 +223,7 @@
         private Label appVersion;
         private Label closeLabel;
         private PictureBox hidePasswordPictureBox;
+        private PictureBox createAccountPictureBox;
+        private ErrorProvider startFormErrorProvider;
     }
 }

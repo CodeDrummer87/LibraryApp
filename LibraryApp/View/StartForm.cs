@@ -1,20 +1,41 @@
 ﻿using LibraryApp.Models;
 using LibraryApp.View;
-using Microsoft.Data.Sqlite;
 
 namespace LibraryApp
 {
     public partial class StartForm : Form
     {
-        private SqliteCommand command;
-        private SqliteDataReader reader;
+        private AccountActions account;
 
         private bool isHiddenPassword;
+
+        enum AccountRole { Reader = 1, Employee = 2, Admin = 3 }; // account roles for authorization direction
 
         public StartForm()
         {
             InitializeComponent();
+
+            account = new AccountActions();
             isHiddenPassword = true;
+        }
+
+        private void StartForm_Load(object? sender, EventArgs e)
+        {
+            // create the ToolTip and associate with the Form container
+            ToolTip hintToolTip = new ToolTip();
+
+            // set up the delays for the ToolTip
+            hintToolTip.AutoPopDelay = 5000;
+            hintToolTip.InitialDelay = 500;
+            hintToolTip.ReshowDelay = 500;
+
+            // force the ToolTip text to be displayed whether or not the form is active
+            hintToolTip.ShowAlways = true;
+
+            // set up the ToolTip text 
+            hintToolTip.SetToolTip(hidePasswordPictureBox, "Показать или скрыть пароль");
+            hintToolTip.SetToolTip(createAccountPictureBox, "Регистрация нового пользователя");
+
         }
 
         #region Window control buttons
@@ -35,7 +56,7 @@ namespace LibraryApp
 
         #endregion
 
-        // изменяем цвет кнопки скрытия пароля при наведении курсора
+        // change PictureBox color on hover
         private void PictureBoxMouseEnter(object? sender, EventArgs e)
         {
             PictureBox pic = sender as PictureBox;
@@ -48,7 +69,15 @@ namespace LibraryApp
             pic.BackColor = Color.OldLace;
         }
 
-        // скрываем или показывамем пароль в поле ввода по нажатию кнопки
+        // open the registration form
+        private void CreateAccountPictureBox_Click(object? sender, EventArgs e)
+        {
+            RegForm regForm = new(this);
+            this.Hide();
+            regForm.Show();
+        }
+
+        // hide or show the password in the input field 
         private void HidePasswordPictureBox_Click(object? sender, EventArgs e)
         {
             if (isHiddenPassword)
@@ -65,81 +94,80 @@ namespace LibraryApp
             }
         }
 
+        // сhecking for empty login and password fields
+        private bool CheckEmptyInput(TextBox inputField)
+        {
+            TextBox field = inputField;
+            int VisibleTime = 1500;
+
+            ToolTip emptyToolTip = new ToolTip();
+            if (String.IsNullOrWhiteSpace(inputField.Text))
+            {
+                emptyToolTip.Show("Поле не заполнено", field, 10, 15, VisibleTime);
+                return true;
+            }
+
+            return false;
+        }
+
+        // authorization at the button-click
         private void AuthButton_Click(object? sender, EventArgs e)
         {
-            // временный код передачи Id пользователя
-            int loginId = GetCurrentLoginId();
+            string inputedLogin = loginInputBox.Text.ToLower().Trim();
+            string inputedPassword = passwordInputBox.Text.ToLower().Trim();
 
-            if (loginInputBox.Text == "admin" && passwordInputBox.Text == "admin")
-            {
+            // if the login or password has not been entered
+            if (CheckEmptyInput(loginInputBox) || CheckEmptyInput(passwordInputBox))
+                return;
 
-                LibraryManagerForm ManagerForm = new(this, loginId);
-                this.Hide();
-                ManagerForm.Show();
-            }
-            else if (loginInputBox.Text == "user" && passwordInputBox.Text == "user")
+            // if an incorrect login was entered
+            if (!account.CheckInputedLogin(inputedLogin))
             {
-                UserAccountForm userForm = new(this, loginId);
-                this.Hide();
-                userForm.Show();
+                MessageBox.Show($"Аккаунта с логином \"{inputedLogin}\" не существует.\n" +
+                                $"Пожалуйста, введите корректный логин",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-            else if (loginInputBox.Text == "emp" && passwordInputBox.Text == "emp")
+
+            // if everything was entered correctly
+            Account accountDb = account.GetCurrentAccountData(inputedLogin);
+
+            if (accountDb != null && (accountDb.Password == account.GetHash(inputedPassword, accountDb.Salt)))
             {
-                EmployeeAccountForm employeeForm = new(this, loginId);
-                this.Hide();
-                employeeForm.Show();
+                // find out the role of the account
+
+                if (accountDb.Role == (int)AccountRole.Reader)
+                {
+                    UserAccountForm userForm = new UserAccountForm(this, accountDb.LoginId);
+                    this.Hide();
+                    userForm.Show();
+                }
+                else if (accountDb.Role == (int)AccountRole.Employee)
+                {
+                    EmployeeAccountForm employeeForm = new EmployeeAccountForm(this, accountDb.LoginId);
+                    this.Hide();
+                    employeeForm.Show();
+                }
+                else if (accountDb.Role == (int)AccountRole.Admin)
+                {
+                    LibraryManagerForm ManagerForm = new LibraryManagerForm(this, accountDb.LoginId);
+                    this.Hide();
+                    ManagerForm.Show();
+                }
             }
             else
             {
-                MessageBox.Show("Неверный логин или пароль", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Неверный пароль",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        // cancel-button
         private void CancelButton_Click(object? sender, EventArgs e)
         {
             loginInputBox.Clear();
             passwordInputBox.Clear();
             loginInputBox.Focus();
-        }
-
-        // получаем Id аккаунта
-        private int GetCurrentLoginId() => Convert.ToInt32(GetCurrentAccountData(loginInputBox.Text).LoginId);
-
-        // получаем данные аккаунта
-        public Account GetCurrentAccountData(string login)
-        {
-            Account account = new();
-
-            string query = "SELECT * FROM Accounts WHERE Login=@login";
-
-            try
-            {
-                command = DataBase.GetConnection().CreateCommand();
-                command.CommandText = query;
-                command.Parameters.AddWithValue("@login", login);
-                DataBase.OpenConnection();
-                reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    account = new Account
-                    {
-                        Id = reader.GetInt32(0),
-                        LoginId = reader.GetInt32(1),
-                        Login = reader.GetString(2),
-                        Password = reader.GetString(3),
-                    };
-                }
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка:\n\"{ex.Message}\"\n" +
-                                $"Обратитесь к системному администратору для её устранения.",
-                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-            }
-
-            DataBase.CloseConnection();
-            return account;
         }
 
     }

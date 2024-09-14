@@ -5,9 +5,11 @@ namespace LibraryApp
 {
     public partial class UserAccountForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
+        private int iFormX, iFormY, iMouseX, iMouseY; // form positioning coordinates
+
         private SqliteCommand? command;
         private SqliteDataReader? reader;
+
         private int currentLoginId;
         private StartForm startForm;
 
@@ -41,13 +43,14 @@ namespace LibraryApp
             userAccountCloseLabel.ForeColor = Color.Black;
         }
 
-        // кнопка "Выход". Выходим на стартовую форму, если ответить "да"
+        // exit-button. We exit to the starting form if we answer "yes"
         private void ExitToStartFormLabel_CLick(object sender, EventArgs e)
         {
             MessageBoxButtons msb = MessageBoxButtons.YesNo;
+            MessageBoxIcon icn = MessageBoxIcon.Question;
             String message = "Вы действительно хотите выйти?";
             String caption = "Выход";
-            if (MessageBox.Show(message, caption, msb) == DialogResult.Yes)
+            if (MessageBox.Show(message, caption, msb, icn) == DialogResult.Yes)
             {
                 this.Close();
                 startForm.Show();
@@ -66,20 +69,19 @@ namespace LibraryApp
 
         #endregion
 
-
-        // выводим текущую дату
+        // display the current date
         private void GetCurrentDate() => currentDateLabel.Text = "Сегодня " + DateTime.Now.ToLongDateString();
 
-        // выводим имя, дату рождения, номер читательского билета и кол-во книг текущего пользователя
+        // display the name, date of birth, library card number and number of books of the current user
         private void PutCurrentUserData(ViewReaderModel reader)
         {
-            currentUserName.Text = $"{reader.Lastname.ToString()} {reader.Firstname.ToString()} {reader.Surname.ToString()}";
-            currentDateOfBirth.Text = $"Дата рождения: {reader.DateOfBirth.ToString()}";
+            currentUserName.Text = $"{reader.Lastname} {reader.Firstname} {reader.Surname}";
+            currentDateOfBirth.Text = $"Дата рождения: {reader.DateOfBirth}";
             currentLibraryCardNumber.Text = reader.libraryCardNumber.ToString();
             currentTotalBooks.Text = reader.TotalBooks.ToString();
         }
 
-        // получаем данные текущего пользователя
+        // get the current user's data
         public ViewReaderModel GetCurrentUserData(int loginId)
         {
             ViewReaderModel model = new();
@@ -88,7 +90,7 @@ namespace LibraryApp
                            "FROM Readers r " +
                            "INNER JOIN Persons p " +
                            "ON p.Id = r.PersonalId " +
-                           "WHERE r.Id = @Id";
+                           "WHERE r.PersonalId = @Id";
 
             try
             {

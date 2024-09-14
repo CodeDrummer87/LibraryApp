@@ -6,23 +6,23 @@ namespace LibraryApp.View
 {
     public partial class ListOfEmployeesForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
+        private int iFormX, iFormY, iMouseX, iMouseY; // form positioning coordinates
         private SqliteCommand? command;
         private SqliteDataReader? reader;
 
-        private List<ViewEmployeesModel> employeesList = new(); // список всех сотрудников
-        private List<ViewEmployeesModel> activeList = new(); // список только действующих сотрудников
-        private List<ViewEmployeesModel> filteredList = new(); // список сотрудников, фильтрованный по параметрам
+        private List<ViewEmployeesModel> employeesList = new(); // list of all employees
+        private List<ViewEmployeesModel> activeList = new(); // list of current employees only
+        private List<ViewEmployeesModel> filteredList = new(); // list of employees filtered by parameters
 
-        private List<ViewBirthdayModel> birthdayList = new(); // список дней рождения
+        private List<ViewBirthdayModel> birthdayList = new(); // list of birthdays
 
         public ListOfEmployeesForm()
         {
             InitializeComponent();
 
-            ViewEmployeesTable(); // заполняем таблицу
+            ViewEmployeesTable(); // fill in the table
 
-            GetBirthdays(); // получаем дни рождения
+            GetBirthdays(); // get birthdays
         }
 
         #region Window control buttons
@@ -45,7 +45,7 @@ namespace LibraryApp.View
 
         #endregion
 
-        // получаем список всех сотрудников и заполняем employeesList
+        // get a list of all employees and fill in the employeesList
         private void GetEmployees()
         {
             employeesList.Clear();
@@ -90,15 +90,15 @@ namespace LibraryApp.View
             DataBase.CloseConnection();
         }
 
-        // по умолчанию заполняем таблицу из activeList, который содержит только действующих сотрудников
+        // by default fill the table from activeList, which contains only active employees
         private void ViewEmployeesTable()
         {
             GetEmployees();
 
-            // activeList - фильтрованный employeesList
+            // activeList is a filtered employeesList
             activeList = employeesList.Where(x => x.IsActive.ToString().Contains("действующий")).ToList();
 
-            employeesTable.DataSource = activeList; // источник данных таблицы - activeList
+            employeesTable.DataSource = activeList; // table data source - activeList
 
             employeesTable.Columns[0].Visible = false;
             employeesTable.Columns[1].HeaderText = "Фамилия";
@@ -109,7 +109,7 @@ namespace LibraryApp.View
             employeesTable.Columns[6].HeaderText = "Дата рождения";
             employeesTable.Columns[7].HeaderText = "Релевантность";
 
-            // таблица только для чтения
+            // read only table
             foreach (DataGridViewBand column in employeesTable.Columns)
             {
                 column.ReadOnly = true;
@@ -117,24 +117,24 @@ namespace LibraryApp.View
             employeesTable.ClearSelection();
         }
 
-        // переключаем источник заполнения таблицы по чекбоксу (либо действующие, либо все сотрудники)
+        // switch the source of filling the table using the checkbox (either current or all employees)
         private void FilterIsActiveChanged(object sender, EventArgs e)
         {
             employeesTable.DataSource = listOfEmployeesIsActiveCheckBox.Checked ? activeList : employeesList;
         }
 
-        // проводим фильтрацию из TextBox
+        // filter from TextBox
         private void FilterTextChanged(object sender, EventArgs e)
         {
-            // если поле поиска пустое и галочка не стоит
+            // if the search field is empty and the checkbox is not checked
             if (listOfEmployeesFilterBox.Text.Equals(String.Empty) && !listOfEmployeesIsActiveCheckBox.Checked)
             {
                 employeesTable.DataSource = employeesList;
             }
-            // если поле поиска заполняется, тогда фильтруем
+            // if the search field is filled, then we filter
             else
             {
-                // по фамилии
+                // by last name
                 if (listOfEmployeesLastNameFilterRadioButton.Checked && listOfEmployeesIsActiveCheckBox.Checked)
                 {
                     filteredList = activeList.Where(x => x.Lastname.StartsWith(listOfEmployeesFilterBox.Text.Trim(),
@@ -148,7 +148,7 @@ namespace LibraryApp.View
                     employeesTable.DataSource = filteredList;
                 }
 
-                // по должности
+                // by post
                 if (listOfEmployeesPostFilterRadioButton.Checked && listOfEmployeesIsActiveCheckBox.Checked)
                 {
                     filteredList = activeList.Where(x => x.Post.StartsWith(listOfEmployeesFilterBox.Text.Trim(),
@@ -162,7 +162,7 @@ namespace LibraryApp.View
                     employeesTable.DataSource = filteredList;
                 }
 
-                // по табельному номеру
+                // by personnel number
                 if (listOfEmployeesPersonnelNumberFilterRadioButton.Checked && listOfEmployeesIsActiveCheckBox.Checked)
                 {
                     filteredList = activeList.Where(x => x.PersonnelNumber.ToString().Contains(listOfEmployeesFilterBox.Text.Trim())).ToList();
@@ -176,7 +176,7 @@ namespace LibraryApp.View
             }
         }
 
-        // получаем дни рождения действующих сотрудников
+        // get birthdays of current employees
         private void GetBirthdays()
         {
             string query = "SELECT p.Id, p.Lastname, p.Firstname, p.Surname, p.DateOfBirth " +
@@ -216,7 +216,7 @@ namespace LibraryApp.View
             DataBase.CloseConnection();
         }
 
-        // отображаем дни рождения в ListBox по заданному диапазону
+        // display birthdays in ListBox by specified range
         private void ShowBirthdays(object sender, EventArgs e)
         {
             listOfEmployeesBirthdayListBox.Items.Clear();
@@ -229,7 +229,7 @@ namespace LibraryApp.View
                 var year = current.Month > date.Month || current.Month == date.Month && current.Day > date.Day ? current.Year + 1 : current.Year;
                 var days = (new DateTime(year, date.Month, date.Day) - current).TotalDays;
 
-                // через 3 дня
+                // in 3 days
                 if (listOfEmployeesBirthdayThreeFilterRadioButton.Checked)
                 {
                     if (days == 4)
@@ -239,7 +239,7 @@ namespace LibraryApp.View
                     }
                 }
 
-                // через 2 дня
+                // in 2 days
                 else if (listOfEmployeesBirthdayTwoFilterRadioButton.Checked)
                 {
                     if (days == 3)
@@ -249,7 +249,7 @@ namespace LibraryApp.View
                     }
                 }
 
-                // через 1 день
+                // in 1 day
                 else if (listOfEmployeesBirthdayOneFilterRadioButton.Checked)
                 {
                     if (days == 2)
@@ -260,7 +260,7 @@ namespace LibraryApp.View
                 }
             }
 
-            // если подходящих дат нет и в ListBox ничего не добавилось, то отображаем "нет"
+            // if there are no suitable dates and nothing has been added to the ListBox, then we display "no"
             if (listOfEmployeesBirthdayListBox.Items.Count == 0)
             {
                 listOfEmployeesBirthdayListBox.Items.Add("(нет)");

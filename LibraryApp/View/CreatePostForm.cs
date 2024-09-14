@@ -4,7 +4,7 @@ namespace LibraryApp.View
 {
     public partial class CreatePostForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
+        private int iFormX, iFormY, iMouseX, iMouseY; // form positioning coordinates
         private SqliteCommand command;
 
         public CreatePostForm()
@@ -32,25 +32,25 @@ namespace LibraryApp.View
 
         #endregion
 
-        // кнопка "Создать"
+        // create-button
         private void CreatePostButton_Click(object? sender, EventArgs e)
         {
             CreatePost();
         }
 
-        // кнопка "Очистить"
+        // clear-button
         private void ClearFormButton_Click(object? sender, EventArgs e)
         {
             ClearForm();
         }
 
-        // проверяем, есть ли более 3-х символов в названии должности
+        // сheck if there are more than 3 characters in the post title
         private bool CheckPostNameLength()
         {
             return createPostNewPostBox.Text.Trim().Length <= 3;
         }
 
-        // проверяем, есть ли цифры в названии должности
+        // check if there are numbers in the post title
         private bool CheckPostNameNumberContains(string postName)
         {
             foreach (char x in postName)
@@ -59,7 +59,7 @@ namespace LibraryApp.View
             return false;
         }
 
-        // проверяем, есть ли должность в базе данных
+        // check if the post is in the database
         private bool CheckPostInDataBase()
         {
             string query = "SELECT COUNT(Post) " +
@@ -76,7 +76,7 @@ namespace LibraryApp.View
             return answer;
         }
 
-        // создаем новую должность
+        // creating a new post
         public void CreatePost()
         {
            if(CheckPostNameLength())
@@ -133,7 +133,7 @@ namespace LibraryApp.View
             }
         }
 
-        // очищаем форму
+        // clear the form
         private void ClearForm()
         {
             createPostNewPostBox.Clear();

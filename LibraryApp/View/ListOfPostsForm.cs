@@ -5,14 +5,14 @@ namespace LibraryApp.View
 {
     public partial class ListOfPostsForm : Form
     {
-        private int iFormX, iFormY, iMouseX, iMouseY; // координаты позиционирования формы
+        private int iFormX, iFormY, iMouseX, iMouseY; // form positioning coordinates
 
         private SqliteCommand? command;
         private SqliteDataReader? reader;
 
-        private List<Post> postsList = new(); // лист как источник данных таблицы должностей
+        private List<Post> postsList = new(); // the List as data source of post table
 
-        bool flag = false; // флаг для работы метода выделения/снятия выделения строки
+        bool flag = false; // flag for the operation of the line selection/deselection method
 
         public ListOfPostsForm()
         {
@@ -41,7 +41,7 @@ namespace LibraryApp.View
 
         #endregion
 
-        // получаем список должностей
+        // get a list of positions
         private void GetPosts()
         {
             postsList.Clear();
@@ -76,21 +76,21 @@ namespace LibraryApp.View
             DataBase.CloseConnection();
         }
 
-        // заполняем таблицу из списка должностей
+        // fill in the table from the list of posts
         private void ViewPostsTable()
         {
             GetPosts();
 
-            postsTable.DataSource = postsList; // источник данных таблицы 
-            postsTable.MultiSelect = false; // нельзя выделять больше одной строки
+            postsTable.DataSource = postsList; // table data source
+            postsTable.MultiSelect = false; // you can't select more than one line
 
             postsTable.Columns[0].Visible = false;
             postsTable.Columns[1].HeaderText = "Должность";
             postsTable.Columns[2].HeaderText = "Релевантность";
-            postsTable.Columns[3].Visible = false; // не отображать колонку "Удаляемость"
+            postsTable.Columns[3].Visible = false; // do not display the "Removability" column
         }
 
-        // при выборе новой строки она всегда выделена, кнопки "Изменить" и "Удалить" активны
+        // when you select a new line, it is always highlighted, the "Edit" and "Delete" buttons are active
         private void PostTableSelectionChanged(object sender, EventArgs e)
         {
             if (postsTable.CurrentCell.Selected)
@@ -102,8 +102,8 @@ namespace LibraryApp.View
             }
         }
 
-        // убираем выделение строки или возвращаем его по клику 
-        // изменяем активность кнопок "Изменить" и "Удалить" в зависимости от выделения/невыделения строки
+        // remove the line selection or return it by clicking
+        // change the activity of the "Edit" and "Delete" buttons depending on whether the line is selected/not selected
         private void PostTableMouseUp(object sender, MouseEventArgs e)
         {
             if (postsTable.CurrentCell.Selected)
@@ -125,7 +125,7 @@ namespace LibraryApp.View
             }
         }
 
-        // по нажатию на чекбокс решаем, можно ли редатировать должности
+        // by clicking on the checkbox we decide whether it is possible to edit posts
         private void EditModeChanged(object sender, EventArgs e)
         {
             if (listOfPostsEditModeCheckBox.Checked)
@@ -144,7 +144,7 @@ namespace LibraryApp.View
             }
         }
 
-        // изменяем должность в таблице и БД
+        // change the post in the table and the database
         private void ChangePostButton_CLick(object sender, EventArgs e)
         {
             string query = "UPDATE Posts " +
@@ -178,7 +178,7 @@ namespace LibraryApp.View
             }
         }
 
-        // проверяем, удаляемая ли должность
+        // check if the position is being deleted
         private bool IsDeletablePost()
         {
             string query = "SELECT IsDeletable FROM Posts WHERE Id = @Id";
@@ -195,7 +195,7 @@ namespace LibraryApp.View
             return answer;
         }
 
-        // удаляем должность из таблицы и БД
+        // delete position from table and database
         private void DeletePostButton_Click(object sender, EventArgs e)
         {
             MessageBoxButtons msb = MessageBoxButtons.YesNo;
@@ -219,7 +219,7 @@ namespace LibraryApp.View
 
                         DataBase.CloseConnection();
 
-                        BindingSource binding = new BindingSource(); // для привязки источника через BindingSource
+                        BindingSource binding = new BindingSource(); // to bind a source via BindingSource
                         binding.SuspendBinding();
                         binding.DataSource = postsList;
                         binding.ResumeBinding();

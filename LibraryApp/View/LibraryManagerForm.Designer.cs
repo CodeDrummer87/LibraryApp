@@ -38,6 +38,8 @@
             currentDateLabel = new Label();
             currentManagerNameLabel = new Label();
             exitToStartFormLabel = new Label();
+            libraryManagerPictureBox = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)libraryManagerPictureBox).BeginInit();
             SuspendLayout();
             // 
             // LibraryManagerName
@@ -113,7 +115,7 @@
             // 
             currentDateLabel.AutoSize = true;
             currentDateLabel.BackColor = Color.Transparent;
-            currentDateLabel.Location = new Point(296, 104);
+            currentDateLabel.Location = new Point(385, 104);
             currentDateLabel.Name = "currentDateLabel";
             currentDateLabel.Size = new Size(97, 15);
             currentDateLabel.TabIndex = 8;
@@ -123,7 +125,7 @@
             // 
             currentManagerNameLabel.AutoSize = true;
             currentManagerNameLabel.BackColor = Color.Transparent;
-            currentManagerNameLabel.Location = new Point(296, 128);
+            currentManagerNameLabel.Location = new Point(385, 128);
             currentManagerNameLabel.Name = "currentManagerNameLabel";
             currentManagerNameLabel.Size = new Size(152, 15);
             currentManagerNameLabel.TabIndex = 9;
@@ -145,6 +147,15 @@
             exitToStartFormLabel.MouseEnter += ExitToStartFormLabel_MouseEnter;
             exitToStartFormLabel.MouseLeave += ExitToStartFormLabel_MouseLeave;
             // 
+            // libraryManagerPictureBox
+            // 
+            libraryManagerPictureBox.BackColor = SystemColors.ControlDark;
+            libraryManagerPictureBox.Location = new Point(266, 100);
+            libraryManagerPictureBox.Name = "libraryManagerPictureBox";
+            libraryManagerPictureBox.Size = new Size(100, 110);
+            libraryManagerPictureBox.TabIndex = 11;
+            libraryManagerPictureBox.TabStop = false;
+            // 
             // LibraryManagerForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -152,6 +163,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(800, 450);
+            Controls.Add(libraryManagerPictureBox);
             Controls.Add(exitToStartFormLabel);
             Controls.Add(currentManagerNameLabel);
             Controls.Add(currentDateLabel);
@@ -170,6 +182,7 @@
             Text = "Управление библиотекой";
             MouseDown += ThisForm_MouseDown;
             MouseMove += ThisForm_MouseMove;
+            ((System.ComponentModel.ISupportInitialize)libraryManagerPictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -185,5 +198,6 @@
         private Label currentDateLabel;
         private Label currentManagerNameLabel;
         private Label exitToStartFormLabel;
+        private PictureBox libraryManagerPictureBox;
     }
 }

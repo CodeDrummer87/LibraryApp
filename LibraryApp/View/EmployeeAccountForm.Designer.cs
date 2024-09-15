@@ -43,8 +43,10 @@
             addBookButton = new Button();
             saveBookButton = new Button();
             currentEmployeeName = new Label();
+            employeeFormPictureBox = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)booksTable).BeginInit();
             booksFilterGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)employeeFormPictureBox).BeginInit();
             SuspendLayout();
             // 
             // EmployeeFormName
@@ -210,7 +212,7 @@
             currentEmployeeName.Cursor = Cursors.Hand;
             currentEmployeeName.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
             currentEmployeeName.ForeColor = Color.MidnightBlue;
-            currentEmployeeName.Location = new Point(928, 109);
+            currentEmployeeName.Location = new Point(804, 103);
             currentEmployeeName.Name = "currentEmployeeName";
             currentEmployeeName.Size = new Size(374, 29);
             currentEmployeeName.TabIndex = 9;
@@ -220,12 +222,22 @@
             currentEmployeeName.MouseEnter += ExitToStartFormLabel_MouseEnter;
             currentEmployeeName.MouseLeave += ExitToStartFormLabel_MouseLeave;
             // 
+            // employeeFormPictureBox
+            // 
+            employeeFormPictureBox.BackColor = SystemColors.ControlLight;
+            employeeFormPictureBox.Location = new Point(1205, 36);
+            employeeFormPictureBox.Name = "employeeFormPictureBox";
+            employeeFormPictureBox.Size = new Size(100, 110);
+            employeeFormPictureBox.TabIndex = 10;
+            employeeFormPictureBox.TabStop = false;
+            // 
             // EmployeeAccountForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1366, 768);
+            Controls.Add(employeeFormPictureBox);
             Controls.Add(currentEmployeeName);
             Controls.Add(saveBookButton);
             Controls.Add(addBookButton);
@@ -246,6 +258,7 @@
             ((System.ComponentModel.ISupportInitialize)booksTable).EndInit();
             booksFilterGroupBox.ResumeLayout(false);
             booksFilterGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)employeeFormPictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -265,5 +278,6 @@
         private Button addBookButton;
         private Button saveBookButton;
         private Label currentEmployeeName;
+        private PictureBox employeeFormPictureBox;
     }
 }

@@ -41,6 +41,8 @@ namespace LibraryApp
             userAccountCloseLabel = new Label();
             currentDateOfBirth = new Label();
             exitToStartFormLabel = new Label();
+            userAccountPictureBox = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)userAccountPictureBox).BeginInit();
             SuspendLayout();
             // 
             // currentDateLabel
@@ -60,7 +62,7 @@ namespace LibraryApp
             currentLibraryCardNumber.AutoSize = true;
             currentLibraryCardNumber.BackColor = Color.Transparent;
             currentLibraryCardNumber.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            currentLibraryCardNumber.Location = new Point(243, 180);
+            currentLibraryCardNumber.Location = new Point(367, 180);
             currentLibraryCardNumber.Name = "currentLibraryCardNumber";
             currentLibraryCardNumber.Size = new Size(172, 17);
             currentLibraryCardNumber.TabIndex = 2;
@@ -72,7 +74,7 @@ namespace LibraryApp
             currentTotalBooks.BackColor = Color.Transparent;
             currentTotalBooks.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentTotalBooks.ForeColor = SystemColors.ControlText;
-            currentTotalBooks.Location = new Point(120, 209);
+            currentTotalBooks.Location = new Point(244, 209);
             currentTotalBooks.Name = "currentTotalBooks";
             currentTotalBooks.Size = new Size(118, 17);
             currentTotalBooks.TabIndex = 3;
@@ -84,7 +86,7 @@ namespace LibraryApp
             currentLibraryCardNumberLabel.BackColor = Color.Transparent;
             currentLibraryCardNumberLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentLibraryCardNumberLabel.ForeColor = Color.MidnightBlue;
-            currentLibraryCardNumberLabel.Location = new Point(37, 180);
+            currentLibraryCardNumberLabel.Location = new Point(161, 180);
             currentLibraryCardNumberLabel.Name = "currentLibraryCardNumberLabel";
             currentLibraryCardNumberLabel.Size = new Size(195, 17);
             currentLibraryCardNumberLabel.TabIndex = 5;
@@ -96,7 +98,7 @@ namespace LibraryApp
             currentTotalBooksLabel.BackColor = Color.Transparent;
             currentTotalBooksLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentTotalBooksLabel.ForeColor = Color.MidnightBlue;
-            currentTotalBooksLabel.Location = new Point(37, 209);
+            currentTotalBooksLabel.Location = new Point(161, 209);
             currentTotalBooksLabel.Name = "currentTotalBooksLabel";
             currentTotalBooksLabel.Size = new Size(77, 17);
             currentTotalBooksLabel.TabIndex = 6;
@@ -118,7 +120,7 @@ namespace LibraryApp
             currentUserName.AutoSize = true;
             currentUserName.BackColor = Color.Transparent;
             currentUserName.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            currentUserName.Location = new Point(37, 110);
+            currentUserName.Location = new Point(161, 110);
             currentUserName.Name = "currentUserName";
             currentUserName.Size = new Size(164, 25);
             currentUserName.TabIndex = 8;
@@ -144,7 +146,7 @@ namespace LibraryApp
             currentDateOfBirth.AutoSize = true;
             currentDateOfBirth.BackColor = Color.Transparent;
             currentDateOfBirth.Font = new Font("Arial", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
-            currentDateOfBirth.Location = new Point(40, 142);
+            currentDateOfBirth.Location = new Point(164, 142);
             currentDateOfBirth.Name = "currentDateOfBirth";
             currentDateOfBirth.Size = new Size(114, 16);
             currentDateOfBirth.TabIndex = 10;
@@ -166,6 +168,14 @@ namespace LibraryApp
             exitToStartFormLabel.MouseEnter += ExitToStartFormLabel_MouseEnter;
             exitToStartFormLabel.MouseLeave += ExitToStartFormLabel_MouseLeave;
             // 
+            // userAccountPictureBox
+            // 
+            userAccountPictureBox.Location = new Point(46, 115);
+            userAccountPictureBox.Name = "userAccountPictureBox";
+            userAccountPictureBox.Size = new Size(100, 110);
+            userAccountPictureBox.TabIndex = 12;
+            userAccountPictureBox.TabStop = false;
+            // 
             // UserAccountForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -174,6 +184,7 @@ namespace LibraryApp
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1008, 729);
+            Controls.Add(userAccountPictureBox);
             Controls.Add(exitToStartFormLabel);
             Controls.Add(currentDateOfBirth);
             Controls.Add(userAccountCloseLabel);
@@ -194,6 +205,7 @@ namespace LibraryApp
             Text = "Личный кабинет пользователя";
             MouseDown += ThisForm_MouseDown;
             MouseMove += ThisForm_MouseMove;
+            ((System.ComponentModel.ISupportInitialize)userAccountPictureBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -210,5 +222,6 @@ namespace LibraryApp
         private Label userAccountCloseLabel;
         private Label currentDateOfBirth;
         private Label exitToStartFormLabel;
+        private PictureBox userAccountPictureBox;
     }
 }

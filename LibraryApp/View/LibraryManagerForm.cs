@@ -57,16 +57,6 @@ namespace LibraryApp
             }
         }
 
-        private void ExitToStartFormLabel_MouseEnter(object sender, EventArgs e)
-        {
-            exitToStartFormLabel.ForeColor = Color.Red;
-        }
-
-        private void ExitToStartFormLabel_MouseLeave(object sender, EventArgs e)
-        {
-            exitToStartFormLabel.ForeColor = Color.MidnightBlue;
-        }
-
         #endregion
 
         // "сreate employee account" button

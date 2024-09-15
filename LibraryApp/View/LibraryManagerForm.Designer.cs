@@ -37,7 +37,6 @@
             listOfPositionsButton = new Button();
             currentDateLabel = new Label();
             currentManagerNameLabel = new Label();
-            exitToStartFormLabel = new Label();
             libraryManagerPictureBox = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)libraryManagerPictureBox).BeginInit();
             SuspendLayout();
@@ -115,7 +114,7 @@
             // 
             currentDateLabel.AutoSize = true;
             currentDateLabel.BackColor = Color.Transparent;
-            currentDateLabel.Location = new Point(385, 104);
+            currentDateLabel.Location = new Point(286, 105);
             currentDateLabel.Name = "currentDateLabel";
             currentDateLabel.Size = new Size(97, 15);
             currentDateLabel.TabIndex = 8;
@@ -125,36 +124,23 @@
             // 
             currentManagerNameLabel.AutoSize = true;
             currentManagerNameLabel.BackColor = Color.Transparent;
-            currentManagerNameLabel.Location = new Point(385, 128);
+            currentManagerNameLabel.Location = new Point(286, 129);
             currentManagerNameLabel.Name = "currentManagerNameLabel";
             currentManagerNameLabel.Size = new Size(152, 15);
             currentManagerNameLabel.TabIndex = 9;
             currentManagerNameLabel.Text = "currentManagerNameLabel";
             // 
-            // exitToStartFormLabel
-            // 
-            exitToStartFormLabel.AutoSize = true;
-            exitToStartFormLabel.BackColor = Color.Transparent;
-            exitToStartFormLabel.Cursor = Cursors.Hand;
-            exitToStartFormLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            exitToStartFormLabel.ForeColor = Color.MidnightBlue;
-            exitToStartFormLabel.Location = new Point(730, 421);
-            exitToStartFormLabel.Name = "exitToStartFormLabel";
-            exitToStartFormLabel.Size = new Size(49, 17);
-            exitToStartFormLabel.TabIndex = 10;
-            exitToStartFormLabel.Text = "Выход";
-            exitToStartFormLabel.Click += ExitToStartFormLabel_CLick;
-            exitToStartFormLabel.MouseEnter += ExitToStartFormLabel_MouseEnter;
-            exitToStartFormLabel.MouseLeave += ExitToStartFormLabel_MouseLeave;
-            // 
             // libraryManagerPictureBox
             // 
-            libraryManagerPictureBox.BackColor = SystemColors.ControlDark;
-            libraryManagerPictureBox.Location = new Point(266, 100);
+            libraryManagerPictureBox.BackColor = Color.Transparent;
+            libraryManagerPictureBox.BackgroundImage = Properties.Resources._default;
+            libraryManagerPictureBox.Cursor = Cursors.Hand;
+            libraryManagerPictureBox.Location = new Point(647, 83);
             libraryManagerPictureBox.Name = "libraryManagerPictureBox";
-            libraryManagerPictureBox.Size = new Size(100, 110);
+            libraryManagerPictureBox.Size = new Size(100, 100);
             libraryManagerPictureBox.TabIndex = 11;
             libraryManagerPictureBox.TabStop = false;
+            libraryManagerPictureBox.Click += ExitToStartFormLabel_CLick;
             // 
             // LibraryManagerForm
             // 
@@ -164,7 +150,6 @@
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(800, 450);
             Controls.Add(libraryManagerPictureBox);
-            Controls.Add(exitToStartFormLabel);
             Controls.Add(currentManagerNameLabel);
             Controls.Add(currentDateLabel);
             Controls.Add(listOfPositionsButton);
@@ -197,7 +182,6 @@
         private Button listOfPositionsButton;
         private Label currentDateLabel;
         private Label currentManagerNameLabel;
-        private Label exitToStartFormLabel;
         private PictureBox libraryManagerPictureBox;
     }
 }

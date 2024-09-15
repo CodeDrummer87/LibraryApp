@@ -775,6 +775,6 @@ namespace LibraryApp.View
                 this.Location = new Point(iFormX + (iMouseX2 - iMouseX), iFormY + (iMouseY2 - iMouseY));
         }
 
-        #endregion
+#endregion
     }
 }

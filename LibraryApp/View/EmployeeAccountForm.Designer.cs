@@ -209,27 +209,26 @@
             // 
             // currentEmployeeName
             // 
-            currentEmployeeName.Cursor = Cursors.Hand;
             currentEmployeeName.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
             currentEmployeeName.ForeColor = Color.MidnightBlue;
-            currentEmployeeName.Location = new Point(804, 103);
+            currentEmployeeName.Location = new Point(804, 76);
             currentEmployeeName.Name = "currentEmployeeName";
             currentEmployeeName.Size = new Size(374, 29);
             currentEmployeeName.TabIndex = 9;
             currentEmployeeName.Text = "currentEmployeeName";
             currentEmployeeName.TextAlign = ContentAlignment.MiddleRight;
-            currentEmployeeName.Click += ExitToStartFormLabel_CLick;
-            currentEmployeeName.MouseEnter += ExitToStartFormLabel_MouseEnter;
-            currentEmployeeName.MouseLeave += ExitToStartFormLabel_MouseLeave;
             // 
             // employeeFormPictureBox
             // 
-            employeeFormPictureBox.BackColor = SystemColors.ControlLight;
-            employeeFormPictureBox.Location = new Point(1205, 36);
+            employeeFormPictureBox.BackColor = Color.Transparent;
+            employeeFormPictureBox.BackgroundImage = Properties.Resources.default1;
+            employeeFormPictureBox.Cursor = Cursors.Hand;
+            employeeFormPictureBox.Location = new Point(1203, 36);
             employeeFormPictureBox.Name = "employeeFormPictureBox";
-            employeeFormPictureBox.Size = new Size(100, 110);
+            employeeFormPictureBox.Size = new Size(100, 100);
             employeeFormPictureBox.TabIndex = 10;
             employeeFormPictureBox.TabStop = false;
+            employeeFormPictureBox.Click += ExitToStartFormLabel_CLick;
             // 
             // EmployeeAccountForm
             // 

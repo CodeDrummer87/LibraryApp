@@ -11,17 +11,18 @@ namespace LibraryApp
         private SqliteCommand? command;
         private SqliteDataReader? reader;
 
-        private int currentLoginId;
-
         private StartForm startForm;
-        public LibraryManagerForm(StartForm startForm, int currentLoginId)
+        Account account;
+
+        public LibraryManagerForm(StartForm startForm, Account account)
         {
             InitializeComponent();
             GetCurrentDate();
-            this.currentLoginId = currentLoginId!;
+
+            this.account = account;
             this.startForm = startForm;
 
-            PutCurrentUserData(GetCurrentManagerData(currentLoginId));
+            PutCurrentUserData(GetCurrentManagerData(account.LoginId));
         }
 
         #region Window control buttons
@@ -94,6 +95,12 @@ namespace LibraryApp
         private void PutCurrentUserData(ViewManagerModel manager)
         {
             currentManagerNameLabel.Text = $"Управляющий: {manager.Lastname} {manager.Firstname} {manager.Surname}";
+
+            // if the database contains data about the file path, display the profile photo
+            if (account.ImagePath is not null)
+            {
+                libraryManagerPictureBox.Image = Image.FromFile(Environment.ExpandEnvironmentVariables(@"%appdata%\LibraryApp") + account.ImagePath);
+            }
         }
 
         // get the data of the current manager
@@ -164,3 +171,4 @@ namespace LibraryApp
     }
 
 }
+

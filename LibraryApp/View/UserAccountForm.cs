@@ -10,18 +10,18 @@ namespace LibraryApp
         private SqliteCommand? command;
         private SqliteDataReader? reader;
 
-        private int currentLoginId;
         private StartForm startForm;
+        Account account;
 
-        public UserAccountForm(StartForm startForm, int currentLoginId)
+        public UserAccountForm(StartForm startForm, Account account)
         {
             InitializeComponent();
             GetCurrentDate();
 
-            this.currentLoginId = currentLoginId!;
+            this.account = account;
             this.startForm = startForm;
 
-            PutCurrentUserData(GetCurrentUserData(currentLoginId));
+            PutCurrentUserData(GetCurrentUserData(account.LoginId));
         }
 
         #region Window control buttons
@@ -69,6 +69,12 @@ namespace LibraryApp
             currentDateOfBirth.Text = $"Дата рождения: {reader.DateOfBirth}";
             currentLibraryCardNumber.Text = reader.libraryCardNumber.ToString();
             currentTotalBooks.Text = reader.TotalBooks.ToString();
+
+            // if the database contains data about the file path, display the profile photo
+            if (account.ImagePath is not null)
+            {
+                userAccountPictureBox.Image = Image.FromFile(Environment.ExpandEnvironmentVariables(@"%appdata%\LibraryApp") + account.ImagePath);
+            }
         }
 
         // get the current user's data

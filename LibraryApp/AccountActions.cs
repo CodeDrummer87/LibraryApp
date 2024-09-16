@@ -201,7 +201,8 @@ namespace LibraryApp
                         Login = reader.GetString(2),
                         Password = reader.GetString(3),
                         Salt = (byte[])reader[4],
-                        Role = reader.GetInt32(5)
+                        Role = reader.GetInt32(5),
+                        ImagePath = reader.IsDBNull(6) ? null : reader.GetString(6)
                     };
                 }
                 reader.Close();

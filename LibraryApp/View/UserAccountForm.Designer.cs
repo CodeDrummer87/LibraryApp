@@ -73,7 +73,7 @@ namespace LibraryApp
             currentTotalBooks.BackColor = Color.Transparent;
             currentTotalBooks.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentTotalBooks.ForeColor = SystemColors.ControlText;
-            currentTotalBooks.Location = new Point(244, 209);
+            currentTotalBooks.Location = new Point(244, 204);
             currentTotalBooks.Name = "currentTotalBooks";
             currentTotalBooks.Size = new Size(118, 17);
             currentTotalBooks.TabIndex = 3;
@@ -97,7 +97,7 @@ namespace LibraryApp
             currentTotalBooksLabel.BackColor = Color.Transparent;
             currentTotalBooksLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentTotalBooksLabel.ForeColor = Color.MidnightBlue;
-            currentTotalBooksLabel.Location = new Point(161, 209);
+            currentTotalBooksLabel.Location = new Point(161, 204);
             currentTotalBooksLabel.Name = "currentTotalBooksLabel";
             currentTotalBooksLabel.Size = new Size(77, 17);
             currentTotalBooksLabel.TabIndex = 6;
@@ -119,7 +119,7 @@ namespace LibraryApp
             currentUserName.AutoSize = true;
             currentUserName.BackColor = Color.Transparent;
             currentUserName.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            currentUserName.Location = new Point(161, 110);
+            currentUserName.Location = new Point(161, 115);
             currentUserName.Name = "currentUserName";
             currentUserName.Size = new Size(164, 25);
             currentUserName.TabIndex = 8;
@@ -145,7 +145,7 @@ namespace LibraryApp
             currentDateOfBirth.AutoSize = true;
             currentDateOfBirth.BackColor = Color.Transparent;
             currentDateOfBirth.Font = new Font("Arial", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
-            currentDateOfBirth.Location = new Point(164, 142);
+            currentDateOfBirth.Location = new Point(164, 147);
             currentDateOfBirth.Name = "currentDateOfBirth";
             currentDateOfBirth.Size = new Size(114, 16);
             currentDateOfBirth.TabIndex = 10;

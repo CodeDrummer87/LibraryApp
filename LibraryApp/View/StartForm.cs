@@ -15,6 +15,8 @@ namespace LibraryApp
         {
             InitializeComponent();
 
+            CreateServiceFolders();
+
             account = new AccountActions();
             isHiddenPassword = true;
         }
@@ -55,6 +57,12 @@ namespace LibraryApp
         }
 
         #endregion
+
+        // create basic folders for work if they do not exist
+        private void CreateServiceFolders()
+        {
+            Directory.CreateDirectory(Environment.ExpandEnvironmentVariables(@"%appdata%\LibraryApp\avatars"));
+        }
 
         // change PictureBox color on hover
         private void PictureBoxMouseEnter(object? sender, EventArgs e)
@@ -138,19 +146,19 @@ namespace LibraryApp
 
                 if (accountDb.Role == (int)AccountRole.Reader)
                 {
-                    UserAccountForm userForm = new UserAccountForm(this, accountDb.LoginId);
+                    UserAccountForm userForm = new UserAccountForm(this, accountDb);
                     this.Hide();
                     userForm.Show();
                 }
                 else if (accountDb.Role == (int)AccountRole.Employee)
                 {
-                    EmployeeAccountForm employeeForm = new EmployeeAccountForm(this, accountDb.LoginId);
+                    EmployeeAccountForm employeeForm = new EmployeeAccountForm(this, accountDb);
                     this.Hide();
                     employeeForm.Show();
                 }
                 else if (accountDb.Role == (int)AccountRole.Admin)
                 {
-                    LibraryManagerForm ManagerForm = new LibraryManagerForm(this, accountDb.LoginId);
+                    LibraryManagerForm ManagerForm = new LibraryManagerForm(this, accountDb);
                     this.Hide();
                     ManagerForm.Show();
                 }

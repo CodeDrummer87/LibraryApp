@@ -12,8 +12,8 @@ namespace LibraryApp.View
         private SqliteCommand? command;
         private SqliteDataReader? reader;
 
-        private int currentLoginId;
         private StartForm startForm;
+        Account account;
 
         private BindingList<Book> booksList = new(); // list of all books (with binding)
         private List<Book> filteredList = new(); // list of books filtered by parameters
@@ -25,17 +25,17 @@ namespace LibraryApp.View
 
         bool flag = false; // flag for the operation of the line selection/deselection method
 
-        public EmployeeAccountForm(StartForm startForm, int currentLoginId)
+        public EmployeeAccountForm(StartForm startForm, Account account)
         {
             InitializeComponent();
 
             ViewBooksTable();
             LoadComboBoxes();
 
-            this.currentLoginId = currentLoginId!;
+            this.account = account;
             this.startForm = startForm;
 
-            PutCurrentEmployeeName(GetCurrentEmployeeName(currentLoginId));
+            PutCurrentEmployeeName(GetCurrentEmployeeName(account.LoginId));
         }
 
         #region Window control buttons
@@ -86,6 +86,12 @@ namespace LibraryApp.View
         private void PutCurrentEmployeeName(ViewEmployeeNameModel employeeName)
         {
             currentEmployeeName.Text = $"{employeeName.Lastname} {employeeName.Firstname} {employeeName.Surname}";
+
+            // if the database contains data about the file path, display the profile photo
+            if (account.ImagePath is not null)
+            {
+                employeeFormPictureBox.Image = Image.FromFile(Environment.ExpandEnvironmentVariables(@"%appdata%\LibraryApp") + account.ImagePath);
+            }
         }
 
         // get the full name of the current employee

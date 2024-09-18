@@ -90,7 +90,12 @@ namespace LibraryApp.View
             // if the database contains data about the file path, display the profile photo
             if (account.ImagePath is not null)
             {
-                employeeFormPictureBox.Image = Image.FromFile(Environment.ExpandEnvironmentVariables(@"%appdata%\LibraryApp") + account.ImagePath);
+                using (var stream = new FileStream(Environment.ExpandEnvironmentVariables(@"%appdata%\LibraryApp\avatars\") + account.ImagePath, FileMode.Open))
+                {
+                    employeeFormPictureBox.BackgroundImage = null;
+                    employeeFormPictureBox.Image = Image.FromStream(stream);
+                    employeeFormPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+                }
             }
         }
 
@@ -135,6 +140,47 @@ namespace LibraryApp.View
             DataBase.CloseConnection();
 
             return employeeNameModel;
+        }
+
+        // change the profile image by clicking on it
+        private void ChangeProfileImage(object sender, EventArgs e)
+        {
+            // opening the file dialog
+            employeeAccountOpenFileDialog.FileName = "Image";
+            employeeAccountOpenFileDialog.Filter = "PNG (*.png)|*.png";
+            employeeAccountOpenFileDialog.Title = "Выберите файл с изображением";
+
+            if (employeeAccountOpenFileDialog.ShowDialog() == DialogResult.Cancel)
+                return;
+
+            // saving the image to the PictureBox
+            employeeFormPictureBox.BackgroundImage = null;
+
+            employeeFormPictureBox.Image = new Bitmap(employeeAccountOpenFileDialog.FileName);
+
+            employeeFormPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+            employeeFormPictureBox.Update();
+
+            // the name of the file to save
+            string fileName = account.Login + ".png";
+
+            // the saving path
+            string savePath = Environment.ExpandEnvironmentVariables(@"%appdata%\LibraryApp\avatars\") + fileName;
+
+            if (employeeFormPictureBox.Image is not null)
+            {
+                try
+                {
+                    // saving the file
+                    employeeFormPictureBox.Image.Save(savePath, System.Drawing.Imaging.ImageFormat.Png);
+                    AccountActions.SetImagePathData(command, fileName, account.LoginId);
+                }
+                catch
+                {
+                    MessageBox.Show("Невозможно сохранить изображение профиля", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         // get a list of books and fill booksList
@@ -781,6 +827,6 @@ namespace LibraryApp.View
                 this.Location = new Point(iFormX + (iMouseX2 - iMouseX), iFormY + (iMouseY2 - iMouseY));
         }
 
-#endregion
+        #endregion
     }
 }

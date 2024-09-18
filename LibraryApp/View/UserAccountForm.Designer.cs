@@ -41,6 +41,8 @@ namespace LibraryApp
             userAccountCloseLabel = new Label();
             currentDateOfBirth = new Label();
             userAccountPictureBox = new PictureBox();
+            exitToStartFormLabel = new Label();
+            userAccountOpenFileDialog = new OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)userAccountPictureBox).BeginInit();
             SuspendLayout();
             // 
@@ -161,7 +163,27 @@ namespace LibraryApp
             userAccountPictureBox.Size = new Size(100, 100);
             userAccountPictureBox.TabIndex = 12;
             userAccountPictureBox.TabStop = false;
-            userAccountPictureBox.Click += ExitToStartFormLabel_CLick;
+            userAccountPictureBox.Click += ChangeProfileImage;
+            // 
+            // exitToStartFormLabel
+            // 
+            exitToStartFormLabel.AutoSize = true;
+            exitToStartFormLabel.BackColor = Color.Transparent;
+            exitToStartFormLabel.Cursor = Cursors.Hand;
+            exitToStartFormLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            exitToStartFormLabel.ForeColor = Color.MidnightBlue;
+            exitToStartFormLabel.Location = new Point(927, 685);
+            exitToStartFormLabel.Name = "exitToStartFormLabel";
+            exitToStartFormLabel.Size = new Size(49, 17);
+            exitToStartFormLabel.TabIndex = 13;
+            exitToStartFormLabel.Text = "Выход";
+            exitToStartFormLabel.Click += ExitToStartFormLabel_CLick;
+            exitToStartFormLabel.MouseEnter += ExitToStartFormLabel_MouseEnter;
+            exitToStartFormLabel.MouseLeave += ExitToStartFormLabel_MouseLeave;
+            // 
+            // userAccountOpenFileDialog
+            // 
+            userAccountOpenFileDialog.FileName = "openFileDialog1";
             // 
             // UserAccountForm
             // 
@@ -171,6 +193,7 @@ namespace LibraryApp
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1008, 729);
+            Controls.Add(exitToStartFormLabel);
             Controls.Add(userAccountPictureBox);
             Controls.Add(currentDateOfBirth);
             Controls.Add(userAccountCloseLabel);
@@ -208,5 +231,8 @@ namespace LibraryApp
         private Label userAccountCloseLabel;
         private Label currentDateOfBirth;
         private PictureBox userAccountPictureBox;
+        private Label exitToStartFormLabel;
+        private OpenFileDialog openFileDialog1;
+        private OpenFileDialog userAccountOpenFileDialog;
     }
 }

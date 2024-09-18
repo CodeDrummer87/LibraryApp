@@ -58,6 +58,16 @@ namespace LibraryApp
             }
         }
 
+        private void ExitToStartFormLabel_MouseEnter(object sender, EventArgs e)
+        {
+            exitToStartFormLabel.ForeColor = Color.Red;
+        }
+
+        private void ExitToStartFormLabel_MouseLeave(object sender, EventArgs e)
+        {
+            exitToStartFormLabel.ForeColor = Color.MidnightBlue;
+        }
+
         #endregion
 
         // "сreate employee account" button
@@ -99,7 +109,12 @@ namespace LibraryApp
             // if the database contains data about the file path, display the profile photo
             if (account.ImagePath is not null)
             {
-                libraryManagerPictureBox.Image = Image.FromFile(Environment.ExpandEnvironmentVariables(@"%appdata%\LibraryApp") + account.ImagePath);
+                using (var stream = new FileStream(Environment.ExpandEnvironmentVariables(@"%appdata%\LibraryApp\avatars\") + account.ImagePath, FileMode.Open))
+                {
+                    libraryManagerPictureBox.BackgroundImage = null;
+                    libraryManagerPictureBox.Image = Image.FromStream(stream);
+                    libraryManagerPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+                }
             }
         }
 
@@ -148,6 +163,47 @@ namespace LibraryApp
 
             DataBase.CloseConnection();
             return model;
+        }
+
+        // change the profile image by clicking on it
+        private void ChangeProfileImage(object sender, EventArgs e)
+        {
+            // opening the file dialog
+            libraryManagerOpenFileDialog.FileName = "Image";
+            libraryManagerOpenFileDialog.Filter = "PNG (*.png)|*.png";
+            libraryManagerOpenFileDialog.Title = "Выберите файл с изображением";
+
+            if (libraryManagerOpenFileDialog.ShowDialog() == DialogResult.Cancel)
+                return;
+
+            // saving the image to the PictureBox
+            libraryManagerPictureBox.BackgroundImage = null;
+
+            libraryManagerPictureBox.Image = new Bitmap(libraryManagerOpenFileDialog.FileName);
+
+            libraryManagerPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+            libraryManagerPictureBox.Update();
+
+            // the name of the file to save
+            string fileName = account.Login + ".png";
+
+            // the saving path
+            string savePath = Environment.ExpandEnvironmentVariables(@"%appdata%\LibraryApp\avatars\") + fileName;
+
+            if (libraryManagerPictureBox.Image is not null)
+            {
+                try
+                {
+                    // saving the file
+                    libraryManagerPictureBox.Image.Save(savePath, System.Drawing.Imaging.ImageFormat.Png);
+                    AccountActions.SetImagePathData(command, fileName, account.LoginId);
+                }
+                catch
+                {
+                    MessageBox.Show("Невозможно сохранить изображение профиля", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         #region Move the Form

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Data.Sqlite;
 using System.Security.Cryptography;
+using System.Security.Principal;
 
 namespace LibraryApp
 {
@@ -114,6 +115,31 @@ namespace LibraryApp
                 command.Parameters.AddWithValue("@Lastname", person.Lastname);
                 command.Parameters.AddWithValue("@Surname", person.Surname);
                 command.Parameters.AddWithValue("@DateOfBirth", person.DateOfBirth);
+
+                DataBase.OpenConnection();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось создать запись в таблице Accounts. Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
+
+        // writing the address of the profile image file to the Accounts table
+        public static void SetImagePathData(SqliteCommand command, string path, int LoginId)
+        {
+            string query = "UPDATE Accounts SET ImagePath = @Path WHERE LoginId = @LoginId;";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@Path", path);
+                command.Parameters.AddWithValue("@LoginId", LoginId);
 
                 DataBase.OpenConnection();
                 command.ExecuteNonQuery();
@@ -246,6 +272,7 @@ namespace LibraryApp
                 DataBase.CloseConnection();
             }
         }
+
     }
 
 }

@@ -38,6 +38,8 @@
             currentDateLabel = new Label();
             currentManagerNameLabel = new Label();
             libraryManagerPictureBox = new PictureBox();
+            exitToStartFormLabel = new Label();
+            libraryManagerOpenFileDialog = new OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)libraryManagerPictureBox).BeginInit();
             SuspendLayout();
             // 
@@ -114,7 +116,7 @@
             // 
             currentDateLabel.AutoSize = true;
             currentDateLabel.BackColor = Color.Transparent;
-            currentDateLabel.Location = new Point(286, 105);
+            currentDateLabel.Location = new Point(286, 104);
             currentDateLabel.Name = "currentDateLabel";
             currentDateLabel.Size = new Size(97, 15);
             currentDateLabel.TabIndex = 8;
@@ -124,7 +126,7 @@
             // 
             currentManagerNameLabel.AutoSize = true;
             currentManagerNameLabel.BackColor = Color.Transparent;
-            currentManagerNameLabel.Location = new Point(286, 129);
+            currentManagerNameLabel.Location = new Point(286, 128);
             currentManagerNameLabel.Name = "currentManagerNameLabel";
             currentManagerNameLabel.Size = new Size(152, 15);
             currentManagerNameLabel.TabIndex = 9;
@@ -140,7 +142,27 @@
             libraryManagerPictureBox.Size = new Size(100, 100);
             libraryManagerPictureBox.TabIndex = 11;
             libraryManagerPictureBox.TabStop = false;
-            libraryManagerPictureBox.Click += ExitToStartFormLabel_CLick;
+            libraryManagerPictureBox.Click += ChangeProfileImage;
+            // 
+            // exitToStartFormLabel
+            // 
+            exitToStartFormLabel.AutoSize = true;
+            exitToStartFormLabel.BackColor = Color.Transparent;
+            exitToStartFormLabel.Cursor = Cursors.Hand;
+            exitToStartFormLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            exitToStartFormLabel.ForeColor = Color.MidnightBlue;
+            exitToStartFormLabel.Location = new Point(735, 421);
+            exitToStartFormLabel.Name = "exitToStartFormLabel";
+            exitToStartFormLabel.Size = new Size(49, 17);
+            exitToStartFormLabel.TabIndex = 12;
+            exitToStartFormLabel.Text = "Выход";
+            exitToStartFormLabel.Click += ExitToStartFormLabel_CLick;
+            exitToStartFormLabel.MouseEnter += ExitToStartFormLabel_MouseEnter;
+            exitToStartFormLabel.MouseLeave += ExitToStartFormLabel_MouseLeave;
+            // 
+            // libraryManagerOpenFileDialog
+            // 
+            libraryManagerOpenFileDialog.FileName = "openFileDialog1";
             // 
             // LibraryManagerForm
             // 
@@ -149,6 +171,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(800, 450);
+            Controls.Add(exitToStartFormLabel);
             Controls.Add(libraryManagerPictureBox);
             Controls.Add(currentManagerNameLabel);
             Controls.Add(currentDateLabel);
@@ -183,5 +206,7 @@
         private Label currentDateLabel;
         private Label currentManagerNameLabel;
         private PictureBox libraryManagerPictureBox;
+        private Label exitToStartFormLabel;
+        private OpenFileDialog libraryManagerOpenFileDialog;
     }
 }

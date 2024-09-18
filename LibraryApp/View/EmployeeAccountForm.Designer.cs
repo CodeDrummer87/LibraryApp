@@ -44,6 +44,7 @@
             saveBookButton = new Button();
             currentEmployeeName = new Label();
             employeeFormPictureBox = new PictureBox();
+            employeeAccountOpenFileDialog = new OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)booksTable).BeginInit();
             booksFilterGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)employeeFormPictureBox).BeginInit();
@@ -209,6 +210,7 @@
             // 
             // currentEmployeeName
             // 
+            currentEmployeeName.Cursor = Cursors.Hand;
             currentEmployeeName.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
             currentEmployeeName.ForeColor = Color.MidnightBlue;
             currentEmployeeName.Location = new Point(804, 76);
@@ -217,6 +219,9 @@
             currentEmployeeName.TabIndex = 9;
             currentEmployeeName.Text = "currentEmployeeName";
             currentEmployeeName.TextAlign = ContentAlignment.MiddleRight;
+            currentEmployeeName.Click += ExitToStartFormLabel_CLick;
+            currentEmployeeName.MouseEnter += ExitToStartFormLabel_MouseEnter;
+            currentEmployeeName.MouseLeave += ExitToStartFormLabel_MouseLeave;
             // 
             // employeeFormPictureBox
             // 
@@ -228,7 +233,11 @@
             employeeFormPictureBox.Size = new Size(100, 100);
             employeeFormPictureBox.TabIndex = 10;
             employeeFormPictureBox.TabStop = false;
-            employeeFormPictureBox.Click += ExitToStartFormLabel_CLick;
+            employeeFormPictureBox.Click += ChangeProfileImage;
+            // 
+            // employeeAccountOpenFileDialog
+            // 
+            employeeAccountOpenFileDialog.FileName = "openFileDialog1";
             // 
             // EmployeeAccountForm
             // 
@@ -278,5 +287,6 @@
         private Button saveBookButton;
         private Label currentEmployeeName;
         private PictureBox employeeFormPictureBox;
+        private OpenFileDialog employeeAccountOpenFileDialog;
     }
 }

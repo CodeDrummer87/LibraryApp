@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EmployeeAccountForm));
             EmployeeFormName = new Label();
             employeeFormCloseLabel = new Label();
@@ -45,9 +46,17 @@
             currentEmployeeName = new Label();
             employeeFormPictureBox = new PictureBox();
             employeeAccountOpenFileDialog = new OpenFileDialog();
+            tabControl1 = new TabControl();
+            tabPage1 = new TabPage();
+            tabPage2 = new TabPage();
+            readersTable = new DataGridView();
             ((System.ComponentModel.ISupportInitialize)booksTable).BeginInit();
             booksFilterGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)employeeFormPictureBox).BeginInit();
+            tabControl1.SuspendLayout();
+            tabPage1.SuspendLayout();
+            tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)readersTable).BeginInit();
             SuspendLayout();
             // 
             // EmployeeFormName
@@ -85,12 +94,12 @@
             booksTable.BackgroundColor = SystemColors.Control;
             booksTable.BorderStyle = BorderStyle.None;
             booksTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            booksTable.Location = new Point(44, 160);
+            booksTable.Location = new Point(3, 6);
             booksTable.Name = "booksTable";
             booksTable.RowHeadersVisible = false;
             booksTable.RowTemplate.Height = 25;
             booksTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            booksTable.Size = new Size(1283, 521);
+            booksTable.Size = new Size(1262, 494);
             booksTable.TabIndex = 2;
             booksTable.CellClick += BooksTable_CellClick;
             booksTable.CellValidating += IsDigit_CellValidating;
@@ -239,12 +248,63 @@
             // 
             employeeAccountOpenFileDialog.FileName = "openFileDialog1";
             // 
+            // tabControl1
+            // 
+            tabControl1.Controls.Add(tabPage1);
+            tabControl1.Controls.Add(tabPage2);
+            tabControl1.Location = new Point(44, 154);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(1276, 531);
+            tabControl1.TabIndex = 11;
+            // 
+            // tabPage1
+            // 
+            tabPage1.Controls.Add(booksTable);
+            tabPage1.Location = new Point(4, 24);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(1268, 503);
+            tabPage1.TabIndex = 0;
+            tabPage1.Text = "Книги";
+            tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            tabPage2.Controls.Add(readersTable);
+            tabPage2.Location = new Point(4, 24);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(1268, 503);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "Читатели";
+            tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // readersTable
+            // 
+            readersTable.AllowUserToAddRows = false;
+            readersTable.AllowUserToResizeColumns = false;
+            readersTable.AllowUserToResizeRows = false;
+            dataGridViewCellStyle2.BackColor = Color.WhiteSmoke;
+            readersTable.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            readersTable.BackgroundColor = SystemColors.Control;
+            readersTable.BorderStyle = BorderStyle.None;
+            readersTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            readersTable.Location = new Point(3, 6);
+            readersTable.Name = "readersTable";
+            readersTable.RowHeadersVisible = false;
+            readersTable.RowTemplate.Height = 25;
+            readersTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            readersTable.Size = new Size(1041, 494);
+            readersTable.TabIndex = 0;
+            // 
             // EmployeeAccountForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1366, 768);
+            Controls.Add(tabControl1);
             Controls.Add(employeeFormPictureBox);
             Controls.Add(currentEmployeeName);
             Controls.Add(saveBookButton);
@@ -252,7 +312,6 @@
             Controls.Add(EmployeeFormEditModeCheckBox);
             Controls.Add(deleteBookButton);
             Controls.Add(booksFilterGroupBox);
-            Controls.Add(booksTable);
             Controls.Add(employeeFormCloseLabel);
             Controls.Add(EmployeeFormName);
             FormBorderStyle = FormBorderStyle.None;
@@ -267,6 +326,10 @@
             booksFilterGroupBox.ResumeLayout(false);
             booksFilterGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)employeeFormPictureBox).EndInit();
+            tabControl1.ResumeLayout(false);
+            tabPage1.ResumeLayout(false);
+            tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)readersTable).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -288,5 +351,9 @@
         private Label currentEmployeeName;
         private PictureBox employeeFormPictureBox;
         private OpenFileDialog employeeAccountOpenFileDialog;
+        private TabControl tabControl1;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        private DataGridView readersTable;
     }
 }

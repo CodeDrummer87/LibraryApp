@@ -18,6 +18,8 @@ namespace LibraryApp.View
         private BindingList<Book> booksList = new(); // list of all books (with binding)
         private List<Book> filteredList = new(); // list of books filtered by parameters
 
+        private BindingList<ViewReaderModel> readersList = new(); // list of all readers (with binding)
+
         private ComboBox genresComboBox = new ComboBox(); // genre drop-down list
         private ComboBox isAvailableComboBox = new ComboBox(); // drop-down list of book availability
         private ComboBox statusComboBox = new ComboBox(); // book status drop-down list
@@ -30,6 +32,8 @@ namespace LibraryApp.View
             InitializeComponent();
 
             ViewBooksTable();
+            ViewReadersTable();
+
             LoadComboBoxes();
 
             this.account = account;
@@ -183,6 +187,7 @@ namespace LibraryApp.View
             }
         }
 
+        #region Books Tab
         // get a list of books and fill booksList
         private void GetBooks()
         {
@@ -241,7 +246,7 @@ namespace LibraryApp.View
             booksTable.Columns[1].Width = 500;
             booksTable.Columns[1].HeaderText = "Название";
 
-            booksTable.Columns[2].Width = 180;
+            booksTable.Columns[2].Width = 160;
             booksTable.Columns[2].HeaderText = "Жанр";
 
             booksTable.Columns[3].Width = 280;
@@ -793,6 +798,82 @@ namespace LibraryApp.View
                 }
             }
         }
+        #endregion
+
+        #region Readers Tab
+        // get a list of readers and fill readersList
+        private void GetReaders()
+        {
+            readersList.Clear();
+
+            string query = "SELECT r.Id, r.PersonalId, r.libraryCardNumber, r.TotalBooks, " +
+                           "p.Firstname, p.Lastname, p.Surname, p.DateOfBirth " +
+                           "FROM Readers r " +
+                           "INNER JOIN Persons p " +
+                           "ON p.Id = r.PersonalId";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    readersList.Add(new ViewReaderModel
+                    {
+                        Id = reader.GetInt32(0),
+                        PersonalId = reader.GetInt32(1),
+                        libraryCardNumber = reader.GetInt32(2),
+                        TotalBooks = reader.GetInt32(3),
+                        Firstname = reader.GetString(4),
+                        Lastname = reader.GetString(5),
+                        Surname = reader.GetString(6),
+                        DateOfBirth = reader.GetString(7)
+                    });
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось загрузить список читателей:" +
+                                $"\n\"{ex.Message}\"\nОбратитесь к системному администратору для устранения ошибки.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
+
+        // by default we fill the table from readersList, which contains all readers
+        private void ViewReadersTable()
+        {
+            GetReaders();
+
+            readersTable.DataSource = readersList; // table data source
+            readersTable.MultiSelect = false; // you can't select more than one line
+
+            // set the sizes and names of the columns
+            readersTable.Columns[0].Width = 150;
+            readersTable.Columns[0].HeaderText = "Фамилия";
+
+            readersTable.Columns[1].Width = 150;
+            readersTable.Columns[1].HeaderText = "Имя";
+
+            readersTable.Columns[2].Width = 150;
+            readersTable.Columns[2].HeaderText = "Отчество";
+
+            readersTable.Columns[3].HeaderText = "Дата рождения";
+
+            readersTable.Columns[4].Visible = false; // do not display column with Id
+            readersTable.Columns[5].Visible = false; // do not display column with PersonalId
+
+            readersTable.Columns[6].HeaderText = "Номер читательского билета";
+
+            readersTable.Columns[7].HeaderText = "Количество книг";
+        }
+
+        #endregion
 
         // handling errors when working with DataGridView
         private void CheckError_DataError(object sender, DataGridViewDataErrorEventArgs anError)

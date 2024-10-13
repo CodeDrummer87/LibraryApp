@@ -97,7 +97,8 @@ namespace LibraryApp
         {
             ViewReaderModel model = new();
 
-            string query = "SELECT r.Id, r.PersonalId, r.libraryCardNumber, r.TotalBooks, p.Firstname, p.Lastname, p.Surname, p.DateOfBirth " +
+            string query = "SELECT r.Id, r.PersonalId, r.libraryCardNumber, r.TotalBooks, " +
+                           "p.Firstname, p.Lastname, p.Surname, p.DateOfBirth " +
                            "FROM Readers r " +
                            "INNER JOIN Persons p " +
                            "ON p.Id = r.PersonalId " +

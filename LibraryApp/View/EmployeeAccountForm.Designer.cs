@@ -49,6 +49,8 @@
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
             tabPage2 = new TabPage();
+            saveReaderButton = new Button();
+            addReaderButton = new Button();
             readersTable = new DataGridView();
             ((System.ComponentModel.ISupportInitialize)booksTable).BeginInit();
             booksFilterGroupBox.SuspendLayout();
@@ -99,10 +101,10 @@
             booksTable.RowHeadersVisible = false;
             booksTable.RowTemplate.Height = 25;
             booksTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            booksTable.Size = new Size(1262, 494);
+            booksTable.Size = new Size(1262, 499);
             booksTable.TabIndex = 2;
             booksTable.CellClick += BooksTable_CellClick;
-            booksTable.CellValidating += IsDigit_CellValidating;
+            booksTable.CellValidating += IsDigit_CellValidating_Books;
             booksTable.DataError += CheckError_DataError;
             booksTable.SelectionChanged += BooksTableSelectionChanged;
             // 
@@ -173,7 +175,7 @@
             // deleteBookButton
             // 
             deleteBookButton.Cursor = Cursors.Hand;
-            deleteBookButton.Location = new Point(246, 708);
+            deleteBookButton.Location = new Point(224, 524);
             deleteBookButton.Name = "deleteBookButton";
             deleteBookButton.Size = new Size(75, 23);
             deleteBookButton.TabIndex = 5;
@@ -187,7 +189,7 @@
             EmployeeFormEditModeCheckBox.Cursor = Cursors.Hand;
             EmployeeFormEditModeCheckBox.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             EmployeeFormEditModeCheckBox.ForeColor = Color.MidnightBlue;
-            EmployeeFormEditModeCheckBox.Location = new Point(366, 710);
+            EmployeeFormEditModeCheckBox.Location = new Point(344, 526);
             EmployeeFormEditModeCheckBox.Name = "EmployeeFormEditModeCheckBox";
             EmployeeFormEditModeCheckBox.Size = new Size(143, 21);
             EmployeeFormEditModeCheckBox.TabIndex = 6;
@@ -198,7 +200,7 @@
             // addBookButton
             // 
             addBookButton.Cursor = Cursors.Hand;
-            addBookButton.Location = new Point(44, 708);
+            addBookButton.Location = new Point(22, 524);
             addBookButton.Name = "addBookButton";
             addBookButton.Size = new Size(75, 23);
             addBookButton.TabIndex = 7;
@@ -209,7 +211,7 @@
             // saveBookButton
             // 
             saveBookButton.Cursor = Cursors.Hand;
-            saveBookButton.Location = new Point(145, 708);
+            saveBookButton.Location = new Point(123, 524);
             saveBookButton.Name = "saveBookButton";
             saveBookButton.Size = new Size(75, 23);
             saveBookButton.TabIndex = 8;
@@ -255,30 +257,56 @@
             tabControl1.Location = new Point(44, 154);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1276, 531);
+            tabControl1.Size = new Size(1276, 589);
             tabControl1.TabIndex = 11;
             // 
             // tabPage1
             // 
+            tabPage1.BackColor = SystemColors.Control;
             tabPage1.Controls.Add(booksTable);
+            tabPage1.Controls.Add(EmployeeFormEditModeCheckBox);
+            tabPage1.Controls.Add(deleteBookButton);
+            tabPage1.Controls.Add(saveBookButton);
+            tabPage1.Controls.Add(addBookButton);
             tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(1268, 503);
+            tabPage1.Size = new Size(1268, 561);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Книги";
-            tabPage1.UseVisualStyleBackColor = true;
             // 
             // tabPage2
             // 
+            tabPage2.BackColor = SystemColors.Control;
+            tabPage2.Controls.Add(saveReaderButton);
+            tabPage2.Controls.Add(addReaderButton);
             tabPage2.Controls.Add(readersTable);
             tabPage2.Location = new Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(1268, 503);
+            tabPage2.Size = new Size(1268, 561);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Читатели";
-            tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // saveReaderButton
+            // 
+            saveReaderButton.Location = new Point(123, 524);
+            saveReaderButton.Name = "saveReaderButton";
+            saveReaderButton.Size = new Size(75, 23);
+            saveReaderButton.TabIndex = 2;
+            saveReaderButton.Text = "Сохранить";
+            saveReaderButton.UseVisualStyleBackColor = true;
+            saveReaderButton.Click += SaveReaderButton_CLick;
+            // 
+            // addReaderButton
+            // 
+            addReaderButton.Location = new Point(22, 524);
+            addReaderButton.Name = "addReaderButton";
+            addReaderButton.Size = new Size(75, 23);
+            addReaderButton.TabIndex = 1;
+            addReaderButton.Text = "Добавить";
+            addReaderButton.UseVisualStyleBackColor = true;
+            addReaderButton.Click += AddReaderButton_Click;
             // 
             // readersTable
             // 
@@ -295,8 +323,9 @@
             readersTable.RowHeadersVisible = false;
             readersTable.RowTemplate.Height = 25;
             readersTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            readersTable.Size = new Size(1041, 494);
+            readersTable.Size = new Size(1041, 501);
             readersTable.TabIndex = 0;
+            readersTable.CellValidating += IsDigit_CellValidating_Readers;
             // 
             // EmployeeAccountForm
             // 
@@ -307,10 +336,6 @@
             Controls.Add(tabControl1);
             Controls.Add(employeeFormPictureBox);
             Controls.Add(currentEmployeeName);
-            Controls.Add(saveBookButton);
-            Controls.Add(addBookButton);
-            Controls.Add(EmployeeFormEditModeCheckBox);
-            Controls.Add(deleteBookButton);
             Controls.Add(booksFilterGroupBox);
             Controls.Add(employeeFormCloseLabel);
             Controls.Add(EmployeeFormName);
@@ -328,6 +353,7 @@
             ((System.ComponentModel.ISupportInitialize)employeeFormPictureBox).EndInit();
             tabControl1.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
+            tabPage1.PerformLayout();
             tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)readersTable).EndInit();
             ResumeLayout(false);
@@ -355,5 +381,8 @@
         private TabPage tabPage1;
         private TabPage tabPage2;
         private DataGridView readersTable;
+        private Button addReaderButton;
+        private Button button1;
+        private Button saveReaderButton;
     }
 }

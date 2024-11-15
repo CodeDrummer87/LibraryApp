@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Data.Sqlite;
 using System.Security.Cryptography;
-using System.Security.Principal;
 
 namespace LibraryApp
 {
@@ -12,7 +11,7 @@ namespace LibraryApp
         private SqliteDataReader reader;
 
         // writing data to the Readers table
-        private void SetReadersData(Person person)
+        public void SetReadersData(Person person)
         {
             string query = "INSERT INTO Readers (PersonalId, libraryCardNumber, TotalBooks) " +
                            "SELECT Persons.Id, Persons.Id + 100, @TotalBooks FROM Persons " +
@@ -95,7 +94,7 @@ namespace LibraryApp
         }
 
         // writing data to the Accounts table
-        private void SetAccountData(Person person, int role)
+        public void SetAccountData(Person person, int role)
         {
             byte[] salt = GetSalt();
             string pswdHash = GetHash(person.Password, salt);

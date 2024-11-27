@@ -49,6 +49,7 @@
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
             tabPage2 = new TabPage();
+            deleteReaderButton = new Button();
             saveReaderButton = new Button();
             addReaderButton = new Button();
             readersTable = new DataGridView();
@@ -278,6 +279,7 @@
             // tabPage2
             // 
             tabPage2.BackColor = SystemColors.Control;
+            tabPage2.Controls.Add(deleteReaderButton);
             tabPage2.Controls.Add(saveReaderButton);
             tabPage2.Controls.Add(addReaderButton);
             tabPage2.Controls.Add(readersTable);
@@ -287,6 +289,16 @@
             tabPage2.Size = new Size(1268, 561);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Читатели";
+            // 
+            // deleteReaderButton
+            // 
+            deleteReaderButton.Location = new Point(224, 524);
+            deleteReaderButton.Name = "deleteReaderButton";
+            deleteReaderButton.Size = new Size(75, 23);
+            deleteReaderButton.TabIndex = 3;
+            deleteReaderButton.Text = "Удалить";
+            deleteReaderButton.UseVisualStyleBackColor = true;
+            deleteReaderButton.Click += DeleteReaderButton_Click;
             // 
             // saveReaderButton
             // 
@@ -384,5 +396,6 @@
         private Button addReaderButton;
         private Button button1;
         private Button saveReaderButton;
+        private Button deleteReaderButton;
     }
 }

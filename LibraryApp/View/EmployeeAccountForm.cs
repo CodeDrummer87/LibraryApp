@@ -29,6 +29,7 @@ namespace LibraryApp.View
         private ComboBox genresComboBox = new ComboBox(); // genre drop-down list
         private ComboBox isAvailableComboBox = new ComboBox(); // drop-down list of book availability
         private ComboBox statusComboBox = new ComboBox(); // book status drop-down list
+
         int rowIndex = 0; // index of the row in the drop-down list
 
         bool flag = false; // flag for the operation of the line selection/deselection method
@@ -835,11 +836,13 @@ namespace LibraryApp.View
         {
             readersList.Clear();
 
+            // do not display readers who have a deletion date
             string query = "SELECT r.Id, r.PersonalId, r.libraryCardNumber, r.TotalBooks, " +
                            "p.Firstname, p.Lastname, p.Surname, p.DateOfBirth " +
                            "FROM Readers r " +
                            "INNER JOIN Persons p " +
-                           "ON p.Id = r.PersonalId";
+                           "ON p.Id = r.PersonalId " +
+                           "WHERE p.DateOfDeletion IS NULL";
 
             try
             {
@@ -1076,7 +1079,6 @@ namespace LibraryApp.View
         // save data about the reader in the Readers table and the database
         private void SaveReaderButton_CLick(object sender, EventArgs e)
         {
-
             // if the table is empty or no rows are selected, then saving doesn't work
             if (readersTable.Rows.Count == 0 || readersTable.SelectedRows.Count == 0)
                 return;
@@ -1086,7 +1088,6 @@ namespace LibraryApp.View
             // if the row has no empty cells
             if (!CheckIsNullOrWhiteSpace(2, out index))
             {
-
                 // if the saved line contains PersonalId or libraryCardNumber, we re-save the reader in the database
                 if (readersTable.CurrentRow.Cells[4].Value is not null)
                 {
@@ -1157,6 +1158,65 @@ namespace LibraryApp.View
             }
         }
 
+        // write the date of the reader's deletion in the database or just delete a row in the form
+        private void DeleteReaderButton_Click(object sender, EventArgs e)
+        {
+            // if the table is empty or no rows are selected, deletion doesn't work
+            if (readersTable.Rows.Count == 0 || readersTable.SelectedRows.Count == 0)
+                return;
+
+            // if the "Lastname", "Firstname" and "Surname" fields are not empty
+            // and the similar reader exists in the database, we delete from the database the reader
+            if (readersTable.SelectedRows[0].Cells[0].Value is not null
+             && readersTable.SelectedRows[0].Cells[1].Value is not null
+             && readersTable.SelectedRows[0].Cells[2].Value is not null
+             && CheckReaderInDataBase())
+            {
+                    MessageBoxButtons msb = MessageBoxButtons.YesNo;
+                    MessageBoxIcon icn = MessageBoxIcon.Question;
+                    String message = "Вы действительно хотите удалить этого читателя?";
+                    String caption = "Удаление читателя";
+
+                    if (MessageBox.Show(message, caption, msb, icn) == DialogResult.Yes)
+                    {
+                                            
+                        string query = "UPDATE Persons SET DateOfDeletion = @DateOfDeletion " +
+                                       "WHERE (Firstname, Lastname, Surname, DateOfBirth) = " +
+                                       "(@Firstname, @Lastname, @Surname, @DateOfBirth)";
+
+                        try
+                        {
+                            command = DataBase.GetConnection().CreateCommand();
+                            command.CommandText = query;
+                            command.Parameters.AddWithValue("@Firstname", readersTable.SelectedRows[0].Cells[1].Value.ToString());
+                            command.Parameters.AddWithValue("@Lastname", readersTable.SelectedRows[0].Cells[0].Value.ToString());
+                            command.Parameters.AddWithValue("@Surname", readersTable.SelectedRows[0].Cells[2].Value.ToString());
+                            command.Parameters.AddWithValue("@DateOfBirth", readersTable.SelectedRows[0].Cells[3].Value.ToString());
+                            command.Parameters.AddWithValue("@DateOfDeletion", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                            DataBase.OpenConnection();
+                            command.ExecuteNonQuery();
+
+                            DataBase.CloseConnection();
+
+                            readersTable.Rows.RemoveAt(readersTable.CurrentRow.Index);
+
+                            MessageBox.Show("Читатель был удален из базы данных",
+                                            "Удаление читателя", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Не удалось удалить читателя из базы данных:\n\"{ex.Message}\"\n" +
+                                            $"Обратитесь к системному администратору для её устранения.",
+                                            "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        }
+                    }
+            }
+            // if the line is not full and there is no similar reader in the database, just delete the line
+            else
+            {
+                readersTable.Rows.RemoveAt(readersTable.CurrentRow.Index);
+            }
+        }
 
         #endregion
 

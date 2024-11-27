@@ -1,7 +1,9 @@
 ﻿using LibraryApp.Models;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Data.Sqlite;
+using Microsoft.VisualBasic.Logging;
 using System.Security.Cryptography;
+using System.Windows.Forms;
 
 namespace LibraryApp
 {
@@ -270,6 +272,53 @@ namespace LibraryApp
             {
                 DataBase.CloseConnection();
             }
+        }
+
+        // checking the account for the deletion date
+        public bool CheckDeletedAccount(string login)
+        {
+            string query = "SELECT EXISTS (SELECT a.LoginId, a.Login, p.DateOfDeletion " +
+                           "FROM Accounts a " +
+                           "INNER JOIN Persons p " +
+                           "ON a.LoginId = p.Id " +
+                           "WHERE a.Login = @login AND " +
+                           "DateOfDeletion IS NULL)";
+
+            command = DataBase.GetConnection().CreateCommand();
+            command.CommandText = query;
+            command.Parameters.AddWithValue("login", login);
+
+            DataBase.OpenConnection();
+            bool answer = Convert.ToBoolean(command.ExecuteScalar());
+
+            DataBase.CloseConnection();
+            return answer;
+        }
+
+        // checking account deletion dates
+        // if the account was deleted more than a year ago,
+        // then we delete the data about it from the database
+        public void DeleteOldAccounts()
+        {
+            string query = "DELETE from Persons " +
+                           "WHERE date('now')-DateOfDeletion >= 1";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+
+                DataBase.OpenConnection();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось произвести удаление архивных аккаунтов:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка работы с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
         }
 
     }

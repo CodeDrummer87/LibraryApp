@@ -19,6 +19,8 @@ namespace LibraryApp
 
             account = new AccountActions();
             isHiddenPassword = true;
+
+            account.DeleteOldAccounts();
         }
 
         private void StartForm_Load(object? sender, EventArgs e)
@@ -136,6 +138,15 @@ namespace LibraryApp
                                 "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            // if the account has a deletion date, it's not possible to log in
+            if (!account.CheckDeletedAccount(inputedLogin))
+            {
+                MessageBox.Show($"В настоящее время вход в этот аккаунт невозможен",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
 
             // if everything was entered correctly
             Account accountDb = account.GetCurrentAccountData(inputedLogin);

@@ -117,3 +117,5 @@ C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.
 C:\Users\User\Desktop\LibraryApp\LibraryApp\bin\Debug\net7.0-windows\Microsoft.AspNetCore.Cryptography.Internal.dll
 C:\Users\User\Desktop\LibraryApp\LibraryApp\bin\Debug\net7.0-windows\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
 C:\Users\User\Desktop\LibraryApp\LibraryApp\obj\Debug\net7.0-windows\LibraryApp.View.SetReaderLoginPassword.resources
+C:\Users\User\Desktop\LibraryApp\LibraryApp\bin\Debug\net7.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\User\Desktop\LibraryApp\LibraryApp\bin\Debug\net7.0-windows\Quartz.dll

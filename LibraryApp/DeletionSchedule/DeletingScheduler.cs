@@ -16,7 +16,7 @@ namespace LibraryApp.Jobs
             ITrigger trigger = TriggerBuilder.Create() // creating a trigger
                   .WithIdentity("trigger1", "group1")  // identifying a trigger with a name and a group
                   .WithSchedule(CronScheduleBuilder
-                  .DailyAtHourAndMinute(20, 38))
+                  .DailyAtHourAndMinute(23, 59))
                   .StartNow()                          // start immediately after the start of execution
                   .Build();
 

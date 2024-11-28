@@ -22,9 +22,10 @@ namespace LibraryApp.View
         Account account;
 
         private BindingList<Book> booksList = new(); // list of all books (with binding)
-        private List<Book> filteredList = new(); // list of books filtered by parameters
+        private List<Book> filteredBooksList = new(); // list of books filtered by parameters
 
         private BindingList<ViewReaderModel> readersList = new(); // list of all readers (with binding)
+        private List<ViewReaderModel> filteredReadersList = new(); // list of readers filtered by parameters
 
         private ComboBox genresComboBox = new ComboBox(); // genre drop-down list
         private ComboBox isAvailableComboBox = new ComboBox(); // drop-down list of book availability
@@ -340,8 +341,8 @@ namespace LibraryApp.View
             }
         }
 
-        // we filter from the search field
-        private void FilterTextChanged(object sender, EventArgs e)
+        // filtering books by the search field
+        private void BooksFilterTextChanged(object sender, EventArgs e)
         {
             // if the search field is empty
             if (booksFilterBox.Text.Equals(String.Empty))
@@ -355,24 +356,24 @@ namespace LibraryApp.View
                 // by author
                 if (booksAuthorFilterRadioButton.Checked)
                 {
-                    filteredList = booksList.Where(x => x.Author.Contains(booksFilterBox.Text.Trim(),
+                    filteredBooksList = booksList.Where(x => x.Author.Contains(booksFilterBox.Text.Trim(),
                     StringComparison.OrdinalIgnoreCase)).ToList();
-                    booksTable.DataSource = filteredList;
+                    booksTable.DataSource = filteredBooksList;
                 }
 
                 // by name
                 else if (booksNameFilterRadioButton.Checked)
                 {
-                    filteredList = booksList.Where(x => x.Title.Contains(booksFilterBox.Text.Trim(),
+                    filteredBooksList = booksList.Where(x => x.Title.Contains(booksFilterBox.Text.Trim(),
                     StringComparison.OrdinalIgnoreCase)).ToList();
-                    booksTable.DataSource = filteredList;
+                    booksTable.DataSource = filteredBooksList;
                 }
 
                 // by age restrictions
                 else if (booksAgeLimitFilterRadioButton.Checked)
                 {
-                    filteredList = booksList.Where(x => x.AgeLimit.ToString().Contains(booksFilterBox.Text.Trim())).ToList();
-                    booksTable.DataSource = filteredList;
+                    filteredBooksList = booksList.Where(x => x.AgeLimit.ToString().Contains(booksFilterBox.Text.Trim())).ToList();
+                    booksTable.DataSource = filteredBooksList;
                 }
             }
         }
@@ -903,6 +904,35 @@ namespace LibraryApp.View
             readersTable.Columns[6].HeaderText = "Номер читательского билета";
 
             readersTable.Columns[7].HeaderText = "Количество книг";
+        }
+
+        // filtering readers by the search field
+        private void ReadersFilterTextChanged(object sender, EventArgs e)
+        {
+            // if the search field is empty
+            if (readersFilterBox.Text.Equals(String.Empty))
+            {
+                // then the table data source is a list with all readers readersList
+                readersTable.DataSource = readersList;
+            }
+            // if the search field is filled, then we filter (data source - filteredReadersList)
+            else
+            {
+                // by lastname
+                if (readersLastnameFilterRadioButton.Checked)
+                {
+                    filteredReadersList = readersList.Where(x => x.Lastname.Contains(readersFilterBox.Text.Trim(),
+                    StringComparison.OrdinalIgnoreCase)).ToList();
+                    readersTable.DataSource = filteredReadersList;
+                }
+
+                // by library card number
+                else if (readersLibraryCardNumberFilterRadioButton.Checked)
+                {
+                    filteredReadersList = readersList.Where(x => x.libraryCardNumber.ToString().Contains(readersFilterBox.Text.Trim())).ToList();
+                    readersTable.DataSource = filteredReadersList;
+                }
+            }
         }
 
         // check if there is a similar reader in the database

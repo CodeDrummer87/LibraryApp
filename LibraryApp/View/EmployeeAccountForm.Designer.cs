@@ -49,6 +49,10 @@
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
             tabPage2 = new TabPage();
+            groupBox1 = new GroupBox();
+            readersFilterBox = new TextBox();
+            readersLibraryCardNumberFilterRadioButton = new RadioButton();
+            readersLastnameFilterRadioButton = new RadioButton();
             deleteReaderButton = new Button();
             saveReaderButton = new Button();
             addReaderButton = new Button();
@@ -59,6 +63,7 @@
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             tabPage2.SuspendLayout();
+            groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)readersTable).BeginInit();
             SuspendLayout();
             // 
@@ -66,7 +71,7 @@
             // 
             EmployeeFormName.AutoSize = true;
             EmployeeFormName.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point);
-            EmployeeFormName.Location = new Point(35, 27);
+            EmployeeFormName.Location = new Point(44, 45);
             EmployeeFormName.Name = "EmployeeFormName";
             EmployeeFormName.Size = new Size(473, 45);
             EmployeeFormName.TabIndex = 0;
@@ -97,12 +102,12 @@
             booksTable.BackgroundColor = SystemColors.Control;
             booksTable.BorderStyle = BorderStyle.None;
             booksTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            booksTable.Location = new Point(3, 6);
+            booksTable.Location = new Point(3, 75);
             booksTable.Name = "booksTable";
             booksTable.RowHeadersVisible = false;
             booksTable.RowTemplate.Height = 25;
             booksTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            booksTable.Size = new Size(1262, 499);
+            booksTable.Size = new Size(1262, 443);
             booksTable.TabIndex = 2;
             booksTable.CellClick += BooksTable_CellClick;
             booksTable.CellValidating += IsDigit_CellValidating_Books;
@@ -117,7 +122,7 @@
             booksFilterGroupBox.Controls.Add(booksAuthorFilterRadioButton);
             booksFilterGroupBox.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold, GraphicsUnit.Point);
             booksFilterGroupBox.ForeColor = Color.MidnightBlue;
-            booksFilterGroupBox.Location = new Point(44, 81);
+            booksFilterGroupBox.Location = new Point(3, 6);
             booksFilterGroupBox.Name = "booksFilterGroupBox";
             booksFilterGroupBox.Size = new Size(589, 63);
             booksFilterGroupBox.TabIndex = 3;
@@ -131,7 +136,7 @@
             booksFilterBox.Name = "booksFilterBox";
             booksFilterBox.Size = new Size(205, 25);
             booksFilterBox.TabIndex = 3;
-            booksFilterBox.TextChanged += FilterTextChanged;
+            booksFilterBox.TextChanged += BooksFilterTextChanged;
             // 
             // booksAgeLimitFilterRadioButton
             // 
@@ -176,7 +181,7 @@
             // deleteBookButton
             // 
             deleteBookButton.Cursor = Cursors.Hand;
-            deleteBookButton.Location = new Point(224, 524);
+            deleteBookButton.Location = new Point(224, 548);
             deleteBookButton.Name = "deleteBookButton";
             deleteBookButton.Size = new Size(75, 23);
             deleteBookButton.TabIndex = 5;
@@ -190,7 +195,7 @@
             EmployeeFormEditModeCheckBox.Cursor = Cursors.Hand;
             EmployeeFormEditModeCheckBox.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             EmployeeFormEditModeCheckBox.ForeColor = Color.MidnightBlue;
-            EmployeeFormEditModeCheckBox.Location = new Point(344, 526);
+            EmployeeFormEditModeCheckBox.Location = new Point(344, 550);
             EmployeeFormEditModeCheckBox.Name = "EmployeeFormEditModeCheckBox";
             EmployeeFormEditModeCheckBox.Size = new Size(143, 21);
             EmployeeFormEditModeCheckBox.TabIndex = 6;
@@ -201,7 +206,7 @@
             // addBookButton
             // 
             addBookButton.Cursor = Cursors.Hand;
-            addBookButton.Location = new Point(22, 524);
+            addBookButton.Location = new Point(22, 548);
             addBookButton.Name = "addBookButton";
             addBookButton.Size = new Size(75, 23);
             addBookButton.TabIndex = 7;
@@ -212,7 +217,7 @@
             // saveBookButton
             // 
             saveBookButton.Cursor = Cursors.Hand;
-            saveBookButton.Location = new Point(123, 524);
+            saveBookButton.Location = new Point(123, 548);
             saveBookButton.Name = "saveBookButton";
             saveBookButton.Size = new Size(75, 23);
             saveBookButton.TabIndex = 8;
@@ -225,7 +230,7 @@
             currentEmployeeName.Cursor = Cursors.Hand;
             currentEmployeeName.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
             currentEmployeeName.ForeColor = Color.MidnightBlue;
-            currentEmployeeName.Location = new Point(804, 76);
+            currentEmployeeName.Location = new Point(796, 62);
             currentEmployeeName.Name = "currentEmployeeName";
             currentEmployeeName.Size = new Size(374, 29);
             currentEmployeeName.TabIndex = 9;
@@ -240,7 +245,7 @@
             employeeFormPictureBox.BackColor = Color.Transparent;
             employeeFormPictureBox.BackgroundImage = Properties.Resources.default1;
             employeeFormPictureBox.Cursor = Cursors.Hand;
-            employeeFormPictureBox.Location = new Point(1203, 36);
+            employeeFormPictureBox.Location = new Point(1195, 18);
             employeeFormPictureBox.Name = "employeeFormPictureBox";
             employeeFormPictureBox.Size = new Size(100, 100);
             employeeFormPictureBox.TabIndex = 10;
@@ -255,10 +260,10 @@
             // 
             tabControl1.Controls.Add(tabPage1);
             tabControl1.Controls.Add(tabPage2);
-            tabControl1.Location = new Point(44, 154);
+            tabControl1.Location = new Point(44, 118);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1276, 589);
+            tabControl1.Size = new Size(1276, 625);
             tabControl1.TabIndex = 11;
             // 
             // tabPage1
@@ -267,18 +272,20 @@
             tabPage1.Controls.Add(booksTable);
             tabPage1.Controls.Add(EmployeeFormEditModeCheckBox);
             tabPage1.Controls.Add(deleteBookButton);
+            tabPage1.Controls.Add(booksFilterGroupBox);
             tabPage1.Controls.Add(saveBookButton);
             tabPage1.Controls.Add(addBookButton);
             tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(1268, 561);
+            tabPage1.Size = new Size(1268, 597);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Книги";
             // 
             // tabPage2
             // 
             tabPage2.BackColor = SystemColors.Control;
+            tabPage2.Controls.Add(groupBox1);
             tabPage2.Controls.Add(deleteReaderButton);
             tabPage2.Controls.Add(saveReaderButton);
             tabPage2.Controls.Add(addReaderButton);
@@ -286,13 +293,63 @@
             tabPage2.Location = new Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(1268, 561);
+            tabPage2.Size = new Size(1268, 597);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Читатели";
             // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(readersFilterBox);
+            groupBox1.Controls.Add(readersLibraryCardNumberFilterRadioButton);
+            groupBox1.Controls.Add(readersLastnameFilterRadioButton);
+            groupBox1.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold, GraphicsUnit.Point);
+            groupBox1.ForeColor = Color.MidnightBlue;
+            groupBox1.Location = new Point(3, 6);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(589, 63);
+            groupBox1.TabIndex = 4;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Фильтрация";
+            // 
+            // readersFilterBox
+            // 
+            readersFilterBox.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            readersFilterBox.Location = new Point(368, 26);
+            readersFilterBox.Name = "readersFilterBox";
+            readersFilterBox.Size = new Size(205, 25);
+            readersFilterBox.TabIndex = 3;
+            readersFilterBox.TextChanged += ReadersFilterTextChanged;
+            // 
+            // readersLibraryCardNumberFilterRadioButton
+            // 
+            readersLibraryCardNumberFilterRadioButton.AutoSize = true;
+            readersLibraryCardNumberFilterRadioButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            readersLibraryCardNumberFilterRadioButton.ForeColor = Color.Black;
+            readersLibraryCardNumberFilterRadioButton.Location = new Point(122, 30);
+            readersLibraryCardNumberFilterRadioButton.Name = "readersLibraryCardNumberFilterRadioButton";
+            readersLibraryCardNumberFilterRadioButton.Size = new Size(224, 21);
+            readersLibraryCardNumberFilterRadioButton.TabIndex = 1;
+            readersLibraryCardNumberFilterRadioButton.TabStop = true;
+            readersLibraryCardNumberFilterRadioButton.Text = "по номеру читательского билета";
+            readersLibraryCardNumberFilterRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // readersLastnameFilterRadioButton
+            // 
+            readersLastnameFilterRadioButton.AutoSize = true;
+            readersLastnameFilterRadioButton.Checked = true;
+            readersLastnameFilterRadioButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            readersLastnameFilterRadioButton.ForeColor = Color.Black;
+            readersLastnameFilterRadioButton.Location = new Point(15, 30);
+            readersLastnameFilterRadioButton.Name = "readersLastnameFilterRadioButton";
+            readersLastnameFilterRadioButton.Size = new Size(98, 21);
+            readersLastnameFilterRadioButton.TabIndex = 0;
+            readersLastnameFilterRadioButton.TabStop = true;
+            readersLastnameFilterRadioButton.Text = "по фамилии";
+            readersLastnameFilterRadioButton.UseVisualStyleBackColor = true;
+            // 
             // deleteReaderButton
             // 
-            deleteReaderButton.Location = new Point(224, 524);
+            deleteReaderButton.Location = new Point(224, 548);
             deleteReaderButton.Name = "deleteReaderButton";
             deleteReaderButton.Size = new Size(75, 23);
             deleteReaderButton.TabIndex = 3;
@@ -302,7 +359,7 @@
             // 
             // saveReaderButton
             // 
-            saveReaderButton.Location = new Point(123, 524);
+            saveReaderButton.Location = new Point(123, 548);
             saveReaderButton.Name = "saveReaderButton";
             saveReaderButton.Size = new Size(75, 23);
             saveReaderButton.TabIndex = 2;
@@ -312,7 +369,7 @@
             // 
             // addReaderButton
             // 
-            addReaderButton.Location = new Point(22, 524);
+            addReaderButton.Location = new Point(22, 548);
             addReaderButton.Name = "addReaderButton";
             addReaderButton.Size = new Size(75, 23);
             addReaderButton.TabIndex = 1;
@@ -330,12 +387,12 @@
             readersTable.BackgroundColor = SystemColors.Control;
             readersTable.BorderStyle = BorderStyle.None;
             readersTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            readersTable.Location = new Point(3, 6);
+            readersTable.Location = new Point(3, 75);
             readersTable.Name = "readersTable";
             readersTable.RowHeadersVisible = false;
             readersTable.RowTemplate.Height = 25;
             readersTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            readersTable.Size = new Size(1041, 501);
+            readersTable.Size = new Size(1041, 450);
             readersTable.TabIndex = 0;
             readersTable.CellValidating += IsDigit_CellValidating_Readers;
             // 
@@ -348,7 +405,6 @@
             Controls.Add(tabControl1);
             Controls.Add(employeeFormPictureBox);
             Controls.Add(currentEmployeeName);
-            Controls.Add(booksFilterGroupBox);
             Controls.Add(employeeFormCloseLabel);
             Controls.Add(EmployeeFormName);
             FormBorderStyle = FormBorderStyle.None;
@@ -367,6 +423,8 @@
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();
             tabPage2.ResumeLayout(false);
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)readersTable).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -397,5 +455,9 @@
         private Button button1;
         private Button saveReaderButton;
         private Button deleteReaderButton;
+        private GroupBox groupBox1;
+        private TextBox readersFilterBox;
+        private RadioButton readersLibraryCardNumberFilterRadioButton;
+        private RadioButton readersLastnameFilterRadioButton;
     }
 }

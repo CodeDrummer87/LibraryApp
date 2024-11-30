@@ -79,7 +79,7 @@ namespace LibraryApp.View
         // creating a new post
         public void CreatePost()
         {
-           if(CheckPostNameLength())
+            if (CheckPostNameLength())
             {
                 MessageBox.Show($"Название должности должно содержать больше трёх букв",
                                 "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -87,7 +87,7 @@ namespace LibraryApp.View
             }
             else
             {
-                if(CheckPostNameNumberContains(createPostNewPostBox.Text.Trim()))
+                if (CheckPostNameNumberContains(createPostNewPostBox.Text.Trim()))
                 {
                     MessageBox.Show($"Название должности не должно содержать цифры",
                                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);

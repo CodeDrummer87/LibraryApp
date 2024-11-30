@@ -1,3 +1,5 @@
+using LibraryApp.Jobs;
+
 namespace LibraryApp
 {
     internal static class Program
@@ -6,6 +8,10 @@ namespace LibraryApp
         static void Main()
         {
             ApplicationConfiguration.Initialize();
+
+            // starting the work of deleting old accounts
+            DeletingScheduler.Start();
+
             Application.Run(new StartForm());
         }
     }

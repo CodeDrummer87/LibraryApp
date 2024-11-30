@@ -22,6 +22,9 @@
     <Compile Update="View\RegForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="View\SubForms\SetReaderLoginPassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="View\StartForm.cs">
       <SubType>Form</SubType>
     </Compile>

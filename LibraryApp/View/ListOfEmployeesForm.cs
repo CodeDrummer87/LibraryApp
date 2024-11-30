@@ -234,7 +234,7 @@ namespace LibraryApp.View
                 {
                     if (days == 4)
                     {
-                        listOfEmployeesBirthdayListBox.Items.Add(Convert.ToString(item.Lastname + " " 
+                        listOfEmployeesBirthdayListBox.Items.Add(Convert.ToString(item.Lastname + " "
                         + item.Firstname.Substring(0, 1) + "." + item.Surname.Substring(0, 1) + "."));
                     }
                 }
@@ -244,7 +244,7 @@ namespace LibraryApp.View
                 {
                     if (days == 3)
                     {
-                        listOfEmployeesBirthdayListBox.Items.Add(Convert.ToString(item.Lastname + " " 
+                        listOfEmployeesBirthdayListBox.Items.Add(Convert.ToString(item.Lastname + " "
                         + item.Firstname.Substring(0, 1) + "." + item.Surname.Substring(0, 1) + "."));
                     }
                 }
@@ -254,7 +254,7 @@ namespace LibraryApp.View
                 {
                     if (days == 2)
                     {
-                        listOfEmployeesBirthdayListBox.Items.Add(Convert.ToString(item.Lastname + " " 
+                        listOfEmployeesBirthdayListBox.Items.Add(Convert.ToString(item.Lastname + " "
                         + item.Firstname.Substring(0, 1) + "." + item.Surname.Substring(0, 1) + "."));
                     }
                 }

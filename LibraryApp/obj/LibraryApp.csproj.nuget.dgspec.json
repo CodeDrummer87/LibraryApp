@@ -47,6 +47,10 @@
             "Microsoft.Data.Sqlite": {
               "target": "Package",
               "version": "[7.0.9, )"
+            },
+            "Quartz": {
+              "target": "Package",
+              "version": "[3.13.1, )"
             }
           },
           "imports": [

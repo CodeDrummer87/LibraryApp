@@ -10,18 +10,18 @@ namespace LibraryApp
         private SqliteCommand? command;
         private SqliteDataReader? reader;
 
-        private int currentLoginId;
         private StartForm startForm;
+        Account account;
 
-        public UserAccountForm(StartForm startForm, int currentLoginId)
+        public UserAccountForm(StartForm startForm, Account account)
         {
             InitializeComponent();
             GetCurrentDate();
 
-            this.currentLoginId = currentLoginId!;
+            this.account = account;
             this.startForm = startForm;
 
-            PutCurrentUserData(GetCurrentUserData(currentLoginId));
+            PutCurrentUserData(GetCurrentUserData(account.LoginId));
         }
 
         #region Window control buttons
@@ -79,6 +79,17 @@ namespace LibraryApp
             currentDateOfBirth.Text = $"Дата рождения: {reader.DateOfBirth}";
             currentLibraryCardNumber.Text = reader.libraryCardNumber.ToString();
             currentTotalBooks.Text = reader.TotalBooks.ToString();
+
+            // if the database contains data about the file path, display the profile photo
+            if (account.ImagePath is not null)
+            {
+                using (var stream = new FileStream(Environment.ExpandEnvironmentVariables(@"%appdata%\LibraryApp\avatars\") + account.ImagePath, FileMode.Open))
+                {
+                    userAccountPictureBox.BackgroundImage = null;
+                    userAccountPictureBox.Image = Image.FromStream(stream);
+                    userAccountPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+                }
+            }
         }
 
         // get the current user's data
@@ -86,7 +97,8 @@ namespace LibraryApp
         {
             ViewReaderModel model = new();
 
-            string query = "SELECT r.Id, r.PersonalId, r.libraryCardNumber, r.TotalBooks, p.Firstname, p.Lastname, p.Surname, p.DateOfBirth " +
+            string query = "SELECT r.Id, r.PersonalId, r.libraryCardNumber, r.TotalBooks, " +
+                           "p.Firstname, p.Lastname, p.Surname, p.DateOfBirth " +
                            "FROM Readers r " +
                            "INNER JOIN Persons p " +
                            "ON p.Id = r.PersonalId " +
@@ -128,6 +140,48 @@ namespace LibraryApp
             DataBase.CloseConnection();
             return model;
         }
+
+        // change the profile image by clicking on it
+        private void ChangeProfileImage(object sender, EventArgs e)
+        {
+            // opening the file dialog
+            userAccountOpenFileDialog.FileName = "Image";
+            userAccountOpenFileDialog.Filter = "PNG (*.png)|*.png";
+            userAccountOpenFileDialog.Title = "Выберите файл с изображением";
+
+            if (userAccountOpenFileDialog.ShowDialog() == DialogResult.Cancel)
+                return;
+
+            // saving the image to the PictureBox
+            userAccountPictureBox.BackgroundImage = null;
+
+            userAccountPictureBox.Image = new Bitmap(userAccountOpenFileDialog.FileName);
+
+            userAccountPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+            userAccountPictureBox.Update();
+
+            // the name of the file to save
+            string fileName = account.Login + ".png";
+
+            // the saving path
+            string savePath = Environment.ExpandEnvironmentVariables(@"%appdata%\LibraryApp\avatars\") + fileName;
+
+            if (userAccountPictureBox.Image is not null)
+            {
+                try
+                {
+                    // saving the file
+                    userAccountPictureBox.Image.Save(savePath, System.Drawing.Imaging.ImageFormat.Png);
+                    AccountActions.SetImagePathData(command, fileName, account.LoginId);
+                }
+                catch
+                {
+                    MessageBox.Show("Невозможно сохранить изображение профиля", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
 
         #region Move the Form
         private void ThisForm_MouseDown(object sender, MouseEventArgs e)

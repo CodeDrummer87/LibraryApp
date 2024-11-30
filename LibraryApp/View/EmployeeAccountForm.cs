@@ -1270,7 +1270,12 @@ namespace LibraryApp.View
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    if (Convert.ToDateTime(reader.GetString(4)) == DateTime.Today)
+                    var current = DateTime.Today;
+                    var date = Convert.ToDateTime(reader.GetString(4));
+                    var year = current.Month > date.Month || current.Month == date.Month && current.Day > date.Day ? current.Year + 1 : current.Year;
+                    var days = (new DateTime(year, date.Month, date.Day) - current).TotalDays;
+
+                    if (days == 0)
                     {
                         birthdayList.Add(new ViewBirthdayModel
                         {
@@ -1293,9 +1298,34 @@ namespace LibraryApp.View
 
             DataBase.CloseConnection();
 
-            birthdayPeople.Text = $"Число читателей, у которых сегодня день рождения: {birthdayList.Count}";
+            birthdayReaders.Text = $"Число читателей, у которых сегодня день рождения: {birthdayList.Count}";
+
+            ShowTodayBirthdays();
         }
 
+        // displaying readers who have a birthday in the ListBox
+        private void ShowTodayBirthdays()
+        {
+            EmployeeAccountBirthdayListBox.Items.Clear();
+
+            foreach (ViewBirthdayModel item in birthdayList)
+            {
+                EmployeeAccountBirthdayListBox.Items.Add(Convert.ToString(item.Lastname + " "
+                + item.Firstname + " " + item.Surname));
+            }
+
+            // if there are no dates and nothing has been added to the ListBox, then we display "no"
+            if (EmployeeAccountBirthdayListBox.Items.Count == 0)
+            {
+                EmployeeAccountBirthdayListBox.Items.Add("(нет)");
+            }
+        }
+
+        // displaying or hiding the birthday ListBox on click
+        private void BirthdayReaders_Click(object sender, EventArgs e)
+        {
+            EmployeeAccountBirthdayListBox.Visible = !EmployeeAccountBirthdayListBox.Visible;  
+        }
 
         #endregion
 

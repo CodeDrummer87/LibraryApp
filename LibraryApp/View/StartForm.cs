@@ -17,6 +17,8 @@ namespace LibraryApp
 
             CreateServiceFolders();
 
+            KeyPreview = true;
+
             account = new AccountActions();
             isHiddenPassword = true;
 
@@ -189,5 +191,15 @@ namespace LibraryApp
             loginInputBox.Focus();
         }
 
+        // authentication by pressing Enter key
+        private void StartForm_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) authButton.PerformClick();
+        }
+
+        private void StartForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) e.SuppressKeyPress = true;
+        }
     }
 }

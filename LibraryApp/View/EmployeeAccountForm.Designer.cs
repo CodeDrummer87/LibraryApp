@@ -49,7 +49,8 @@
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
             tabPage2 = new TabPage();
-            birthdayPeople = new Label();
+            EmployeeAccountBirthdayListBox = new ListBox();
+            birthdayReaders = new Label();
             groupBox1 = new GroupBox();
             readersFilterBox = new TextBox();
             readersLibraryCardNumberFilterRadioButton = new RadioButton();
@@ -231,7 +232,7 @@
             currentEmployeeName.Cursor = Cursors.Hand;
             currentEmployeeName.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
             currentEmployeeName.ForeColor = Color.MidnightBlue;
-            currentEmployeeName.Location = new Point(796, 57);
+            currentEmployeeName.Location = new Point(795, 58);
             currentEmployeeName.Name = "currentEmployeeName";
             currentEmployeeName.Size = new Size(374, 29);
             currentEmployeeName.TabIndex = 9;
@@ -285,8 +286,9 @@
             // 
             // tabPage2
             // 
-            tabPage2.BackColor = SystemColors.Control;
-            tabPage2.Controls.Add(birthdayPeople);
+            tabPage2.BackColor = Color.Transparent;
+            tabPage2.Controls.Add(EmployeeAccountBirthdayListBox);
+            tabPage2.Controls.Add(birthdayReaders);
             tabPage2.Controls.Add(groupBox1);
             tabPage2.Controls.Add(deleteReaderButton);
             tabPage2.Controls.Add(saveReaderButton);
@@ -299,15 +301,28 @@
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Читатели";
             // 
-            // birthdayPeople
+            // EmployeeAccountBirthdayListBox
             // 
-            birthdayPeople.AutoSize = true;
-            birthdayPeople.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            birthdayPeople.Location = new Point(857, 94);
-            birthdayPeople.Name = "birthdayPeople";
-            birthdayPeople.Size = new Size(87, 15);
-            birthdayPeople.TabIndex = 5;
-            birthdayPeople.Text = "birthdayPeople";
+            EmployeeAccountBirthdayListBox.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            EmployeeAccountBirthdayListBox.FormattingEnabled = true;
+            EmployeeAccountBirthdayListBox.ItemHeight = 17;
+            EmployeeAccountBirthdayListBox.Location = new Point(857, 121);
+            EmployeeAccountBirthdayListBox.Name = "EmployeeAccountBirthdayListBox";
+            EmployeeAccountBirthdayListBox.Size = new Size(260, 106);
+            EmployeeAccountBirthdayListBox.TabIndex = 6;
+            EmployeeAccountBirthdayListBox.Visible = false;
+            // 
+            // birthdayReaders
+            // 
+            birthdayReaders.AutoSize = true;
+            birthdayReaders.Cursor = Cursors.Hand;
+            birthdayReaders.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            birthdayReaders.Location = new Point(852, 94);
+            birthdayReaders.Name = "birthdayReaders";
+            birthdayReaders.Size = new Size(104, 17);
+            birthdayReaders.TabIndex = 5;
+            birthdayReaders.Text = "birthdayReaders";
+            birthdayReaders.Click += BirthdayReaders_Click;
             // 
             // groupBox1
             // 
@@ -404,7 +419,7 @@
             readersTable.RowHeadersVisible = false;
             readersTable.RowTemplate.Height = 25;
             readersTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            readersTable.Size = new Size(848, 450);
+            readersTable.Size = new Size(848, 446);
             readersTable.TabIndex = 0;
             readersTable.CellValidating += IsDigit_CellValidating_Readers;
             // 
@@ -472,6 +487,7 @@
         private TextBox readersFilterBox;
         private RadioButton readersLibraryCardNumberFilterRadioButton;
         private RadioButton readersLastnameFilterRadioButton;
-        private Label birthdayPeople;
+        private Label birthdayReaders;
+        private ListBox EmployeeAccountBirthdayListBox;
     }
 }

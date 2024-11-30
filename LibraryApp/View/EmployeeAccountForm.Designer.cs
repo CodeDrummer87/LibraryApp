@@ -49,6 +49,7 @@
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
             tabPage2 = new TabPage();
+            birthdayPeople = new Label();
             groupBox1 = new GroupBox();
             readersFilterBox = new TextBox();
             readersLibraryCardNumberFilterRadioButton = new RadioButton();
@@ -230,7 +231,7 @@
             currentEmployeeName.Cursor = Cursors.Hand;
             currentEmployeeName.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
             currentEmployeeName.ForeColor = Color.MidnightBlue;
-            currentEmployeeName.Location = new Point(796, 62);
+            currentEmployeeName.Location = new Point(796, 57);
             currentEmployeeName.Name = "currentEmployeeName";
             currentEmployeeName.Size = new Size(374, 29);
             currentEmployeeName.TabIndex = 9;
@@ -285,6 +286,7 @@
             // tabPage2
             // 
             tabPage2.BackColor = SystemColors.Control;
+            tabPage2.Controls.Add(birthdayPeople);
             tabPage2.Controls.Add(groupBox1);
             tabPage2.Controls.Add(deleteReaderButton);
             tabPage2.Controls.Add(saveReaderButton);
@@ -296,6 +298,16 @@
             tabPage2.Size = new Size(1268, 597);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Читатели";
+            // 
+            // birthdayPeople
+            // 
+            birthdayPeople.AutoSize = true;
+            birthdayPeople.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            birthdayPeople.Location = new Point(857, 94);
+            birthdayPeople.Name = "birthdayPeople";
+            birthdayPeople.Size = new Size(87, 15);
+            birthdayPeople.TabIndex = 5;
+            birthdayPeople.Text = "birthdayPeople";
             // 
             // groupBox1
             // 
@@ -392,7 +404,7 @@
             readersTable.RowHeadersVisible = false;
             readersTable.RowTemplate.Height = 25;
             readersTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            readersTable.Size = new Size(1041, 450);
+            readersTable.Size = new Size(848, 450);
             readersTable.TabIndex = 0;
             readersTable.CellValidating += IsDigit_CellValidating_Readers;
             // 
@@ -423,6 +435,7 @@
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();
             tabPage2.ResumeLayout(false);
+            tabPage2.PerformLayout();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)readersTable).EndInit();
@@ -459,5 +472,6 @@
         private TextBox readersFilterBox;
         private RadioButton readersLibraryCardNumberFilterRadioButton;
         private RadioButton readersLastnameFilterRadioButton;
+        private Label birthdayPeople;
     }
 }

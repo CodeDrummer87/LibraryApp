@@ -27,6 +27,8 @@ namespace LibraryApp.View
         private BindingList<ViewReaderModel> readersList = new(); // list of all readers (with binding)
         private List<ViewReaderModel> filteredReadersList = new(); // list of readers filtered by parameters
 
+        private List<ViewBirthdayModel> birthdayList = new(); // list of birthdays
+
         private ComboBox genresComboBox = new ComboBox(); // genre drop-down list
         private ComboBox isAvailableComboBox = new ComboBox(); // drop-down list of book availability
         private ComboBox statusComboBox = new ComboBox(); // book status drop-down list
@@ -48,6 +50,8 @@ namespace LibraryApp.View
             this.startForm = startForm;
 
             PutCurrentEmployeeName(GetCurrentEmployeeName(account.LoginId));
+
+            GetTodayBirthdays();
         }
 
 
@@ -1202,44 +1206,44 @@ namespace LibraryApp.View
              && readersTable.SelectedRows[0].Cells[2].Value is not null
              && CheckReaderInDataBase())
             {
-                    MessageBoxButtons msb = MessageBoxButtons.YesNo;
-                    MessageBoxIcon icn = MessageBoxIcon.Question;
-                    String message = "Вы действительно хотите удалить этого читателя?";
-                    String caption = "Удаление читателя";
+                MessageBoxButtons msb = MessageBoxButtons.YesNo;
+                MessageBoxIcon icn = MessageBoxIcon.Question;
+                String message = "Вы действительно хотите удалить этого читателя?";
+                String caption = "Удаление читателя";
 
-                    if (MessageBox.Show(message, caption, msb, icn) == DialogResult.Yes)
+                if (MessageBox.Show(message, caption, msb, icn) == DialogResult.Yes)
+                {
+
+                    string query = "UPDATE Persons SET DateOfDeletion = @DateOfDeletion " +
+                                   "WHERE (Firstname, Lastname, Surname, DateOfBirth) = " +
+                                   "(@Firstname, @Lastname, @Surname, @DateOfBirth)";
+
+                    try
                     {
-                                            
-                        string query = "UPDATE Persons SET DateOfDeletion = @DateOfDeletion " +
-                                       "WHERE (Firstname, Lastname, Surname, DateOfBirth) = " +
-                                       "(@Firstname, @Lastname, @Surname, @DateOfBirth)";
+                        command = DataBase.GetConnection().CreateCommand();
+                        command.CommandText = query;
+                        command.Parameters.AddWithValue("@Firstname", readersTable.SelectedRows[0].Cells[1].Value.ToString());
+                        command.Parameters.AddWithValue("@Lastname", readersTable.SelectedRows[0].Cells[0].Value.ToString());
+                        command.Parameters.AddWithValue("@Surname", readersTable.SelectedRows[0].Cells[2].Value.ToString());
+                        command.Parameters.AddWithValue("@DateOfBirth", readersTable.SelectedRows[0].Cells[3].Value.ToString());
+                        command.Parameters.AddWithValue("@DateOfDeletion", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                        DataBase.OpenConnection();
+                        command.ExecuteNonQuery();
 
-                        try
-                        {
-                            command = DataBase.GetConnection().CreateCommand();
-                            command.CommandText = query;
-                            command.Parameters.AddWithValue("@Firstname", readersTable.SelectedRows[0].Cells[1].Value.ToString());
-                            command.Parameters.AddWithValue("@Lastname", readersTable.SelectedRows[0].Cells[0].Value.ToString());
-                            command.Parameters.AddWithValue("@Surname", readersTable.SelectedRows[0].Cells[2].Value.ToString());
-                            command.Parameters.AddWithValue("@DateOfBirth", readersTable.SelectedRows[0].Cells[3].Value.ToString());
-                            command.Parameters.AddWithValue("@DateOfDeletion", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
-                            DataBase.OpenConnection();
-                            command.ExecuteNonQuery();
+                        DataBase.CloseConnection();
 
-                            DataBase.CloseConnection();
+                        readersTable.Rows.RemoveAt(readersTable.CurrentRow.Index);
 
-                            readersTable.Rows.RemoveAt(readersTable.CurrentRow.Index);
-
-                            MessageBox.Show("Читатель был удален из базы данных",
-                                            "Удаление читателя", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show($"Не удалось удалить читателя из базы данных:\n\"{ex.Message}\"\n" +
-                                            $"Обратитесь к системному администратору для её устранения.",
-                                            "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                        }
+                        MessageBox.Show("Читатель был удален из базы данных",
+                                        "Удаление читателя", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Не удалось удалить читателя из базы данных:\n\"{ex.Message}\"\n" +
+                                        $"Обратитесь к системному администратору для её устранения.",
+                                        "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    }
+                }
             }
             // if the line is not full and there is no similar reader in the database, just delete the line
             else
@@ -1247,6 +1251,51 @@ namespace LibraryApp.View
                 readersTable.Rows.RemoveAt(readersTable.CurrentRow.Index);
             }
         }
+
+        // get the number of readers who have a birthday today
+        private void GetTodayBirthdays()
+        {
+            string query = "SELECT p.Id, p.Lastname, p.Firstname, p.Surname, p.DateOfBirth " +
+                           "FROM Readers r " +
+                           "INNER JOIN Persons p " +
+                           "ON p.Id = r.PersonalId " +
+                           "ORDER BY p.Lastname";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (Convert.ToDateTime(reader.GetString(4)) == DateTime.Today)
+                    {
+                        birthdayList.Add(new ViewBirthdayModel
+                        {
+                            Id = reader.GetInt32(0),
+                            Lastname = reader.GetString(1),
+                            Firstname = reader.GetString(2),
+                            Surname = reader.GetString(3),
+                            DateOfBirth = reader.GetString(4)
+                        });
+                    }
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось загрузить список дней рождения:" +
+                                $"\n\"{ex.Message}\"\nОбратитесь к системному администратору для устранения ошибки.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+
+            birthdayPeople.Text = $"Число читателей, у которых сегодня день рождения: {birthdayList.Count}";
+        }
+
 
         #endregion
 

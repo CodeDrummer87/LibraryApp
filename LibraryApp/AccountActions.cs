@@ -1,9 +1,7 @@
 ﻿using LibraryApp.Models;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Data.Sqlite;
-using Microsoft.VisualBasic.Logging;
 using System.Security.Cryptography;
-using System.Windows.Forms;
 
 namespace LibraryApp
 {

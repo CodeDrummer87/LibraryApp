@@ -43,7 +43,14 @@ namespace LibraryApp
             userAccountPictureBox = new PictureBox();
             exitToStartFormLabel = new Label();
             userAccountOpenFileDialog = new OpenFileDialog();
+            userAccountTabControl = new TabControl();
+            tabPage1 = new TabPage();
+            availableBooksTable = new DataGridView();
+            tabPage2 = new TabPage();
             ((System.ComponentModel.ISupportInitialize)userAccountPictureBox).BeginInit();
+            userAccountTabControl.SuspendLayout();
+            tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)availableBooksTable).BeginInit();
             SuspendLayout();
             // 
             // currentDateLabel
@@ -52,7 +59,7 @@ namespace LibraryApp
             currentDateLabel.BackColor = Color.Transparent;
             currentDateLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentDateLabel.ForeColor = Color.MidnightBlue;
-            currentDateLabel.Location = new Point(684, 61);
+            currentDateLabel.Location = new Point(643, 63);
             currentDateLabel.Name = "currentDateLabel";
             currentDateLabel.Size = new Size(111, 17);
             currentDateLabel.TabIndex = 0;
@@ -63,7 +70,7 @@ namespace LibraryApp
             currentLibraryCardNumber.AutoSize = true;
             currentLibraryCardNumber.BackColor = Color.Transparent;
             currentLibraryCardNumber.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            currentLibraryCardNumber.Location = new Point(367, 180);
+            currentLibraryCardNumber.Location = new Point(849, 91);
             currentLibraryCardNumber.Name = "currentLibraryCardNumber";
             currentLibraryCardNumber.Size = new Size(172, 17);
             currentLibraryCardNumber.TabIndex = 2;
@@ -75,7 +82,7 @@ namespace LibraryApp
             currentTotalBooks.BackColor = Color.Transparent;
             currentTotalBooks.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentTotalBooks.ForeColor = SystemColors.ControlText;
-            currentTotalBooks.Location = new Point(244, 204);
+            currentTotalBooks.Location = new Point(726, 123);
             currentTotalBooks.Name = "currentTotalBooks";
             currentTotalBooks.Size = new Size(118, 17);
             currentTotalBooks.TabIndex = 3;
@@ -87,7 +94,7 @@ namespace LibraryApp
             currentLibraryCardNumberLabel.BackColor = Color.Transparent;
             currentLibraryCardNumberLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentLibraryCardNumberLabel.ForeColor = Color.MidnightBlue;
-            currentLibraryCardNumberLabel.Location = new Point(161, 180);
+            currentLibraryCardNumberLabel.Location = new Point(643, 91);
             currentLibraryCardNumberLabel.Name = "currentLibraryCardNumberLabel";
             currentLibraryCardNumberLabel.Size = new Size(195, 17);
             currentLibraryCardNumberLabel.TabIndex = 5;
@@ -99,7 +106,7 @@ namespace LibraryApp
             currentTotalBooksLabel.BackColor = Color.Transparent;
             currentTotalBooksLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentTotalBooksLabel.ForeColor = Color.MidnightBlue;
-            currentTotalBooksLabel.Location = new Point(161, 204);
+            currentTotalBooksLabel.Location = new Point(643, 123);
             currentTotalBooksLabel.Name = "currentTotalBooksLabel";
             currentTotalBooksLabel.Size = new Size(77, 17);
             currentTotalBooksLabel.TabIndex = 6;
@@ -121,11 +128,12 @@ namespace LibraryApp
             currentUserName.AutoSize = true;
             currentUserName.BackColor = Color.Transparent;
             currentUserName.Font = new Font("Segoe UI Semibold", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            currentUserName.Location = new Point(161, 115);
+            currentUserName.Location = new Point(38, 91);
             currentUserName.Name = "currentUserName";
             currentUserName.Size = new Size(164, 25);
             currentUserName.TabIndex = 8;
             currentUserName.Text = "currentUserName";
+            currentUserName.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // userAccountCloseLabel
             // 
@@ -133,7 +141,7 @@ namespace LibraryApp
             userAccountCloseLabel.BackColor = Color.Transparent;
             userAccountCloseLabel.Cursor = Cursors.Hand;
             userAccountCloseLabel.Font = new Font("Lucida Console", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
-            userAccountCloseLabel.Location = new Point(963, 21);
+            userAccountCloseLabel.Location = new Point(1167, 21);
             userAccountCloseLabel.Name = "userAccountCloseLabel";
             userAccountCloseLabel.Size = new Size(21, 19);
             userAccountCloseLabel.TabIndex = 9;
@@ -147,7 +155,7 @@ namespace LibraryApp
             currentDateOfBirth.AutoSize = true;
             currentDateOfBirth.BackColor = Color.Transparent;
             currentDateOfBirth.Font = new Font("Arial", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
-            currentDateOfBirth.Location = new Point(164, 147);
+            currentDateOfBirth.Location = new Point(350, 100);
             currentDateOfBirth.Name = "currentDateOfBirth";
             currentDateOfBirth.Size = new Size(114, 16);
             currentDateOfBirth.TabIndex = 10;
@@ -158,7 +166,7 @@ namespace LibraryApp
             userAccountPictureBox.BackColor = Color.Transparent;
             userAccountPictureBox.BackgroundImage = Properties.Resources.default1;
             userAccountPictureBox.Cursor = Cursors.Hand;
-            userAccountPictureBox.Location = new Point(42, 120);
+            userAccountPictureBox.Location = new Point(1048, 43);
             userAccountPictureBox.Name = "userAccountPictureBox";
             userAccountPictureBox.Size = new Size(100, 100);
             userAccountPictureBox.TabIndex = 12;
@@ -172,7 +180,7 @@ namespace LibraryApp
             exitToStartFormLabel.Cursor = Cursors.Hand;
             exitToStartFormLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             exitToStartFormLabel.ForeColor = Color.MidnightBlue;
-            exitToStartFormLabel.Location = new Point(927, 685);
+            exitToStartFormLabel.Location = new Point(1156, 700);
             exitToStartFormLabel.Name = "exitToStartFormLabel";
             exitToStartFormLabel.Size = new Size(49, 17);
             exitToStartFormLabel.TabIndex = 13;
@@ -185,14 +193,61 @@ namespace LibraryApp
             // 
             userAccountOpenFileDialog.FileName = "openFileDialog1";
             // 
+            // userAccountTabControl
+            // 
+            userAccountTabControl.Controls.Add(tabPage1);
+            userAccountTabControl.Controls.Add(tabPage2);
+            userAccountTabControl.Location = new Point(41, 145);
+            userAccountTabControl.Name = "userAccountTabControl";
+            userAccountTabControl.SelectedIndex = 0;
+            userAccountTabControl.Size = new Size(1168, 526);
+            userAccountTabControl.TabIndex = 14;
+            // 
+            // tabPage1
+            // 
+            tabPage1.BackColor = SystemColors.Control;
+            tabPage1.Controls.Add(availableBooksTable);
+            tabPage1.Location = new Point(4, 24);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(1160, 498);
+            tabPage1.TabIndex = 0;
+            tabPage1.Text = "Все книги";
+            // 
+            // availableBooksTable
+            // 
+            availableBooksTable.AllowUserToAddRows = false;
+            availableBooksTable.AllowUserToResizeColumns = false;
+            availableBooksTable.AllowUserToResizeRows = false;
+            availableBooksTable.BackgroundColor = SystemColors.Control;
+            availableBooksTable.BorderStyle = BorderStyle.None;
+            availableBooksTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            availableBooksTable.Location = new Point(3, 0);
+            availableBooksTable.Name = "availableBooksTable";
+            availableBooksTable.RowHeadersVisible = false;
+            availableBooksTable.RowTemplate.Height = 25;
+            availableBooksTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            availableBooksTable.Size = new Size(1158, 455);
+            availableBooksTable.TabIndex = 0;
+            // 
+            // tabPage2
+            // 
+            tabPage2.Location = new Point(4, 24);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(1160, 498);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "Мои книги";
+            tabPage2.UseVisualStyleBackColor = true;
+            // 
             // UserAccountForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
-            BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
-            ClientSize = new Size(1008, 729);
+            ClientSize = new Size(1246, 768);
+            Controls.Add(userAccountTabControl);
             Controls.Add(exitToStartFormLabel);
             Controls.Add(userAccountPictureBox);
             Controls.Add(currentDateOfBirth);
@@ -207,14 +262,17 @@ namespace LibraryApp
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
-            MaximumSize = new Size(1008, 729);
-            MinimumSize = new Size(1008, 729);
+            MaximumSize = new Size(1246, 768);
+            MinimumSize = new Size(1246, 768);
             Name = "UserAccountForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Личный кабинет пользователя";
             MouseDown += ThisForm_MouseDown;
             MouseMove += ThisForm_MouseMove;
             ((System.ComponentModel.ISupportInitialize)userAccountPictureBox).EndInit();
+            userAccountTabControl.ResumeLayout(false);
+            tabPage1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)availableBooksTable).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -234,5 +292,9 @@ namespace LibraryApp
         private Label exitToStartFormLabel;
         private OpenFileDialog openFileDialog1;
         private OpenFileDialog userAccountOpenFileDialog;
+        private TabControl userAccountTabControl;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        private DataGridView availableBooksTable;
     }
 }

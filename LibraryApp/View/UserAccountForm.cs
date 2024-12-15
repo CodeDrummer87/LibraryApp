@@ -1,5 +1,6 @@
 ﻿using LibraryApp.Models;
 using Microsoft.Data.Sqlite;
+using System.ComponentModel;
 
 namespace LibraryApp
 {
@@ -13,10 +14,15 @@ namespace LibraryApp
         private StartForm startForm;
         Account account;
 
+        private BindingList<Book> availableBooksList = new(); // list of available books (with binding)
+
+
         public UserAccountForm(StartForm startForm, Account account)
         {
             InitializeComponent();
             GetCurrentDate();
+
+            ViewAvailableBooksTable();
 
             this.account = account;
             this.startForm = startForm;
@@ -182,6 +188,86 @@ namespace LibraryApp
             }
         }
 
+        #region All Books Tab
+
+        private void GetAvailableBooks()
+        {
+            availableBooksList.Clear();
+
+            string query = "SELECT b.Id, b.Title, (SELECT Name FROM Genres WHERE b.GenreId = Id), " +
+                           "b.Author, b.AgeLimit, b.ImagePath, b.IsAvailable " +
+                           "FROM Books b " +
+                           "WHERE b.IsAvailable = 1 " +
+                           "ORDER BY Title";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    availableBooksList.Add(new Book
+                    {
+                        Id = reader.GetInt32(0),
+                        Title = reader.GetString(1),
+                        GenreId = reader.GetString(2),
+                        Author = reader.GetString(3),
+                        AgeLimit = reader.GetInt32(4),
+                        ImagePath = reader.GetString(5),
+                        IsAvailable = reader.GetString(6) == "1" ? "в наличии" : "выдана"
+                    });
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось загрузить список книг:" +
+                                $"\n\"{ex.Message}\"\nОбратитесь к системному администратору для устранения ошибки.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
+
+        // by default we fill the table from booksList, which contains all books
+        private void ViewAvailableBooksTable()
+        {
+            GetAvailableBooks();
+
+            availableBooksTable.DataSource = availableBooksList; // table data source
+            availableBooksTable.MultiSelect = false; // you can't select more than one row
+
+            availableBooksTable.Columns[0].Visible = false; // do not display column with Id
+            availableBooksTable.Columns[5].Visible = false; // we do not display the column with the cover address
+            availableBooksTable.Columns[7].Visible = false; // we do not display the column with the Availability
+
+            // set the sizes and names of the columns
+            availableBooksTable.Columns[1].Width = 500;
+            availableBooksTable.Columns[1].HeaderText = "Название";
+
+            availableBooksTable.Columns[2].Width = 160;
+            availableBooksTable.Columns[2].HeaderText = "Жанр";
+
+            availableBooksTable.Columns[3].Width = 280;
+            availableBooksTable.Columns[3].HeaderText = "Автор";
+
+            availableBooksTable.Columns[4].Width = 100;
+            availableBooksTable.Columns[4].HeaderText = "Ограничение по возрасту";
+
+            availableBooksTable.Columns[6].Width = 100;
+            availableBooksTable.Columns[6].HeaderText = "Наличие";
+        }
+
+
+
+
+
+
+        #endregion
+
 
         #region Move the Form
         private void ThisForm_MouseDown(object sender, MouseEventArgs e)
@@ -201,6 +287,11 @@ namespace LibraryApp
         }
 
         #endregion
+
+        private void currentTotalBooksLabel_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
 }

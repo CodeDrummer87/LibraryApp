@@ -1,6 +1,7 @@
 ﻿using LibraryApp.Models;
 using Microsoft.Data.Sqlite;
 using System.ComponentModel;
+using System.IO;
 
 namespace LibraryApp
 {
@@ -190,6 +191,7 @@ namespace LibraryApp
 
         #region All Books Tab
 
+        // get a list of available books and fill availableBooksList
         private void GetAvailableBooks()
         {
             availableBooksList.Clear();
@@ -217,14 +219,14 @@ namespace LibraryApp
                         Author = reader.GetString(3),
                         AgeLimit = reader.GetInt32(4),
                         ImagePath = reader.GetString(5),
-                        IsAvailable = reader.GetString(6) == "1" ? "в наличии" : "выдана"
+                        IsAvailable = reader.GetString(6) == "1" ? "в наличии" : "ошибка"
                     });
                 }
                 reader.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Не удалось загрузить список книг:" +
+                MessageBox.Show($"Не удалось загрузить список доступных книг:" +
                                 $"\n\"{ex.Message}\"\nОбратитесь к системному администратору для устранения ошибки.",
                                 "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
@@ -232,7 +234,7 @@ namespace LibraryApp
             DataBase.CloseConnection();
         }
 
-        // by default we fill the table from booksList, which contains all books
+        // by default we fill the table from availableBooksList, which contains all available books
         private void ViewAvailableBooksTable()
         {
             GetAvailableBooks();
@@ -261,9 +263,81 @@ namespace LibraryApp
             availableBooksTable.Columns[6].HeaderText = "Наличие";
         }
 
+        // get the current reader's Id
+        private int GetReaderId()
+        {
+            string query = "SELECT Id FROM Readers WHERE PersonalId = @PersonalId";
+           
+            command = DataBase.GetConnection().CreateCommand();
+            command.CommandText = query;
+            command.Parameters.AddWithValue("@PersonalId", account.LoginId);
+
+            DataBase.OpenConnection();
+            int readerId = Convert.ToInt32(command.ExecuteScalar())!;
+
+            DataBase.CloseConnection();
+            return readerId;
+        }
+
+        // write the unavailability parameter of the selected book to the database
+        private void MakeTheBookUnavailable()
+        {
+            string query = "UPDATE Books SET IsAvailable = 0 WHERE Id = @Id ";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@Id", availableBooksTable.SelectedRows[0].Cells[0].Value.ToString());
+                
+                DataBase.OpenConnection();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось изменить запись в таблице Books. Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
+
+        // take the selected book and write the information into the database
+        private void TakeABookButton_CLick(object sender, EventArgs e)
+        {
+            string query = "INSERT INTO ReadersBooks (ReaderId, BookId) VALUES(@ReaderId, @BookId) ";
+            
+            int readerId = GetReaderId();
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@ReaderId", readerId); 
+                command.Parameters.AddWithValue("@BookId", availableBooksTable.SelectedRows[0].Cells[0].Value.ToString());
+
+                DataBase.OpenConnection();
+                command.ExecuteNonQuery();
+
+                MessageBox.Show($"Вы взяли книгу: \n\"{availableBooksTable.SelectedRows[0].Cells[1].Value}\"\n",
+                                "Операции с книгами", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
 
+                MakeTheBookUnavailable();
 
+                ViewAvailableBooksTable(); // update the availableBooksTable after taking the book
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось создать запись в таблице ReadersBooks. Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
 
 
         #endregion
@@ -287,11 +361,6 @@ namespace LibraryApp
         }
 
         #endregion
-
-        private void currentTotalBooksLabel_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 
 }

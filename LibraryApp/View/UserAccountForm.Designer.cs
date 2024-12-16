@@ -45,6 +45,7 @@ namespace LibraryApp
             userAccountOpenFileDialog = new OpenFileDialog();
             userAccountTabControl = new TabControl();
             tabPage1 = new TabPage();
+            takeABookButton = new Button();
             availableBooksTable = new DataGridView();
             tabPage2 = new TabPage();
             ((System.ComponentModel.ISupportInitialize)userAccountPictureBox).BeginInit();
@@ -141,7 +142,7 @@ namespace LibraryApp
             userAccountCloseLabel.BackColor = Color.Transparent;
             userAccountCloseLabel.Cursor = Cursors.Hand;
             userAccountCloseLabel.Font = new Font("Lucida Console", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
-            userAccountCloseLabel.Location = new Point(1167, 21);
+            userAccountCloseLabel.Location = new Point(1201, 20);
             userAccountCloseLabel.Name = "userAccountCloseLabel";
             userAccountCloseLabel.Size = new Size(21, 19);
             userAccountCloseLabel.TabIndex = 9;
@@ -155,7 +156,7 @@ namespace LibraryApp
             currentDateOfBirth.AutoSize = true;
             currentDateOfBirth.BackColor = Color.Transparent;
             currentDateOfBirth.Font = new Font("Arial", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
-            currentDateOfBirth.Location = new Point(350, 100);
+            currentDateOfBirth.Location = new Point(42, 123);
             currentDateOfBirth.Name = "currentDateOfBirth";
             currentDateOfBirth.Size = new Size(114, 16);
             currentDateOfBirth.TabIndex = 10;
@@ -180,7 +181,7 @@ namespace LibraryApp
             exitToStartFormLabel.Cursor = Cursors.Hand;
             exitToStartFormLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             exitToStartFormLabel.ForeColor = Color.MidnightBlue;
-            exitToStartFormLabel.Location = new Point(1156, 700);
+            exitToStartFormLabel.Location = new Point(1157, 721);
             exitToStartFormLabel.Name = "exitToStartFormLabel";
             exitToStartFormLabel.Size = new Size(49, 17);
             exitToStartFormLabel.TabIndex = 13;
@@ -197,22 +198,33 @@ namespace LibraryApp
             // 
             userAccountTabControl.Controls.Add(tabPage1);
             userAccountTabControl.Controls.Add(tabPage2);
-            userAccountTabControl.Location = new Point(41, 145);
+            userAccountTabControl.Location = new Point(41, 163);
             userAccountTabControl.Name = "userAccountTabControl";
             userAccountTabControl.SelectedIndex = 0;
-            userAccountTabControl.Size = new Size(1168, 526);
+            userAccountTabControl.Size = new Size(1168, 555);
             userAccountTabControl.TabIndex = 14;
             // 
             // tabPage1
             // 
             tabPage1.BackColor = SystemColors.Control;
+            tabPage1.Controls.Add(takeABookButton);
             tabPage1.Controls.Add(availableBooksTable);
             tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(1160, 498);
+            tabPage1.Size = new Size(1160, 527);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Все книги";
+            // 
+            // takeABookButton
+            // 
+            takeABookButton.Location = new Point(27, 479);
+            takeABookButton.Name = "takeABookButton";
+            takeABookButton.Size = new Size(100, 23);
+            takeABookButton.TabIndex = 1;
+            takeABookButton.Text = "Взять книгу";
+            takeABookButton.UseVisualStyleBackColor = true;
+            takeABookButton.Click += TakeABookButton_CLick;
             // 
             // availableBooksTable
             // 
@@ -222,7 +234,7 @@ namespace LibraryApp
             availableBooksTable.BackgroundColor = SystemColors.Control;
             availableBooksTable.BorderStyle = BorderStyle.None;
             availableBooksTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            availableBooksTable.Location = new Point(3, 0);
+            availableBooksTable.Location = new Point(3, -1);
             availableBooksTable.Name = "availableBooksTable";
             availableBooksTable.RowHeadersVisible = false;
             availableBooksTable.RowTemplate.Height = 25;
@@ -235,7 +247,7 @@ namespace LibraryApp
             tabPage2.Location = new Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(1160, 498);
+            tabPage2.Size = new Size(1160, 527);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Мои книги";
             tabPage2.UseVisualStyleBackColor = true;
@@ -296,5 +308,6 @@ namespace LibraryApp
         private TabPage tabPage1;
         private TabPage tabPage2;
         private DataGridView availableBooksTable;
+        private Button takeABookButton;
     }
 }

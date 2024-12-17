@@ -30,6 +30,8 @@ namespace LibraryApp
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserAccountForm));
             currentDateLabel = new Label();
             currentLibraryCardNumber = new Label();
@@ -48,10 +50,13 @@ namespace LibraryApp
             takeABookButton = new Button();
             availableBooksTable = new DataGridView();
             tabPage2 = new TabPage();
+            currentBooksTable = new DataGridView();
             ((System.ComponentModel.ISupportInitialize)userAccountPictureBox).BeginInit();
             userAccountTabControl.SuspendLayout();
             tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)availableBooksTable).BeginInit();
+            tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)currentBooksTable).BeginInit();
             SuspendLayout();
             // 
             // currentDateLabel
@@ -60,7 +65,7 @@ namespace LibraryApp
             currentDateLabel.BackColor = Color.Transparent;
             currentDateLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentDateLabel.ForeColor = Color.MidnightBlue;
-            currentDateLabel.Location = new Point(643, 63);
+            currentDateLabel.Location = new Point(665, 63);
             currentDateLabel.Name = "currentDateLabel";
             currentDateLabel.Size = new Size(111, 17);
             currentDateLabel.TabIndex = 0;
@@ -71,7 +76,7 @@ namespace LibraryApp
             currentLibraryCardNumber.AutoSize = true;
             currentLibraryCardNumber.BackColor = Color.Transparent;
             currentLibraryCardNumber.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            currentLibraryCardNumber.Location = new Point(849, 91);
+            currentLibraryCardNumber.Location = new Point(871, 91);
             currentLibraryCardNumber.Name = "currentLibraryCardNumber";
             currentLibraryCardNumber.Size = new Size(172, 17);
             currentLibraryCardNumber.TabIndex = 2;
@@ -83,7 +88,7 @@ namespace LibraryApp
             currentTotalBooks.BackColor = Color.Transparent;
             currentTotalBooks.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentTotalBooks.ForeColor = SystemColors.ControlText;
-            currentTotalBooks.Location = new Point(726, 123);
+            currentTotalBooks.Location = new Point(748, 123);
             currentTotalBooks.Name = "currentTotalBooks";
             currentTotalBooks.Size = new Size(118, 17);
             currentTotalBooks.TabIndex = 3;
@@ -95,7 +100,7 @@ namespace LibraryApp
             currentLibraryCardNumberLabel.BackColor = Color.Transparent;
             currentLibraryCardNumberLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentLibraryCardNumberLabel.ForeColor = Color.MidnightBlue;
-            currentLibraryCardNumberLabel.Location = new Point(643, 91);
+            currentLibraryCardNumberLabel.Location = new Point(665, 91);
             currentLibraryCardNumberLabel.Name = "currentLibraryCardNumberLabel";
             currentLibraryCardNumberLabel.Size = new Size(195, 17);
             currentLibraryCardNumberLabel.TabIndex = 5;
@@ -107,7 +112,7 @@ namespace LibraryApp
             currentTotalBooksLabel.BackColor = Color.Transparent;
             currentTotalBooksLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentTotalBooksLabel.ForeColor = Color.MidnightBlue;
-            currentTotalBooksLabel.Location = new Point(643, 123);
+            currentTotalBooksLabel.Location = new Point(665, 123);
             currentTotalBooksLabel.Name = "currentTotalBooksLabel";
             currentTotalBooksLabel.Size = new Size(77, 17);
             currentTotalBooksLabel.TabIndex = 6;
@@ -231,11 +236,14 @@ namespace LibraryApp
             availableBooksTable.AllowUserToAddRows = false;
             availableBooksTable.AllowUserToResizeColumns = false;
             availableBooksTable.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.BackColor = Color.WhiteSmoke;
+            availableBooksTable.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             availableBooksTable.BackgroundColor = SystemColors.Control;
             availableBooksTable.BorderStyle = BorderStyle.None;
             availableBooksTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            availableBooksTable.Location = new Point(3, -1);
+            availableBooksTable.Location = new Point(2, 0);
             availableBooksTable.Name = "availableBooksTable";
+            availableBooksTable.ReadOnly = true;
             availableBooksTable.RowHeadersVisible = false;
             availableBooksTable.RowTemplate.Height = 25;
             availableBooksTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -244,13 +252,33 @@ namespace LibraryApp
             // 
             // tabPage2
             // 
+            tabPage2.BackColor = SystemColors.Control;
+            tabPage2.Controls.Add(currentBooksTable);
             tabPage2.Location = new Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
             tabPage2.Size = new Size(1160, 527);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Мои книги";
-            tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // currentBooksTable
+            // 
+            currentBooksTable.AllowUserToAddRows = false;
+            currentBooksTable.AllowUserToResizeColumns = false;
+            currentBooksTable.AllowUserToResizeRows = false;
+            dataGridViewCellStyle2.BackColor = Color.WhiteSmoke;
+            currentBooksTable.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            currentBooksTable.BackgroundColor = SystemColors.Control;
+            currentBooksTable.BorderStyle = BorderStyle.None;
+            currentBooksTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            currentBooksTable.Location = new Point(1, 0);
+            currentBooksTable.Name = "currentBooksTable";
+            currentBooksTable.ReadOnly = true;
+            currentBooksTable.RowHeadersVisible = false;
+            currentBooksTable.RowTemplate.Height = 25;
+            currentBooksTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            currentBooksTable.Size = new Size(1160, 478);
+            currentBooksTable.TabIndex = 0;
             // 
             // UserAccountForm
             // 
@@ -285,6 +313,8 @@ namespace LibraryApp
             userAccountTabControl.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)availableBooksTable).EndInit();
+            tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)currentBooksTable).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -309,5 +339,6 @@ namespace LibraryApp
         private TabPage tabPage2;
         private DataGridView availableBooksTable;
         private Button takeABookButton;
+        private DataGridView currentBooksTable;
     }
 }

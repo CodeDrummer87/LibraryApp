@@ -1,7 +1,6 @@
 ﻿using LibraryApp.Models;
 using Microsoft.Data.Sqlite;
 using System.ComponentModel;
-using System.IO;
 
 namespace LibraryApp
 {
@@ -16,19 +15,20 @@ namespace LibraryApp
         Account account;
 
         private BindingList<Book> availableBooksList = new(); // list of available books (with binding)
-
+        private BindingList<Book> currentBooksList = new(); // ist of books of the current user (with binding)
 
         public UserAccountForm(StartForm startForm, Account account)
         {
             InitializeComponent();
             GetCurrentDate();
 
-            ViewAvailableBooksTable();
-
             this.account = account;
             this.startForm = startForm;
 
             PutCurrentUserData(GetCurrentUserData(account.LoginId));
+
+            ViewAvailableBooksTable();
+            ViewCurrentBooksTable();
         }
 
         #region Window control buttons
@@ -243,8 +243,8 @@ namespace LibraryApp
             availableBooksTable.MultiSelect = false; // you can't select more than one row
 
             availableBooksTable.Columns[0].Visible = false; // do not display column with Id
-            availableBooksTable.Columns[5].Visible = false; // we do not display the column with the cover address
-            availableBooksTable.Columns[7].Visible = false; // we do not display the column with the Availability
+            availableBooksTable.Columns[5].Visible = false; // do not display the column with the cover address
+            availableBooksTable.Columns[7].Visible = false; // do not display the column with the availability
 
             // set the sizes and names of the columns
             availableBooksTable.Columns[1].Width = 500;
@@ -267,16 +267,76 @@ namespace LibraryApp
         private int GetReaderId()
         {
             string query = "SELECT Id FROM Readers WHERE PersonalId = @PersonalId";
-           
-            command = DataBase.GetConnection().CreateCommand();
-            command.CommandText = query;
-            command.Parameters.AddWithValue("@PersonalId", account.LoginId);
+            int readerId = 0;
 
-            DataBase.OpenConnection();
-            int readerId = Convert.ToInt32(command.ExecuteScalar())!;
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@PersonalId", account.LoginId);
+
+                DataBase.OpenConnection();
+                readerId = Convert.ToInt32(command.ExecuteScalar())!;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось получить значение Id текущего пользователя. Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
 
             DataBase.CloseConnection();
             return readerId;
+        }
+
+        // get the total number of books of the current user
+        private int GetTotalBooks(int readerId)
+        {
+            string query = "SELECT TotalBooks FROM Readers WHERE Id = @PersonalId";
+            int totalBooks = 0;
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@PersonalId", readerId);
+
+                DataBase.OpenConnection();
+                totalBooks = Convert.ToInt32(command.ExecuteScalar())!;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось получить значение общего количества книг текущего пользователя. Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+            return totalBooks;
+        }
+
+        // increment the total number of books when we take a new book
+        private void IncrementTotalBooks(int readerId)
+        {
+            string query = "UPDATE Readers SET TotalBooks = TotalBooks +1 WHERE Id = @ReaderId";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@ReaderId", readerId);
+
+                DataBase.OpenConnection();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось изменить запись в таблице Readers. Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
         }
 
         // write the unavailability parameter of the selected book to the database
@@ -289,7 +349,7 @@ namespace LibraryApp
                 command = DataBase.GetConnection().CreateCommand();
                 command.CommandText = query;
                 command.Parameters.AddWithValue("@Id", availableBooksTable.SelectedRows[0].Cells[0].Value.ToString());
-                
+
                 DataBase.OpenConnection();
                 command.ExecuteNonQuery();
             }
@@ -306,25 +366,34 @@ namespace LibraryApp
         // take the selected book and write the information into the database
         private void TakeABookButton_CLick(object sender, EventArgs e)
         {
+            // if the table is empty or no rows are selected, it doesn't work
+            if (availableBooksTable.Rows.Count == 0 || availableBooksTable.SelectedRows.Count == 0)
+                return;
+
             string query = "INSERT INTO ReadersBooks (ReaderId, BookId) VALUES(@ReaderId, @BookId) ";
-            
+
             int readerId = GetReaderId();
 
             try
             {
                 command = DataBase.GetConnection().CreateCommand();
                 command.CommandText = query;
-                command.Parameters.AddWithValue("@ReaderId", readerId); 
+                command.Parameters.AddWithValue("@ReaderId", readerId);
                 command.Parameters.AddWithValue("@BookId", availableBooksTable.SelectedRows[0].Cells[0].Value.ToString());
 
                 DataBase.OpenConnection();
                 command.ExecuteNonQuery();
 
-                MessageBox.Show($"Вы взяли книгу: \n\"{availableBooksTable.SelectedRows[0].Cells[1].Value}\"\n",
-                                "Операции с книгами", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                IncrementTotalBooks(readerId);
 
                 MakeTheBookUnavailable();
+
+                ViewCurrentBooksTable(); // updating the table of books taken
+
+                currentTotalBooks.Text = GetTotalBooks(readerId).ToString(); // updating the user's books counter
+
+                MessageBox.Show($"Вы взяли книгу: \n\"{availableBooksTable.SelectedRows[0].Cells[1].Value}\"\n",
+                                "Операции с книгами", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 ViewAvailableBooksTable(); // update the availableBooksTable after taking the book
 
@@ -339,9 +408,86 @@ namespace LibraryApp
             DataBase.CloseConnection();
         }
 
-
         #endregion
 
+        #region My Books Tab
+
+        // get a list of the current user's books
+        private void GetCurrentBooks()
+        {
+            currentBooksList.Clear();
+
+            string query = "SELECT b.Id, b.Title, (SELECT Name FROM Genres WHERE b.GenreId = Id), " +
+                           "b.Author, b.AgeLimit, b.ImagePath " +
+                           "FROM Books b " +
+                           "JOIN ReadersBooks rb ON b.Id = rb.BookId " +
+                           "WHERE ReaderId = @ReaderId " +
+                           "ORDER BY Title";
+
+            int readerId = GetReaderId();
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@ReaderId", readerId);
+
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    currentBooksList.Add(new Book
+                    {
+                        Id = reader.GetInt32(0),
+                        Title = reader.GetString(1),
+                        GenreId = reader.GetString(2),
+                        Author = reader.GetString(3),
+                        AgeLimit = reader.GetInt32(4),
+                        ImagePath = reader.GetString(5),
+                    });
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось загрузить список книг текущего пользователя:" +
+                                $"\n\"{ex.Message}\"\nОбратитесь к системному администратору для устранения ошибки.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
+
+        // fill the currentBooksTable from currentBooksList
+        private void ViewCurrentBooksTable()
+        {
+            GetCurrentBooks();
+
+            currentBooksTable.DataSource = currentBooksList; // table data source
+            currentBooksTable.MultiSelect = false; // you can't select more than one row
+
+            currentBooksTable.Columns[0].Visible = false; // do not display column with Id
+            currentBooksTable.Columns[5].Visible = false; // do not display the column with the cover address
+            currentBooksTable.Columns[6].Visible = false; // do not display the column with the availability
+            currentBooksTable.Columns[7].Visible = false; // do not display the column with activity
+
+            // set the sizes and names of the columns
+            currentBooksTable.Columns[1].Width = 578;
+            currentBooksTable.Columns[1].HeaderText = "Название";
+
+            currentBooksTable.Columns[2].Width = 180;
+            currentBooksTable.Columns[2].HeaderText = "Жанр";
+
+            currentBooksTable.Columns[3].Width = 300;
+            currentBooksTable.Columns[3].HeaderText = "Автор";
+
+            currentBooksTable.Columns[4].Width = 100;
+            currentBooksTable.Columns[4].HeaderText = "Ограничение по возрасту";
+        }
+
+
+
+        #endregion
 
         #region Move the Form
         private void ThisForm_MouseDown(object sender, MouseEventArgs e)

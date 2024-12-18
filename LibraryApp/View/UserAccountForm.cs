@@ -189,6 +189,79 @@ namespace LibraryApp
             }
         }
 
+        // icrement the book counter if we take the book, and decrement if we return it
+        private void ChangeTotalBooks(int readerId, int action)
+        {
+            string query = String.Empty;
+
+            // if we take a book
+            if (action == 1)
+            {
+                query = "UPDATE Readers SET TotalBooks = TotalBooks +1 WHERE Id = @ReaderId";
+            }
+            // if we return a book
+            else if (action == 2)
+            {
+                query = "UPDATE Readers SET TotalBooks = TotalBooks -1 WHERE Id = @ReaderId";
+            }
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@ReaderId", readerId);
+
+                DataBase.OpenConnection();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось изменить запись в таблице Readers. Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
+
+        // make the book unavailable when we take it and make it available when we return it
+        private void ChangeBookAvailability(int action)
+        {
+            string query = String.Empty;
+            string rowId = String.Empty;
+
+            // if we take a book
+            if (action == 1)
+            {
+                query = "UPDATE Books SET IsAvailable = 0 WHERE Id = @Id ";
+                rowId = availableBooksTable.SelectedRows[0].Cells[0].Value.ToString()!;
+            }
+            // if we return a book
+            else if (action == 2)
+            {
+                query = "UPDATE Books SET IsAvailable = 1 WHERE Id = @Id ";
+                rowId = currentBooksTable.SelectedRows[0].Cells[0].Value.ToString()!;
+            }
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@Id", rowId);
+
+                DataBase.OpenConnection();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось изменить запись в таблице Books. Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
+
         #region All Books Tab
 
         // get a list of available books and fill availableBooksList
@@ -315,54 +388,6 @@ namespace LibraryApp
             return totalBooks;
         }
 
-        // increment the total number of books when we take a new book
-        private void IncrementTotalBooks(int readerId)
-        {
-            string query = "UPDATE Readers SET TotalBooks = TotalBooks +1 WHERE Id = @ReaderId";
-
-            try
-            {
-                command = DataBase.GetConnection().CreateCommand();
-                command.CommandText = query;
-                command.Parameters.AddWithValue("@ReaderId", readerId);
-
-                DataBase.OpenConnection();
-                command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Не удалось изменить запись в таблице Readers. Ошибка:\n\"{ex.Message}\"\n" +
-                                $"Обратитесь к системному администратору для её устранения.",
-                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-            }
-
-            DataBase.CloseConnection();
-        }
-
-        // write the unavailability parameter of the selected book to the database
-        private void MakeTheBookUnavailable()
-        {
-            string query = "UPDATE Books SET IsAvailable = 0 WHERE Id = @Id ";
-
-            try
-            {
-                command = DataBase.GetConnection().CreateCommand();
-                command.CommandText = query;
-                command.Parameters.AddWithValue("@Id", availableBooksTable.SelectedRows[0].Cells[0].Value.ToString());
-
-                DataBase.OpenConnection();
-                command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Не удалось изменить запись в таблице Books. Ошибка:\n\"{ex.Message}\"\n" +
-                                $"Обратитесь к системному администратору для её устранения.",
-                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-            }
-
-            DataBase.CloseConnection();
-        }
-
         // take the selected book and write the information into the database
         private void TakeABookButton_CLick(object sender, EventArgs e)
         {
@@ -384,13 +409,13 @@ namespace LibraryApp
                 DataBase.OpenConnection();
                 command.ExecuteNonQuery();
 
-                IncrementTotalBooks(readerId);
+                ChangeTotalBooks(readerId, 1); // increment TotalBooks;
 
-                MakeTheBookUnavailable();
+                ChangeBookAvailability(1); // IsAvailable = 0
 
-                ViewCurrentBooksTable(); // updating the table of books taken
+                ViewCurrentBooksTable(); // update the table of books taken
 
-                currentTotalBooks.Text = GetTotalBooks(readerId).ToString(); // updating the user's books counter
+                currentTotalBooks.Text = GetTotalBooks(readerId).ToString(); // update the user's books counter
 
                 MessageBox.Show($"Вы взяли книгу: \n\"{availableBooksTable.SelectedRows[0].Cells[1].Value}\"\n",
                                 "Операции с книгами", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -485,7 +510,50 @@ namespace LibraryApp
             currentBooksTable.Columns[4].HeaderText = "Ограничение по возрасту";
         }
 
+        // return the selected book and write the information into the database
+        private void ReturnABookButton_CLick(object sender, EventArgs e)
+        {
+            // if the table is empty or no rows are selected, it doesn't work
+            if (currentBooksTable.Rows.Count == 0 || currentBooksTable.SelectedRows.Count == 0)
+                return;
 
+            string query = "DELETE FROM ReadersBooks WHERE ReaderId = @ReaderId AND BookId = @BookId";
+
+            int readerId = GetReaderId();
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@ReaderId", readerId);
+                command.Parameters.AddWithValue("@BookId", currentBooksTable.SelectedRows[0].Cells[0].Value.ToString());
+
+                DataBase.OpenConnection();
+                command.ExecuteNonQuery();
+
+                ChangeBookAvailability(2); // IsAvailable = 1
+
+                ChangeTotalBooks(readerId, 2); // decrement TotalBooks
+
+                ViewAvailableBooksTable(); // update the table of available books
+
+                currentTotalBooks.Text = GetTotalBooks(readerId).ToString(); // update the user's books counter
+
+                MessageBox.Show($"Вы вернули книгу: \n\"{currentBooksTable.SelectedRows[0].Cells[1].Value}\"\n",
+                                "Операции с книгами", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                ViewCurrentBooksTable(); // update the currentBooksTable after returning the book
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось удалить запись в таблице ReadersBooks. Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
 
         #endregion
 

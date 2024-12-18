@@ -50,6 +50,7 @@ namespace LibraryApp
             takeABookButton = new Button();
             availableBooksTable = new DataGridView();
             tabPage2 = new TabPage();
+            reaturnABookButton = new Button();
             currentBooksTable = new DataGridView();
             ((System.ComponentModel.ISupportInitialize)userAccountPictureBox).BeginInit();
             userAccountTabControl.SuspendLayout();
@@ -253,6 +254,7 @@ namespace LibraryApp
             // tabPage2
             // 
             tabPage2.BackColor = SystemColors.Control;
+            tabPage2.Controls.Add(reaturnABookButton);
             tabPage2.Controls.Add(currentBooksTable);
             tabPage2.Location = new Point(4, 24);
             tabPage2.Name = "tabPage2";
@@ -260,6 +262,16 @@ namespace LibraryApp
             tabPage2.Size = new Size(1160, 527);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Мои книги";
+            // 
+            // reaturnABookButton
+            // 
+            reaturnABookButton.Location = new Point(27, 479);
+            reaturnABookButton.Name = "reaturnABookButton";
+            reaturnABookButton.Size = new Size(100, 23);
+            reaturnABookButton.TabIndex = 1;
+            reaturnABookButton.Text = "Вернуть книгу";
+            reaturnABookButton.UseVisualStyleBackColor = true;
+            reaturnABookButton.Click += ReturnABookButton_CLick;
             // 
             // currentBooksTable
             // 
@@ -277,7 +289,7 @@ namespace LibraryApp
             currentBooksTable.RowHeadersVisible = false;
             currentBooksTable.RowTemplate.Height = 25;
             currentBooksTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            currentBooksTable.Size = new Size(1160, 478);
+            currentBooksTable.Size = new Size(1160, 452);
             currentBooksTable.TabIndex = 0;
             // 
             // UserAccountForm
@@ -340,5 +352,6 @@ namespace LibraryApp
         private DataGridView availableBooksTable;
         private Button takeABookButton;
         private DataGridView currentBooksTable;
+        private Button reaturnABookButton;
     }
 }

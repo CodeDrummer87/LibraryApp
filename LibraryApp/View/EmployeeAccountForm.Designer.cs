@@ -306,7 +306,7 @@
             EmployeeAccountBirthdayListBox.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
             EmployeeAccountBirthdayListBox.FormattingEnabled = true;
             EmployeeAccountBirthdayListBox.ItemHeight = 17;
-            EmployeeAccountBirthdayListBox.Location = new Point(857, 121);
+            EmployeeAccountBirthdayListBox.Location = new Point(869, 121);
             EmployeeAccountBirthdayListBox.Name = "EmployeeAccountBirthdayListBox";
             EmployeeAccountBirthdayListBox.Size = new Size(260, 106);
             EmployeeAccountBirthdayListBox.TabIndex = 6;
@@ -317,7 +317,7 @@
             birthdayReaders.AutoSize = true;
             birthdayReaders.Cursor = Cursors.Hand;
             birthdayReaders.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
-            birthdayReaders.Location = new Point(852, 94);
+            birthdayReaders.Location = new Point(864, 94);
             birthdayReaders.Name = "birthdayReaders";
             birthdayReaders.Size = new Size(104, 17);
             birthdayReaders.TabIndex = 5;

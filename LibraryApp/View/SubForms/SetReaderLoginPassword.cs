@@ -71,7 +71,6 @@
             return false;
         }
 
-
         private void SaveReaderLoginPassword_CLick(object sender, EventArgs e)
         {
 

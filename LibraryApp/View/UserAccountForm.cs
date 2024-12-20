@@ -81,7 +81,7 @@ namespace LibraryApp
         private void GetCurrentDate() => currentDateLabel.Text = "Сегодня " + DateTime.Now.ToLongDateString();
 
         // display the name, date of birth, library card number and number of books of the current user
-        private void PutCurrentUserData(ViewReaderModel reader)
+        private void PutCurrentUserData(Reader reader)
         {
             currentUserName.Text = $"{reader.Lastname} {reader.Firstname} {reader.Surname}";
             currentDateOfBirth.Text = $"Дата рождения: {reader.DateOfBirth}";
@@ -101,9 +101,9 @@ namespace LibraryApp
         }
 
         // get the current user's data
-        public ViewReaderModel GetCurrentUserData(int loginId)
+        private Reader GetCurrentUserData(int loginId)
         {
-            ViewReaderModel model = new();
+            Reader model = new();
 
             string query = "SELECT r.Id, r.PersonalId, r.libraryCardNumber, r.TotalBooks, " +
                            "p.Firstname, p.Lastname, p.Surname, p.DateOfBirth " +
@@ -123,7 +123,7 @@ namespace LibraryApp
                 while (reader.Read())
                 {
 
-                    model = new ViewReaderModel()
+                    model = new Reader()
                     {
                         Id = reader.GetInt32(0),
                         PersonalId = reader.GetInt32(1),

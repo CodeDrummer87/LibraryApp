@@ -24,8 +24,8 @@ namespace LibraryApp.View
         private BindingList<Book> booksList = new(); // list of all books (with binding)
         private List<Book> filteredBooksList = new(); // list of books filtered by parameters
 
-        private BindingList<ViewReaderModel> readersList = new(); // list of all readers (with binding)
-        private List<ViewReaderModel> filteredReadersList = new(); // list of readers filtered by parameters
+        private BindingList<Reader> readersList = new(); // list of all readers (with binding)
+        private List<Reader> filteredReadersList = new(); // list of readers filtered by parameters
 
         private List<ViewBirthdayModel> birthdayList = new(); // list of birthdays
 
@@ -117,7 +117,7 @@ namespace LibraryApp.View
         }
 
         // get the full name of the current employee
-        public ViewEmployeeNameModel GetCurrentEmployeeName(int loginId)
+        private ViewEmployeeNameModel GetCurrentEmployeeName(int loginId)
         {
             ViewEmployeeNameModel employeeNameModel = new();
 
@@ -858,7 +858,7 @@ namespace LibraryApp.View
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    readersList.Add(new ViewReaderModel
+                    readersList.Add(new Reader
                     {
                         Id = reader.GetInt32(0),
                         PersonalId = reader.GetInt32(1),
@@ -999,7 +999,7 @@ namespace LibraryApp.View
             if (readersTable.Rows.Count >= 1)
             {
                 // add a new element to the table source
-                readersList.Add(new ViewReaderModel());
+                readersList.Add(new Reader());
 
                 // move to a new line
                 readersTable.CurrentCell = readersTable.Rows[readersTable.Rows.Count - 1].Cells[1];
@@ -1007,12 +1007,12 @@ namespace LibraryApp.View
             // if there are no rows in the table, then we simply add a new row
             else
             {
-                readersList.Add(new ViewReaderModel());
+                readersList.Add(new Reader());
             }
         }
 
         // writing data to the Readers table
-        public void SetReadersData(Person person)
+        private void SetReadersData(Person person)
         {
             string query = "INSERT INTO Readers (PersonalId, libraryCardNumber, TotalBooks) " +
                            "SELECT Persons.Id, @libraryCardNumber, @TotalBooks FROM Persons " +
@@ -1043,7 +1043,7 @@ namespace LibraryApp.View
         }
 
         // saving a new reader in the database
-        public void SaveNewReader(object sender, FormClosedEventArgs e)
+        private void SaveNewReader(object sender, FormClosedEventArgs e)
         {
 
             // if LoginPswdForm was closed by the button click

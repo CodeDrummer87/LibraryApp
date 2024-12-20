@@ -11,7 +11,7 @@ namespace LibraryApp
         private SqliteDataReader reader;
 
         // writing data to the Readers table
-        public void SetReadersData(Person person)
+        private void SetReadersData(Person person)
         {
             string query = "INSERT INTO Readers (PersonalId, libraryCardNumber, TotalBooks) " +
                            "SELECT Persons.Id, Persons.Id + 100, @TotalBooks FROM Persons " +
@@ -73,7 +73,7 @@ namespace LibraryApp
         }
 
         // password salt
-        public byte[] GetSalt()
+        private byte[] GetSalt()
         {
             byte[] salt = RandomNumberGenerator.GetBytes(128 / 8);
 

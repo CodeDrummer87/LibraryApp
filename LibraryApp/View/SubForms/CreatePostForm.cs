@@ -77,7 +77,7 @@ namespace LibraryApp.View
         }
 
         // creating a new post
-        public void CreatePost()
+        private void CreatePost()
         {
             if (CheckPostNameLength())
             {

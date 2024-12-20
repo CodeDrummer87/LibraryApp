@@ -119,7 +119,7 @@ namespace LibraryApp
         }
 
         // get the data of the current manager
-        public ViewManagerModel GetCurrentManagerData(int loginId)
+        private ViewManagerModel GetCurrentManagerData(int loginId)
         {
             ViewManagerModel model = new();
 

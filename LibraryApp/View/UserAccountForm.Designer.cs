@@ -47,14 +47,20 @@ namespace LibraryApp
             userAccountOpenFileDialog = new OpenFileDialog();
             userAccountTabControl = new TabControl();
             tabPage1 = new TabPage();
+            availableBooksFilterGroupBox = new GroupBox();
+            availableBooksFilterBox = new TextBox();
+            availableBooksNameFilterRadioButton = new RadioButton();
+            availableBooksAuthorFilterRadioButton = new RadioButton();
             takeABookButton = new Button();
             availableBooksTable = new DataGridView();
             tabPage2 = new TabPage();
+            noBooksLabel = new Label();
             reaturnABookButton = new Button();
             currentBooksTable = new DataGridView();
             ((System.ComponentModel.ISupportInitialize)userAccountPictureBox).BeginInit();
             userAccountTabControl.SuspendLayout();
             tabPage1.SuspendLayout();
+            availableBooksFilterGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)availableBooksTable).BeginInit();
             tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)currentBooksTable).BeginInit();
@@ -65,8 +71,8 @@ namespace LibraryApp
             currentDateLabel.AutoSize = true;
             currentDateLabel.BackColor = Color.Transparent;
             currentDateLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            currentDateLabel.ForeColor = Color.MidnightBlue;
-            currentDateLabel.Location = new Point(665, 63);
+            currentDateLabel.ForeColor = Color.Black;
+            currentDateLabel.Location = new Point(804, 63);
             currentDateLabel.Name = "currentDateLabel";
             currentDateLabel.Size = new Size(111, 17);
             currentDateLabel.TabIndex = 0;
@@ -77,7 +83,7 @@ namespace LibraryApp
             currentLibraryCardNumber.AutoSize = true;
             currentLibraryCardNumber.BackColor = Color.Transparent;
             currentLibraryCardNumber.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            currentLibraryCardNumber.Location = new Point(871, 91);
+            currentLibraryCardNumber.Location = new Point(1010, 91);
             currentLibraryCardNumber.Name = "currentLibraryCardNumber";
             currentLibraryCardNumber.Size = new Size(172, 17);
             currentLibraryCardNumber.TabIndex = 2;
@@ -89,7 +95,7 @@ namespace LibraryApp
             currentTotalBooks.BackColor = Color.Transparent;
             currentTotalBooks.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentTotalBooks.ForeColor = SystemColors.ControlText;
-            currentTotalBooks.Location = new Point(748, 123);
+            currentTotalBooks.Location = new Point(887, 120);
             currentTotalBooks.Name = "currentTotalBooks";
             currentTotalBooks.Size = new Size(118, 17);
             currentTotalBooks.TabIndex = 3;
@@ -101,7 +107,7 @@ namespace LibraryApp
             currentLibraryCardNumberLabel.BackColor = Color.Transparent;
             currentLibraryCardNumberLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentLibraryCardNumberLabel.ForeColor = Color.MidnightBlue;
-            currentLibraryCardNumberLabel.Location = new Point(665, 91);
+            currentLibraryCardNumberLabel.Location = new Point(804, 91);
             currentLibraryCardNumberLabel.Name = "currentLibraryCardNumberLabel";
             currentLibraryCardNumberLabel.Size = new Size(195, 17);
             currentLibraryCardNumberLabel.TabIndex = 5;
@@ -113,7 +119,7 @@ namespace LibraryApp
             currentTotalBooksLabel.BackColor = Color.Transparent;
             currentTotalBooksLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             currentTotalBooksLabel.ForeColor = Color.MidnightBlue;
-            currentTotalBooksLabel.Location = new Point(665, 123);
+            currentTotalBooksLabel.Location = new Point(804, 120);
             currentTotalBooksLabel.Name = "currentTotalBooksLabel";
             currentTotalBooksLabel.Size = new Size(77, 17);
             currentTotalBooksLabel.TabIndex = 6;
@@ -173,7 +179,7 @@ namespace LibraryApp
             userAccountPictureBox.BackColor = Color.Transparent;
             userAccountPictureBox.BackgroundImage = Properties.Resources.default1;
             userAccountPictureBox.Cursor = Cursors.Hand;
-            userAccountPictureBox.Location = new Point(1048, 43);
+            userAccountPictureBox.Location = new Point(1078, 47);
             userAccountPictureBox.Name = "userAccountPictureBox";
             userAccountPictureBox.Size = new Size(100, 100);
             userAccountPictureBox.TabIndex = 12;
@@ -187,7 +193,7 @@ namespace LibraryApp
             exitToStartFormLabel.Cursor = Cursors.Hand;
             exitToStartFormLabel.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             exitToStartFormLabel.ForeColor = Color.MidnightBlue;
-            exitToStartFormLabel.Location = new Point(1157, 721);
+            exitToStartFormLabel.Location = new Point(1157, 724);
             exitToStartFormLabel.Name = "exitToStartFormLabel";
             exitToStartFormLabel.Size = new Size(49, 17);
             exitToStartFormLabel.TabIndex = 13;
@@ -204,7 +210,7 @@ namespace LibraryApp
             // 
             userAccountTabControl.Controls.Add(tabPage1);
             userAccountTabControl.Controls.Add(tabPage2);
-            userAccountTabControl.Location = new Point(41, 163);
+            userAccountTabControl.Location = new Point(41, 157);
             userAccountTabControl.Name = "userAccountTabControl";
             userAccountTabControl.SelectedIndex = 0;
             userAccountTabControl.Size = new Size(1168, 555);
@@ -213,6 +219,7 @@ namespace LibraryApp
             // tabPage1
             // 
             tabPage1.BackColor = SystemColors.Control;
+            tabPage1.Controls.Add(availableBooksFilterGroupBox);
             tabPage1.Controls.Add(takeABookButton);
             tabPage1.Controls.Add(availableBooksTable);
             tabPage1.Location = new Point(4, 24);
@@ -221,6 +228,56 @@ namespace LibraryApp
             tabPage1.Size = new Size(1160, 527);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Все книги";
+            // 
+            // availableBooksFilterGroupBox
+            // 
+            availableBooksFilterGroupBox.Controls.Add(availableBooksFilterBox);
+            availableBooksFilterGroupBox.Controls.Add(availableBooksNameFilterRadioButton);
+            availableBooksFilterGroupBox.Controls.Add(availableBooksAuthorFilterRadioButton);
+            availableBooksFilterGroupBox.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold, GraphicsUnit.Point);
+            availableBooksFilterGroupBox.ForeColor = Color.MidnightBlue;
+            availableBooksFilterGroupBox.Location = new Point(2, 2);
+            availableBooksFilterGroupBox.Name = "availableBooksFilterGroupBox";
+            availableBooksFilterGroupBox.Size = new Size(478, 63);
+            availableBooksFilterGroupBox.TabIndex = 4;
+            availableBooksFilterGroupBox.TabStop = false;
+            availableBooksFilterGroupBox.Text = "Фильтрация";
+            // 
+            // availableBooksFilterBox
+            // 
+            availableBooksFilterBox.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            availableBooksFilterBox.Location = new Point(253, 26);
+            availableBooksFilterBox.Name = "availableBooksFilterBox";
+            availableBooksFilterBox.Size = new Size(205, 25);
+            availableBooksFilterBox.TabIndex = 3;
+            availableBooksFilterBox.TextChanged += AvailableBooksFilterTextChanged;
+            // 
+            // availableBooksNameFilterRadioButton
+            // 
+            availableBooksNameFilterRadioButton.AutoSize = true;
+            availableBooksNameFilterRadioButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            availableBooksNameFilterRadioButton.ForeColor = Color.Black;
+            availableBooksNameFilterRadioButton.Location = new Point(122, 30);
+            availableBooksNameFilterRadioButton.Name = "availableBooksNameFilterRadioButton";
+            availableBooksNameFilterRadioButton.Size = new Size(104, 21);
+            availableBooksNameFilterRadioButton.TabIndex = 1;
+            availableBooksNameFilterRadioButton.TabStop = true;
+            availableBooksNameFilterRadioButton.Text = "по названию";
+            availableBooksNameFilterRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // availableBooksAuthorFilterRadioButton
+            // 
+            availableBooksAuthorFilterRadioButton.AutoSize = true;
+            availableBooksAuthorFilterRadioButton.Checked = true;
+            availableBooksAuthorFilterRadioButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            availableBooksAuthorFilterRadioButton.ForeColor = Color.Black;
+            availableBooksAuthorFilterRadioButton.Location = new Point(15, 30);
+            availableBooksAuthorFilterRadioButton.Name = "availableBooksAuthorFilterRadioButton";
+            availableBooksAuthorFilterRadioButton.Size = new Size(86, 21);
+            availableBooksAuthorFilterRadioButton.TabIndex = 0;
+            availableBooksAuthorFilterRadioButton.TabStop = true;
+            availableBooksAuthorFilterRadioButton.Text = "по автору";
+            availableBooksAuthorFilterRadioButton.UseVisualStyleBackColor = true;
             // 
             // takeABookButton
             // 
@@ -242,18 +299,19 @@ namespace LibraryApp
             availableBooksTable.BackgroundColor = SystemColors.Control;
             availableBooksTable.BorderStyle = BorderStyle.None;
             availableBooksTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            availableBooksTable.Location = new Point(2, 0);
+            availableBooksTable.Location = new Point(2, 70);
             availableBooksTable.Name = "availableBooksTable";
             availableBooksTable.ReadOnly = true;
             availableBooksTable.RowHeadersVisible = false;
             availableBooksTable.RowTemplate.Height = 25;
             availableBooksTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            availableBooksTable.Size = new Size(1158, 455);
+            availableBooksTable.Size = new Size(1158, 385);
             availableBooksTable.TabIndex = 0;
             // 
             // tabPage2
             // 
             tabPage2.BackColor = SystemColors.Control;
+            tabPage2.Controls.Add(noBooksLabel);
             tabPage2.Controls.Add(reaturnABookButton);
             tabPage2.Controls.Add(currentBooksTable);
             tabPage2.Location = new Point(4, 24);
@@ -262,6 +320,17 @@ namespace LibraryApp
             tabPage2.Size = new Size(1160, 527);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Мои книги";
+            // 
+            // noBooksLabel
+            // 
+            noBooksLabel.AutoSize = true;
+            noBooksLabel.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            noBooksLabel.Location = new Point(491, 181);
+            noBooksLabel.Name = "noBooksLabel";
+            noBooksLabel.Size = new Size(218, 17);
+            noBooksLabel.TabIndex = 15;
+            noBooksLabel.Text = "Пока вы не взяли ни одной книги...";
+            noBooksLabel.Visible = false;
             // 
             // reaturnABookButton
             // 
@@ -324,8 +393,11 @@ namespace LibraryApp
             ((System.ComponentModel.ISupportInitialize)userAccountPictureBox).EndInit();
             userAccountTabControl.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
+            availableBooksFilterGroupBox.ResumeLayout(false);
+            availableBooksFilterGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)availableBooksTable).EndInit();
             tabPage2.ResumeLayout(false);
+            tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)currentBooksTable).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -353,5 +425,10 @@ namespace LibraryApp
         private Button takeABookButton;
         private DataGridView currentBooksTable;
         private Button reaturnABookButton;
+        private GroupBox availableBooksFilterGroupBox;
+        private TextBox availableBooksFilterBox;
+        private RadioButton availableBooksNameFilterRadioButton;
+        private RadioButton availableBooksAuthorFilterRadioButton;
+        private Label noBooksLabel;
     }
 }

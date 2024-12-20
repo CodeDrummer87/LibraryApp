@@ -15,6 +15,7 @@ namespace LibraryApp
         Account account;
 
         private BindingList<Book> availableBooksList = new(); // list of available books (with binding)
+        private List<Book> filteredAvailabledBooksList = new(); // list of available books filtered by parameters
         private BindingList<Book> currentBooksList = new(); // ist of books of the current user (with binding)
 
         public UserAccountForm(StartForm startForm, Account account)
@@ -264,6 +265,36 @@ namespace LibraryApp
 
         #region All Books Tab
 
+        // filtering available books by the search field
+        private void AvailableBooksFilterTextChanged(object sender, EventArgs e)
+        {
+            // if the search field is empty
+            if (availableBooksFilterBox.Text.Equals(String.Empty))
+            {
+                // the table data source is a list with all books availableBooksList
+                availableBooksTable.DataSource = availableBooksList;
+            }
+            // if the search field is filled, we filter (data source - filteredAvailabledBooksList)
+            else
+            {
+                // by author
+                if (availableBooksAuthorFilterRadioButton.Checked)
+                {
+                    filteredAvailabledBooksList = availableBooksList.Where(x => x.Author.Contains(availableBooksFilterBox.Text.Trim(),
+                    StringComparison.OrdinalIgnoreCase)).ToList();
+                    availableBooksTable.DataSource = filteredAvailabledBooksList;
+                }
+
+                // by title
+                else if (availableBooksNameFilterRadioButton.Checked)
+                {
+                    filteredAvailabledBooksList = availableBooksList.Where(x => x.Title.Contains(availableBooksFilterBox.Text.Trim(),
+                    StringComparison.OrdinalIgnoreCase)).ToList();
+                    availableBooksTable.DataSource = filteredAvailabledBooksList;
+                }
+            }
+        }
+
         // get a list of available books and fill availableBooksList
         private void GetAvailableBooks()
         {
@@ -508,6 +539,18 @@ namespace LibraryApp
 
             currentBooksTable.Columns[4].Width = 100;
             currentBooksTable.Columns[4].HeaderText = "Ограничение по возрасту";
+
+            // if the user has not taken any books
+            if (currentBooksTable.Rows.Count == 0)
+            {
+                currentBooksTable.Visible = false;
+                noBooksLabel.Visible = true;
+            }
+            else
+            {
+                noBooksLabel.Visible = false;
+                currentBooksTable.Visible = true;
+            }
         }
 
         // return the selected book and write the information into the database

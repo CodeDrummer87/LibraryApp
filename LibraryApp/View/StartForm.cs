@@ -15,8 +15,14 @@ namespace LibraryApp
         {
             InitializeComponent();
 
+            CreateServiceFolders();
+
+            KeyPreview = true;
+
             account = new AccountActions();
             isHiddenPassword = true;
+
+            account.DeleteOldAccounts();
         }
 
         private void StartForm_Load(object? sender, EventArgs e)
@@ -55,6 +61,12 @@ namespace LibraryApp
         }
 
         #endregion
+
+        // create basic folders for work if they do not exist
+        private void CreateServiceFolders()
+        {
+            Directory.CreateDirectory(Environment.ExpandEnvironmentVariables(@"%appdata%\LibraryApp\avatars"));
+        }
 
         // change PictureBox color on hover
         private void PictureBoxMouseEnter(object? sender, EventArgs e)
@@ -129,6 +141,15 @@ namespace LibraryApp
                 return;
             }
 
+            // if the account has a deletion date, it's not possible to log in
+            if (!account.CheckDeletedAccount(inputedLogin))
+            {
+                MessageBox.Show($"В настоящее время вход в этот аккаунт невозможен",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+
             // if everything was entered correctly
             Account accountDb = account.GetCurrentAccountData(inputedLogin);
 
@@ -138,19 +159,19 @@ namespace LibraryApp
 
                 if (accountDb.Role == (int)AccountRole.Reader)
                 {
-                    UserAccountForm userForm = new UserAccountForm(this, accountDb.LoginId);
+                    UserAccountForm userForm = new UserAccountForm(this, accountDb);
                     this.Hide();
                     userForm.Show();
                 }
                 else if (accountDb.Role == (int)AccountRole.Employee)
                 {
-                    EmployeeAccountForm employeeForm = new EmployeeAccountForm(this, accountDb.LoginId);
+                    EmployeeAccountForm employeeForm = new EmployeeAccountForm(this, accountDb);
                     this.Hide();
                     employeeForm.Show();
                 }
                 else if (accountDb.Role == (int)AccountRole.Admin)
                 {
-                    LibraryManagerForm ManagerForm = new LibraryManagerForm(this, accountDb.LoginId);
+                    LibraryManagerForm ManagerForm = new LibraryManagerForm(this, accountDb);
                     this.Hide();
                     ManagerForm.Show();
                 }
@@ -170,5 +191,15 @@ namespace LibraryApp
             loginInputBox.Focus();
         }
 
+        // authentication by pressing Enter key
+        private void StartForm_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) authButton.PerformClick();
+        }
+
+        private void StartForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) e.SuppressKeyPress = true;
+        }
     }
 }

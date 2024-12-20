@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EmployeeAccountForm));
             EmployeeFormName = new Label();
             employeeFormCloseLabel = new Label();
@@ -43,15 +44,36 @@
             addBookButton = new Button();
             saveBookButton = new Button();
             currentEmployeeName = new Label();
+            employeeFormPictureBox = new PictureBox();
+            employeeAccountOpenFileDialog = new OpenFileDialog();
+            tabControl1 = new TabControl();
+            tabPage1 = new TabPage();
+            tabPage2 = new TabPage();
+            EmployeeAccountBirthdayListBox = new ListBox();
+            birthdayReaders = new Label();
+            groupBox1 = new GroupBox();
+            readersFilterBox = new TextBox();
+            readersLibraryCardNumberFilterRadioButton = new RadioButton();
+            readersLastnameFilterRadioButton = new RadioButton();
+            deleteReaderButton = new Button();
+            saveReaderButton = new Button();
+            addReaderButton = new Button();
+            readersTable = new DataGridView();
             ((System.ComponentModel.ISupportInitialize)booksTable).BeginInit();
             booksFilterGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)employeeFormPictureBox).BeginInit();
+            tabControl1.SuspendLayout();
+            tabPage1.SuspendLayout();
+            tabPage2.SuspendLayout();
+            groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)readersTable).BeginInit();
             SuspendLayout();
             // 
             // EmployeeFormName
             // 
             EmployeeFormName.AutoSize = true;
             EmployeeFormName.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point);
-            EmployeeFormName.Location = new Point(35, 27);
+            EmployeeFormName.Location = new Point(44, 45);
             EmployeeFormName.Name = "EmployeeFormName";
             EmployeeFormName.Size = new Size(473, 45);
             EmployeeFormName.TabIndex = 0;
@@ -82,15 +104,15 @@
             booksTable.BackgroundColor = SystemColors.Control;
             booksTable.BorderStyle = BorderStyle.None;
             booksTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            booksTable.Location = new Point(44, 160);
+            booksTable.Location = new Point(3, 75);
             booksTable.Name = "booksTable";
             booksTable.RowHeadersVisible = false;
             booksTable.RowTemplate.Height = 25;
             booksTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            booksTable.Size = new Size(1283, 521);
+            booksTable.Size = new Size(1262, 443);
             booksTable.TabIndex = 2;
             booksTable.CellClick += BooksTable_CellClick;
-            booksTable.CellValidating += IsDigit_CellValidating;
+            booksTable.CellValidating += IsDigit_CellValidating_Books;
             booksTable.DataError += CheckError_DataError;
             booksTable.SelectionChanged += BooksTableSelectionChanged;
             // 
@@ -102,7 +124,7 @@
             booksFilterGroupBox.Controls.Add(booksAuthorFilterRadioButton);
             booksFilterGroupBox.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold, GraphicsUnit.Point);
             booksFilterGroupBox.ForeColor = Color.MidnightBlue;
-            booksFilterGroupBox.Location = new Point(44, 81);
+            booksFilterGroupBox.Location = new Point(3, 6);
             booksFilterGroupBox.Name = "booksFilterGroupBox";
             booksFilterGroupBox.Size = new Size(589, 63);
             booksFilterGroupBox.TabIndex = 3;
@@ -116,7 +138,7 @@
             booksFilterBox.Name = "booksFilterBox";
             booksFilterBox.Size = new Size(205, 25);
             booksFilterBox.TabIndex = 3;
-            booksFilterBox.TextChanged += FilterTextChanged;
+            booksFilterBox.TextChanged += BooksFilterTextChanged;
             // 
             // booksAgeLimitFilterRadioButton
             // 
@@ -161,7 +183,7 @@
             // deleteBookButton
             // 
             deleteBookButton.Cursor = Cursors.Hand;
-            deleteBookButton.Location = new Point(246, 708);
+            deleteBookButton.Location = new Point(224, 548);
             deleteBookButton.Name = "deleteBookButton";
             deleteBookButton.Size = new Size(75, 23);
             deleteBookButton.TabIndex = 5;
@@ -175,7 +197,7 @@
             EmployeeFormEditModeCheckBox.Cursor = Cursors.Hand;
             EmployeeFormEditModeCheckBox.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             EmployeeFormEditModeCheckBox.ForeColor = Color.MidnightBlue;
-            EmployeeFormEditModeCheckBox.Location = new Point(366, 710);
+            EmployeeFormEditModeCheckBox.Location = new Point(344, 550);
             EmployeeFormEditModeCheckBox.Name = "EmployeeFormEditModeCheckBox";
             EmployeeFormEditModeCheckBox.Size = new Size(143, 21);
             EmployeeFormEditModeCheckBox.TabIndex = 6;
@@ -186,7 +208,7 @@
             // addBookButton
             // 
             addBookButton.Cursor = Cursors.Hand;
-            addBookButton.Location = new Point(44, 708);
+            addBookButton.Location = new Point(22, 548);
             addBookButton.Name = "addBookButton";
             addBookButton.Size = new Size(75, 23);
             addBookButton.TabIndex = 7;
@@ -197,7 +219,7 @@
             // saveBookButton
             // 
             saveBookButton.Cursor = Cursors.Hand;
-            saveBookButton.Location = new Point(145, 708);
+            saveBookButton.Location = new Point(123, 548);
             saveBookButton.Name = "saveBookButton";
             saveBookButton.Size = new Size(75, 23);
             saveBookButton.TabIndex = 8;
@@ -210,7 +232,7 @@
             currentEmployeeName.Cursor = Cursors.Hand;
             currentEmployeeName.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
             currentEmployeeName.ForeColor = Color.MidnightBlue;
-            currentEmployeeName.Location = new Point(928, 109);
+            currentEmployeeName.Location = new Point(795, 58);
             currentEmployeeName.Name = "currentEmployeeName";
             currentEmployeeName.Size = new Size(374, 29);
             currentEmployeeName.TabIndex = 9;
@@ -220,19 +242,196 @@
             currentEmployeeName.MouseEnter += ExitToStartFormLabel_MouseEnter;
             currentEmployeeName.MouseLeave += ExitToStartFormLabel_MouseLeave;
             // 
+            // employeeFormPictureBox
+            // 
+            employeeFormPictureBox.BackColor = Color.Transparent;
+            employeeFormPictureBox.BackgroundImage = Properties.Resources.default1;
+            employeeFormPictureBox.Cursor = Cursors.Hand;
+            employeeFormPictureBox.Location = new Point(1195, 18);
+            employeeFormPictureBox.Name = "employeeFormPictureBox";
+            employeeFormPictureBox.Size = new Size(100, 100);
+            employeeFormPictureBox.TabIndex = 10;
+            employeeFormPictureBox.TabStop = false;
+            employeeFormPictureBox.Click += ChangeProfileImage;
+            // 
+            // employeeAccountOpenFileDialog
+            // 
+            employeeAccountOpenFileDialog.FileName = "openFileDialog1";
+            // 
+            // tabControl1
+            // 
+            tabControl1.Controls.Add(tabPage1);
+            tabControl1.Controls.Add(tabPage2);
+            tabControl1.Location = new Point(44, 118);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(1276, 625);
+            tabControl1.TabIndex = 11;
+            // 
+            // tabPage1
+            // 
+            tabPage1.BackColor = SystemColors.Control;
+            tabPage1.Controls.Add(booksTable);
+            tabPage1.Controls.Add(EmployeeFormEditModeCheckBox);
+            tabPage1.Controls.Add(deleteBookButton);
+            tabPage1.Controls.Add(booksFilterGroupBox);
+            tabPage1.Controls.Add(saveBookButton);
+            tabPage1.Controls.Add(addBookButton);
+            tabPage1.Location = new Point(4, 24);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(1268, 597);
+            tabPage1.TabIndex = 0;
+            tabPage1.Text = "Книги";
+            // 
+            // tabPage2
+            // 
+            tabPage2.BackColor = Color.Transparent;
+            tabPage2.Controls.Add(EmployeeAccountBirthdayListBox);
+            tabPage2.Controls.Add(birthdayReaders);
+            tabPage2.Controls.Add(groupBox1);
+            tabPage2.Controls.Add(deleteReaderButton);
+            tabPage2.Controls.Add(saveReaderButton);
+            tabPage2.Controls.Add(addReaderButton);
+            tabPage2.Controls.Add(readersTable);
+            tabPage2.Location = new Point(4, 24);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(1268, 597);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "Читатели";
+            // 
+            // EmployeeAccountBirthdayListBox
+            // 
+            EmployeeAccountBirthdayListBox.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            EmployeeAccountBirthdayListBox.FormattingEnabled = true;
+            EmployeeAccountBirthdayListBox.ItemHeight = 17;
+            EmployeeAccountBirthdayListBox.Location = new Point(869, 121);
+            EmployeeAccountBirthdayListBox.Name = "EmployeeAccountBirthdayListBox";
+            EmployeeAccountBirthdayListBox.Size = new Size(260, 106);
+            EmployeeAccountBirthdayListBox.TabIndex = 6;
+            EmployeeAccountBirthdayListBox.Visible = false;
+            // 
+            // birthdayReaders
+            // 
+            birthdayReaders.AutoSize = true;
+            birthdayReaders.Cursor = Cursors.Hand;
+            birthdayReaders.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            birthdayReaders.Location = new Point(864, 94);
+            birthdayReaders.Name = "birthdayReaders";
+            birthdayReaders.Size = new Size(104, 17);
+            birthdayReaders.TabIndex = 5;
+            birthdayReaders.Text = "birthdayReaders";
+            birthdayReaders.Click += BirthdayReaders_Click;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(readersFilterBox);
+            groupBox1.Controls.Add(readersLibraryCardNumberFilterRadioButton);
+            groupBox1.Controls.Add(readersLastnameFilterRadioButton);
+            groupBox1.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold, GraphicsUnit.Point);
+            groupBox1.ForeColor = Color.MidnightBlue;
+            groupBox1.Location = new Point(3, 6);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(589, 63);
+            groupBox1.TabIndex = 4;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Фильтрация";
+            // 
+            // readersFilterBox
+            // 
+            readersFilterBox.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            readersFilterBox.Location = new Point(368, 26);
+            readersFilterBox.Name = "readersFilterBox";
+            readersFilterBox.Size = new Size(205, 25);
+            readersFilterBox.TabIndex = 3;
+            readersFilterBox.TextChanged += ReadersFilterTextChanged;
+            // 
+            // readersLibraryCardNumberFilterRadioButton
+            // 
+            readersLibraryCardNumberFilterRadioButton.AutoSize = true;
+            readersLibraryCardNumberFilterRadioButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            readersLibraryCardNumberFilterRadioButton.ForeColor = Color.Black;
+            readersLibraryCardNumberFilterRadioButton.Location = new Point(122, 30);
+            readersLibraryCardNumberFilterRadioButton.Name = "readersLibraryCardNumberFilterRadioButton";
+            readersLibraryCardNumberFilterRadioButton.Size = new Size(224, 21);
+            readersLibraryCardNumberFilterRadioButton.TabIndex = 1;
+            readersLibraryCardNumberFilterRadioButton.TabStop = true;
+            readersLibraryCardNumberFilterRadioButton.Text = "по номеру читательского билета";
+            readersLibraryCardNumberFilterRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // readersLastnameFilterRadioButton
+            // 
+            readersLastnameFilterRadioButton.AutoSize = true;
+            readersLastnameFilterRadioButton.Checked = true;
+            readersLastnameFilterRadioButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            readersLastnameFilterRadioButton.ForeColor = Color.Black;
+            readersLastnameFilterRadioButton.Location = new Point(15, 30);
+            readersLastnameFilterRadioButton.Name = "readersLastnameFilterRadioButton";
+            readersLastnameFilterRadioButton.Size = new Size(98, 21);
+            readersLastnameFilterRadioButton.TabIndex = 0;
+            readersLastnameFilterRadioButton.TabStop = true;
+            readersLastnameFilterRadioButton.Text = "по фамилии";
+            readersLastnameFilterRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // deleteReaderButton
+            // 
+            deleteReaderButton.Location = new Point(224, 548);
+            deleteReaderButton.Name = "deleteReaderButton";
+            deleteReaderButton.Size = new Size(75, 23);
+            deleteReaderButton.TabIndex = 3;
+            deleteReaderButton.Text = "Удалить";
+            deleteReaderButton.UseVisualStyleBackColor = true;
+            deleteReaderButton.Click += DeleteReaderButton_Click;
+            // 
+            // saveReaderButton
+            // 
+            saveReaderButton.Location = new Point(123, 548);
+            saveReaderButton.Name = "saveReaderButton";
+            saveReaderButton.Size = new Size(75, 23);
+            saveReaderButton.TabIndex = 2;
+            saveReaderButton.Text = "Сохранить";
+            saveReaderButton.UseVisualStyleBackColor = true;
+            saveReaderButton.Click += SaveReaderButton_CLick;
+            // 
+            // addReaderButton
+            // 
+            addReaderButton.Location = new Point(22, 548);
+            addReaderButton.Name = "addReaderButton";
+            addReaderButton.Size = new Size(75, 23);
+            addReaderButton.TabIndex = 1;
+            addReaderButton.Text = "Добавить";
+            addReaderButton.UseVisualStyleBackColor = true;
+            addReaderButton.Click += AddReaderButton_Click;
+            // 
+            // readersTable
+            // 
+            readersTable.AllowUserToAddRows = false;
+            readersTable.AllowUserToResizeColumns = false;
+            readersTable.AllowUserToResizeRows = false;
+            dataGridViewCellStyle2.BackColor = Color.WhiteSmoke;
+            readersTable.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            readersTable.BackgroundColor = SystemColors.Control;
+            readersTable.BorderStyle = BorderStyle.None;
+            readersTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            readersTable.Location = new Point(3, 75);
+            readersTable.Name = "readersTable";
+            readersTable.RowHeadersVisible = false;
+            readersTable.RowTemplate.Height = 25;
+            readersTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            readersTable.Size = new Size(848, 446);
+            readersTable.TabIndex = 0;
+            readersTable.CellValidating += IsDigit_CellValidating_Readers;
+            // 
             // EmployeeAccountForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1366, 768);
+            Controls.Add(tabControl1);
+            Controls.Add(employeeFormPictureBox);
             Controls.Add(currentEmployeeName);
-            Controls.Add(saveBookButton);
-            Controls.Add(addBookButton);
-            Controls.Add(EmployeeFormEditModeCheckBox);
-            Controls.Add(deleteBookButton);
-            Controls.Add(booksFilterGroupBox);
-            Controls.Add(booksTable);
             Controls.Add(employeeFormCloseLabel);
             Controls.Add(EmployeeFormName);
             FormBorderStyle = FormBorderStyle.None;
@@ -246,6 +445,15 @@
             ((System.ComponentModel.ISupportInitialize)booksTable).EndInit();
             booksFilterGroupBox.ResumeLayout(false);
             booksFilterGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)employeeFormPictureBox).EndInit();
+            tabControl1.ResumeLayout(false);
+            tabPage1.ResumeLayout(false);
+            tabPage1.PerformLayout();
+            tabPage2.ResumeLayout(false);
+            tabPage2.PerformLayout();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)readersTable).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -265,5 +473,21 @@
         private Button addBookButton;
         private Button saveBookButton;
         private Label currentEmployeeName;
+        private PictureBox employeeFormPictureBox;
+        private OpenFileDialog employeeAccountOpenFileDialog;
+        private TabControl tabControl1;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        private DataGridView readersTable;
+        private Button addReaderButton;
+        private Button button1;
+        private Button saveReaderButton;
+        private Button deleteReaderButton;
+        private GroupBox groupBox1;
+        private TextBox readersFilterBox;
+        private RadioButton readersLibraryCardNumberFilterRadioButton;
+        private RadioButton readersLastnameFilterRadioButton;
+        private Label birthdayReaders;
+        private ListBox EmployeeAccountBirthdayListBox;
     }
 }

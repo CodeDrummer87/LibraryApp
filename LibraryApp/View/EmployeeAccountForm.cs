@@ -12,31 +12,48 @@ namespace LibraryApp.View
         private SqliteCommand? command;
         private SqliteDataReader? reader;
 
-        private int currentLoginId;
         private StartForm startForm;
 
+        private SetReaderLoginPassword LoginPswdForm = new SetReaderLoginPassword(); // form for filling in login and password when registering a new reader
+        public static int closingIndex; // shows how the form was closed
+
+        // for actions with readers' accounts
+        private AccountActions acc = new AccountActions();
+        Account account;
+
         private BindingList<Book> booksList = new(); // list of all books (with binding)
-        private List<Book> filteredList = new(); // list of books filtered by parameters
+        private List<Book> filteredBooksList = new(); // list of books filtered by parameters
+
+        private BindingList<Reader> readersList = new(); // list of all readers (with binding)
+        private List<Reader> filteredReadersList = new(); // list of readers filtered by parameters
+
+        private List<ViewBirthdayModel> birthdayList = new(); // list of birthdays
 
         private ComboBox genresComboBox = new ComboBox(); // genre drop-down list
         private ComboBox isAvailableComboBox = new ComboBox(); // drop-down list of book availability
         private ComboBox statusComboBox = new ComboBox(); // book status drop-down list
+
         int rowIndex = 0; // index of the row in the drop-down list
 
         bool flag = false; // flag for the operation of the line selection/deselection method
 
-        public EmployeeAccountForm(StartForm startForm, int currentLoginId)
+        public EmployeeAccountForm(StartForm startForm, Account account)
         {
             InitializeComponent();
 
             ViewBooksTable();
+            ViewReadersTable();
+
             LoadComboBoxes();
 
-            this.currentLoginId = currentLoginId!;
+            this.account = account;
             this.startForm = startForm;
 
-            PutCurrentEmployeeName(GetCurrentEmployeeName(currentLoginId));
+            PutCurrentEmployeeName(GetCurrentEmployeeName(account.LoginId));
+
+            GetTodayBirthdays();
         }
+
 
         #region Window control buttons
         private void EmployeeFormCloseLabel_Click(object? sender, EventArgs e)
@@ -86,10 +103,21 @@ namespace LibraryApp.View
         private void PutCurrentEmployeeName(ViewEmployeeNameModel employeeName)
         {
             currentEmployeeName.Text = $"{employeeName.Lastname} {employeeName.Firstname} {employeeName.Surname}";
+
+            // if the database contains data about the file path, display the profile photo
+            if (account.ImagePath is not null)
+            {
+                using (var stream = new FileStream(Environment.ExpandEnvironmentVariables(@"%appdata%\LibraryApp\avatars\") + account.ImagePath, FileMode.Open))
+                {
+                    employeeFormPictureBox.BackgroundImage = null;
+                    employeeFormPictureBox.Image = Image.FromStream(stream);
+                    employeeFormPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+                }
+            }
         }
 
         // get the full name of the current employee
-        public ViewEmployeeNameModel GetCurrentEmployeeName(int loginId)
+        private ViewEmployeeNameModel GetCurrentEmployeeName(int loginId)
         {
             ViewEmployeeNameModel employeeNameModel = new();
 
@@ -131,6 +159,94 @@ namespace LibraryApp.View
             return employeeNameModel;
         }
 
+        // change the profile image by clicking on it
+        private void ChangeProfileImage(object sender, EventArgs e)
+        {
+            // opening the file dialog
+            employeeAccountOpenFileDialog.FileName = "Image";
+            employeeAccountOpenFileDialog.Filter = "PNG (*.png)|*.png";
+            employeeAccountOpenFileDialog.Title = "Выберите файл с изображением";
+
+            if (employeeAccountOpenFileDialog.ShowDialog() == DialogResult.Cancel)
+                return;
+
+            // saving the image to the PictureBox
+            employeeFormPictureBox.BackgroundImage = null;
+
+            employeeFormPictureBox.Image = new Bitmap(employeeAccountOpenFileDialog.FileName);
+
+            employeeFormPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+            employeeFormPictureBox.Update();
+
+            // the name of the file to save
+            string fileName = account.Login + ".png";
+
+            // the saving path
+            string savePath = Environment.ExpandEnvironmentVariables(@"%appdata%\LibraryApp\avatars\") + fileName;
+
+            if (employeeFormPictureBox.Image is not null)
+            {
+                try
+                {
+                    // saving the file
+                    employeeFormPictureBox.Image.Save(savePath, System.Drawing.Imaging.ImageFormat.Png);
+                    AccountActions.SetImagePathData(command, fileName, account.LoginId);
+                }
+                catch
+                {
+                    MessageBox.Show("Невозможно сохранить изображение профиля", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        // check empty cells before saving data
+        private bool CheckIsNullOrWhiteSpace(int callIndex, out int emptyIndex)
+        {
+
+            emptyIndex = 0; // by default the index of an empty cell is 0
+            bool result = false; // by default the line is considered filled
+
+            if (callIndex == 1) // if we check booksTable
+            {
+                for (int i = 1; i < booksTable.ColumnCount; i++)
+                {
+                    // skip the cell with the cover address when checking,
+                    // because the default address for a new book is written directly to the database, bypassing the table
+                    if (i == 5)
+                        continue;
+
+                    // if the cell value is null or contains only spaces
+                    if (booksTable.CurrentRow.Cells[i].Value is null || string.IsNullOrWhiteSpace(booksTable.CurrentRow.Cells[i].Value.ToString()))
+                    {
+                        // then we return true and then the save method will display an error message
+                        result = true;
+                        emptyIndex = i; // to which we will pass the index of an empty cell to display the name of the unfilled field
+                        break;
+                    }
+                }
+                return result;
+            }
+            else // if we check booksTable
+            {
+                for (int i = 0; i < readersTable.ColumnCount; i++)
+                {
+                    // skip the cell with Id and PersonalId
+                    if (i == 4 || i == 5)
+                        continue;
+
+                    if (readersTable.CurrentRow.Cells[i].Value is null || string.IsNullOrWhiteSpace(readersTable.CurrentRow.Cells[i].Value.ToString()))
+                    {
+                        result = true;
+                        emptyIndex = i;
+                        break;
+                    }
+                }
+                return result;
+            }
+        }
+
+        #region Books Tab
         // get a list of books and fill booksList
         private void GetBooks()
         {
@@ -180,7 +296,7 @@ namespace LibraryApp.View
             GetBooks();
 
             booksTable.DataSource = booksList; // table data source
-            booksTable.MultiSelect = false; // you can't select more than one line
+            booksTable.MultiSelect = false; // you can't select more than one row
 
             booksTable.Columns[0].Visible = false; // do not display column with Id
             booksTable.Columns[5].Visible = false; // we do not display the column with the cover address
@@ -189,7 +305,7 @@ namespace LibraryApp.View
             booksTable.Columns[1].Width = 500;
             booksTable.Columns[1].HeaderText = "Название";
 
-            booksTable.Columns[2].Width = 180;
+            booksTable.Columns[2].Width = 160;
             booksTable.Columns[2].HeaderText = "Жанр";
 
             booksTable.Columns[3].Width = 280;
@@ -229,8 +345,8 @@ namespace LibraryApp.View
             }
         }
 
-        // we filter from the search field
-        private void FilterTextChanged(object sender, EventArgs e)
+        // filtering books by the search field
+        private void BooksFilterTextChanged(object sender, EventArgs e)
         {
             // if the search field is empty
             if (booksFilterBox.Text.Equals(String.Empty))
@@ -244,24 +360,24 @@ namespace LibraryApp.View
                 // by author
                 if (booksAuthorFilterRadioButton.Checked)
                 {
-                    filteredList = booksList.Where(x => x.Author.Contains(booksFilterBox.Text.Trim(),
+                    filteredBooksList = booksList.Where(x => x.Author.Contains(booksFilterBox.Text.Trim(),
                     StringComparison.OrdinalIgnoreCase)).ToList();
-                    booksTable.DataSource = filteredList;
+                    booksTable.DataSource = filteredBooksList;
                 }
 
                 // by name
                 else if (booksNameFilterRadioButton.Checked)
                 {
-                    filteredList = booksList.Where(x => x.Title.Contains(booksFilterBox.Text.Trim(),
+                    filteredBooksList = booksList.Where(x => x.Title.Contains(booksFilterBox.Text.Trim(),
                     StringComparison.OrdinalIgnoreCase)).ToList();
-                    booksTable.DataSource = filteredList;
+                    booksTable.DataSource = filteredBooksList;
                 }
 
                 // by age restrictions
                 else if (booksAgeLimitFilterRadioButton.Checked)
                 {
-                    filteredList = booksList.Where(x => x.AgeLimit.ToString().Contains(booksFilterBox.Text.Trim())).ToList();
-                    booksTable.DataSource = filteredList;
+                    filteredBooksList = booksList.Where(x => x.AgeLimit.ToString().Contains(booksFilterBox.Text.Trim())).ToList();
+                    booksTable.DataSource = filteredBooksList;
                 }
             }
         }
@@ -440,7 +556,7 @@ namespace LibraryApp.View
         }
 
         // check if the value in the cell with age restriction is a number
-        private void IsDigit_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        private void IsDigit_CellValidating_Books(object sender, DataGridViewCellValidatingEventArgs e)
         {
             // if active cell is age limit
             if (booksTable.CurrentRow.Cells[4] == booksTable.CurrentCell)
@@ -460,31 +576,6 @@ namespace LibraryApp.View
                     }
                 }
             }
-        }
-
-        // check if all cells are filled in a row when saving data about a book
-        private bool CheckIsNullOrWhiteSpace(out int emptyIndex)
-        {
-            emptyIndex = 0; // by default the index of an empty cell is 0
-            bool result = false; // by default the line is considered filled
-
-            for (int i = 1; i < booksTable.ColumnCount; i++)
-            {
-                // skip the cell with the cover address when checking,
-                // because the default address for a new book is written directly to the database, bypassing the table
-                if (i == 5)
-                    continue;
-
-                // if the cell value is null or contains only spaces
-                if (booksTable.CurrentRow.Cells[i].Value is null || string.IsNullOrWhiteSpace(booksTable.CurrentRow.Cells[i].Value.ToString()))
-                {
-                    // then we return true and then the save method will display an error message
-                    result = true;
-                    emptyIndex = i; // to which we will pass the index of an empty cell to display the name of the unfilled field
-                    break;
-                }
-            }
-            return result;
         }
 
         // check if there is a similar book in the database
@@ -514,7 +605,7 @@ namespace LibraryApp.View
             int index; // index of unfilled cell
 
             // if the row has no empty cells
-            if (!CheckIsNullOrWhiteSpace(out index))
+            if (!CheckIsNullOrWhiteSpace(1, out index))
             {
                 // if there is no similar book in the database
                 if (!CheckBookInDataBase())
@@ -741,6 +832,502 @@ namespace LibraryApp.View
                 }
             }
         }
+        #endregion
+
+        #region Readers Tab
+
+        // get a list of readers and fill readersList
+        private void GetReaders()
+        {
+            readersList.Clear();
+
+            // do not display readers who have a deletion date
+            string query = "SELECT r.Id, r.PersonalId, r.libraryCardNumber, r.TotalBooks, " +
+                           "p.Firstname, p.Lastname, p.Surname, p.DateOfBirth " +
+                           "FROM Readers r " +
+                           "INNER JOIN Persons p " +
+                           "ON p.Id = r.PersonalId " +
+                           "WHERE p.DateOfDeletion IS NULL";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    readersList.Add(new Reader
+                    {
+                        Id = reader.GetInt32(0),
+                        PersonalId = reader.GetInt32(1),
+                        libraryCardNumber = reader.GetInt32(2),
+                        TotalBooks = reader.GetInt32(3),
+                        Firstname = reader.GetString(4),
+                        Lastname = reader.GetString(5),
+                        Surname = reader.GetString(6),
+                        DateOfBirth = reader.GetString(7)
+                    });
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось загрузить список читателей:" +
+                                $"\n\"{ex.Message}\"\nОбратитесь к системному администратору для устранения ошибки.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
+
+        // by default we fill the table from readersList, which contains all readers
+        private void ViewReadersTable()
+        {
+            GetReaders();
+
+            readersTable.DataSource = readersList; // table data source
+            readersTable.MultiSelect = false; // you can't select more than one row
+
+            // set the sizes and names of the columns
+            readersTable.Columns[0].Width = 150;
+            readersTable.Columns[0].HeaderText = "Фамилия";
+
+            readersTable.Columns[1].Width = 150;
+            readersTable.Columns[1].HeaderText = "Имя";
+
+            readersTable.Columns[2].Width = 150;
+            readersTable.Columns[2].HeaderText = "Отчество";
+
+            readersTable.Columns[3].HeaderText = "Дата рождения";
+
+            readersTable.Columns[4].Visible = false; // do not display column with Id
+            readersTable.Columns[5].Visible = false; // do not display column with PersonalId
+
+            readersTable.Columns[6].HeaderText = "Номер читательского билета";
+
+            readersTable.Columns[7].HeaderText = "Количество книг";
+        }
+
+        // filtering readers by the search field
+        private void ReadersFilterTextChanged(object sender, EventArgs e)
+        {
+            // if the search field is empty
+            if (readersFilterBox.Text.Equals(String.Empty))
+            {
+                // then the table data source is a list with all readers readersList
+                readersTable.DataSource = readersList;
+            }
+            // if the search field is filled, then we filter (data source - filteredReadersList)
+            else
+            {
+                // by lastname
+                if (readersLastnameFilterRadioButton.Checked)
+                {
+                    filteredReadersList = readersList.Where(x => x.Lastname.Contains(readersFilterBox.Text.Trim(),
+                    StringComparison.OrdinalIgnoreCase)).ToList();
+                    readersTable.DataSource = filteredReadersList;
+                }
+
+                // by library card number
+                else if (readersLibraryCardNumberFilterRadioButton.Checked)
+                {
+                    filteredReadersList = readersList.Where(x => x.libraryCardNumber.ToString().Contains(readersFilterBox.Text.Trim())).ToList();
+                    readersTable.DataSource = filteredReadersList;
+                }
+            }
+        }
+
+        // check if there is a similar reader in the database
+        private bool CheckReaderInDataBase()
+        {
+            string query = "SELECT EXISTS (SELECT r.libraryCardNumber, " +
+                           "p.Firstname, p.Lastname, p.Surname, p.DateOfBirth " +
+                           "FROM Readers r " +
+                           "INNER JOIN Persons p " +
+                           "ON p.Id = r.PersonalId " +
+                           "WHERE p.Firstname = @Firstname AND " +
+                           "p.Lastname = @Lastname AND " +
+                           "p.Surname = @Surname AND " +
+                           "p.DateOfBirth = @DateOfBirth OR " +
+                           "r.libraryCardNumber = @libraryCardNumber)";
+
+            command = DataBase.GetConnection().CreateCommand();
+            command.CommandText = query;
+            command.Parameters.AddWithValue("libraryCardNumber", readersTable.SelectedRows[0].Cells[6].Value.ToString());
+            command.Parameters.AddWithValue("Firstname", readersTable.SelectedRows[0].Cells[1].Value.ToString());
+            command.Parameters.AddWithValue("Lastname", readersTable.SelectedRows[0].Cells[0].Value.ToString());
+            command.Parameters.AddWithValue("Surname", readersTable.SelectedRows[0].Cells[2].Value.ToString());
+            command.Parameters.AddWithValue("DateOfBirth", readersTable.SelectedRows[0].Cells[3].Value.ToString());
+
+
+            DataBase.OpenConnection();
+            bool answer = Convert.ToBoolean(command.ExecuteScalar());
+
+            DataBase.CloseConnection();
+            return answer;
+        }
+
+        // check if the value in the cell with library card number or number of books restriction is a number
+        private void IsDigit_CellValidating_Readers(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            // if active cell is library card number or number of books
+            if (readersTable.CurrentRow.Cells[6] == readersTable.CurrentCell || readersTable.CurrentRow.Cells[7] == readersTable.CurrentCell)
+            {
+                // we get its value
+                string ageLimitEditingValue = readersTable.CurrentCell.EditedFormattedValue.ToString()!;
+
+                // and check
+                foreach (var item in ageLimitEditingValue)
+                {
+                    if (!Char.IsDigit(item))
+                    {
+                        e.Cancel = true;
+                        MessageBox.Show($"Значение может быть только числом",
+                                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // add a blank line to save a new reader
+        private void AddReaderButton_Click(object sender, EventArgs e)
+        {
+            // if there are rows in the table
+            if (readersTable.Rows.Count >= 1)
+            {
+                // add a new element to the table source
+                readersList.Add(new Reader());
+
+                // move to a new line
+                readersTable.CurrentCell = readersTable.Rows[readersTable.Rows.Count - 1].Cells[1];
+            }
+            // if there are no rows in the table, then we simply add a new row
+            else
+            {
+                readersList.Add(new Reader());
+            }
+        }
+
+        // writing data to the Readers table
+        private void SetReadersData(Person person)
+        {
+            string query = "INSERT INTO Readers (PersonalId, libraryCardNumber, TotalBooks) " +
+                           "SELECT Persons.Id, @libraryCardNumber, @TotalBooks FROM Persons " +
+                           "WHERE (Firstname, Lastname, Surname, DateOfBirth) = (@Firstname, @Lastname, @Surname, @DateOfBirth); ";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@Firstname", person.Firstname);
+                command.Parameters.AddWithValue("@Lastname", person.Lastname);
+                command.Parameters.AddWithValue("@Surname", person.Surname);
+                command.Parameters.AddWithValue("@DateOfBirth", person.DateOfBirth);
+                command.Parameters.AddWithValue("@libraryCardNumber", readersTable.SelectedRows[0].Cells[6].Value.ToString());
+                command.Parameters.AddWithValue("@TotalBooks", readersTable.SelectedRows[0].Cells[7].Value.ToString());
+
+                DataBase.OpenConnection();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось создать запись в таблице Readers. Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
+
+        // saving a new reader in the database
+        private void SaveNewReader(object sender, FormClosedEventArgs e)
+        {
+
+            // if LoginPswdForm was closed by the button click
+            if (closingIndex == 1)
+            {
+                // if the saved line does not contain Id, then the reader is not yet in the database
+                // we save a new reader
+                if (readersTable.CurrentRow.Cells[4].Value is null)
+                {
+                    try
+                    {
+                        Person person = new()
+                        {
+                            Firstname = readersTable.SelectedRows[0].Cells[1].Value.ToString(),
+                            Lastname = readersTable.SelectedRows[0].Cells[0].Value.ToString(),
+                            Surname = readersTable.SelectedRows[0].Cells[2].Value.ToString(),
+                            DateOfBirth = readersTable.SelectedRows[0].Cells[3].Value.ToString(),
+                            Login = LoginPswdForm.accountData.login,
+                            Password = LoginPswdForm.accountData.password
+                        };
+
+
+                        string query = "INSERT INTO Persons (Firstname, Lastname, Surname, DateOfBirth) " +
+                                       "VALUES (@Firstname, @Lastname, @Surname, @DateOfBirth); ";
+
+                        try
+                        {
+                            command = DataBase.GetConnection().CreateCommand();
+                            command.CommandText = query;
+                            command.Parameters.AddWithValue("@Firstname", person.Firstname);
+                            command.Parameters.AddWithValue("@Lastname", person.Lastname);
+                            command.Parameters.AddWithValue("@Surname", person.Surname);
+                            command.Parameters.AddWithValue("@DateOfBirth", person.DateOfBirth);
+
+                            DataBase.OpenConnection();
+                            if (command.ExecuteNonQuery() == 1)
+                            {
+                                SetReadersData(person);
+
+                                acc.SetAccountData(person, 1);
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Не удалось создать новый аккаунт:\n\"{ex.Message}\"\n" +
+                            $"Обратитесь к системному администратору для её устранения.",
+                            "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        }
+
+                        DataBase.CloseConnection();
+
+
+                        MessageBox.Show("Данные о новом читателе были успешно сохранены",
+                                        "Сохранение нового читателя", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Не удалось сохранить данные о новом читателе\n\"{ex.Message}\"\n" +
+                                        $"Обратитесь к системному администратору для её устранения.",
+                                        "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    }
+                }
+            }
+        }
+
+        // save data about the reader in the Readers table and the database
+        private void SaveReaderButton_CLick(object sender, EventArgs e)
+        {
+            // if the table is empty or no rows are selected, then saving doesn't work
+            if (readersTable.Rows.Count == 0 || readersTable.SelectedRows.Count == 0)
+                return;
+
+            int index; // index of unfilled cell
+
+            // if the row has no empty cells
+            if (!CheckIsNullOrWhiteSpace(2, out index))
+            {
+                // if the saved line contains PersonalId or libraryCardNumber, we re-save the reader in the database
+                if (readersTable.CurrentRow.Cells[4].Value is not null)
+                {
+                    string id = readersTable.CurrentRow.Cells[5].Value.ToString()!;
+
+                    string query = "UPDATE Readers SET libraryCardNumber = @libraryCardNumber, " +
+                                   "TotalBooks = @TotalBooks WHERE PersonalId = @id; " +
+                                   "UPDATE Persons SET Firstname = @Firstname, Lastname = @Lastname, " +
+                                   "Surname = @Surname, DateOfBirth = @DateOfBirth WHERE Id = @id";
+
+                    try
+                    {
+                        command = DataBase.GetConnection().CreateCommand();
+                        command.CommandText = query;
+                        command.Parameters.AddWithValue("id", id);
+                        command.Parameters.AddWithValue("libraryCardNumber", readersTable.SelectedRows[0].Cells[6].Value.ToString().Trim());
+                        command.Parameters.AddWithValue("TotalBooks", readersTable.SelectedRows[0].Cells[7].Value.ToString().Trim());
+                        command.Parameters.AddWithValue("Firstname", readersTable.SelectedRows[0].Cells[1].Value.ToString().Trim());
+                        command.Parameters.AddWithValue("Lastname", readersTable.SelectedRows[0].Cells[0].Value.ToString());
+                        command.Parameters.AddWithValue("Surname", readersTable.SelectedRows[0].Cells[2].Value.ToString());
+                        command.Parameters.AddWithValue("DateOfBirth", readersTable.SelectedRows[0].Cells[3].Value.ToString());
+
+                        DataBase.OpenConnection();
+                        command.ExecuteNonQuery();
+
+                        DataBase.CloseConnection();
+
+                        MessageBox.Show("Данные о читателе были успешно изменены",
+                                        "Изменение данных о читателе", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Не удалось изменить данные о читателе в базе данных:\n\"{ex.Message}\"\n" +
+                                        $"Обратитесь к системному администратору для её устранения.",
+                                        "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    }
+                }
+                else
+                {
+                    // if there is no similar reader in the database
+                    if (!CheckReaderInDataBase())
+                    {
+                        // if the LoginPswdForm was closed earlier
+                        if (LoginPswdForm.IsDisposed)
+                        {
+                            SetReaderLoginPassword LoginPswdForm = new SetReaderLoginPassword(); // create a new form
+                            LoginPswdForm.FormClosed += new FormClosedEventHandler(SaveNewReader); // bind to the LoginPswdForm closing event
+                            LoginPswdForm.Show();
+                        }
+                        else
+                        {
+                            LoginPswdForm.Show();
+                            LoginPswdForm.FormClosed += new FormClosedEventHandler(SaveNewReader);
+                        }
+                    }
+                    // if exactly the same reader is in the database
+                    else
+                    {
+                        MessageBox.Show($"Читатель с такими атрибутами уже существует",
+                                        "Не удается сохранить данные", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show($"Поле \"{readersTable.Columns[index].HeaderText}\" не заполнено",
+                                "Не удается сохранить данные", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+        }
+
+        // write the date of the reader's deletion in the database or just delete a row in the form
+        private void DeleteReaderButton_Click(object sender, EventArgs e)
+        {
+            // if the table is empty or no rows are selected, deletion doesn't work
+            if (readersTable.Rows.Count == 0 || readersTable.SelectedRows.Count == 0)
+                return;
+
+            // if the "Lastname", "Firstname" and "Surname" fields are not empty
+            // and the similar reader exists in the database, we delete from the database the reader
+            if (readersTable.SelectedRows[0].Cells[0].Value is not null
+             && readersTable.SelectedRows[0].Cells[1].Value is not null
+             && readersTable.SelectedRows[0].Cells[2].Value is not null
+             && CheckReaderInDataBase())
+            {
+                MessageBoxButtons msb = MessageBoxButtons.YesNo;
+                MessageBoxIcon icn = MessageBoxIcon.Question;
+                String message = "Вы действительно хотите удалить этого читателя?";
+                String caption = "Удаление читателя";
+
+                if (MessageBox.Show(message, caption, msb, icn) == DialogResult.Yes)
+                {
+
+                    string query = "UPDATE Persons SET DateOfDeletion = @DateOfDeletion " +
+                                   "WHERE (Firstname, Lastname, Surname, DateOfBirth) = " +
+                                   "(@Firstname, @Lastname, @Surname, @DateOfBirth)";
+
+                    try
+                    {
+                        command = DataBase.GetConnection().CreateCommand();
+                        command.CommandText = query;
+                        command.Parameters.AddWithValue("@Firstname", readersTable.SelectedRows[0].Cells[1].Value.ToString());
+                        command.Parameters.AddWithValue("@Lastname", readersTable.SelectedRows[0].Cells[0].Value.ToString());
+                        command.Parameters.AddWithValue("@Surname", readersTable.SelectedRows[0].Cells[2].Value.ToString());
+                        command.Parameters.AddWithValue("@DateOfBirth", readersTable.SelectedRows[0].Cells[3].Value.ToString());
+                        command.Parameters.AddWithValue("@DateOfDeletion", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                        DataBase.OpenConnection();
+                        command.ExecuteNonQuery();
+
+                        DataBase.CloseConnection();
+
+                        readersTable.Rows.RemoveAt(readersTable.CurrentRow.Index);
+
+                        MessageBox.Show("Читатель был удален из базы данных",
+                                        "Удаление читателя", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Не удалось удалить читателя из базы данных:\n\"{ex.Message}\"\n" +
+                                        $"Обратитесь к системному администратору для её устранения.",
+                                        "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    }
+                }
+            }
+            // if the line is not full and there is no similar reader in the database, just delete the line
+            else
+            {
+                readersTable.Rows.RemoveAt(readersTable.CurrentRow.Index);
+            }
+        }
+
+        // get the number of readers who have a birthday today
+        private void GetTodayBirthdays()
+        {
+            string query = "SELECT p.Id, p.Lastname, p.Firstname, p.Surname, p.DateOfBirth " +
+                           "FROM Readers r " +
+                           "INNER JOIN Persons p " +
+                           "ON p.Id = r.PersonalId " +
+                           "ORDER BY p.Lastname";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+
+                DataBase.OpenConnection();
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    var current = DateTime.Today;
+                    var date = Convert.ToDateTime(reader.GetString(4));
+                    var year = current.Month > date.Month || current.Month == date.Month && current.Day > date.Day ? current.Year + 1 : current.Year;
+                    var days = (new DateTime(year, date.Month, date.Day) - current).TotalDays;
+
+                    if (days == 0)
+                    {
+                        birthdayList.Add(new ViewBirthdayModel
+                        {
+                            Id = reader.GetInt32(0),
+                            Lastname = reader.GetString(1),
+                            Firstname = reader.GetString(2),
+                            Surname = reader.GetString(3),
+                            DateOfBirth = reader.GetString(4)
+                        });
+                    }
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось загрузить список дней рождения:" +
+                                $"\n\"{ex.Message}\"\nОбратитесь к системному администратору для устранения ошибки.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+
+            birthdayReaders.Text = $"Число читателей, у которых сегодня день рождения: {birthdayList.Count}";
+
+            ShowTodayBirthdays();
+        }
+
+        // displaying readers who have a birthday in the ListBox
+        private void ShowTodayBirthdays()
+        {
+            EmployeeAccountBirthdayListBox.Items.Clear();
+
+            foreach (ViewBirthdayModel item in birthdayList)
+            {
+                EmployeeAccountBirthdayListBox.Items.Add(Convert.ToString(item.Lastname + " "
+                + item.Firstname + " " + item.Surname));
+            }
+
+            // if there are no dates and nothing has been added to the ListBox, then we display "no"
+            if (EmployeeAccountBirthdayListBox.Items.Count == 0)
+            {
+                EmployeeAccountBirthdayListBox.Items.Add("(нет)");
+            }
+        }
+
+        // displaying or hiding the birthday ListBox on click
+        private void BirthdayReaders_Click(object sender, EventArgs e)
+        {
+            EmployeeAccountBirthdayListBox.Visible = !EmployeeAccountBirthdayListBox.Visible;  
+        }
+
+        #endregion
 
         // handling errors when working with DataGridView
         private void CheckError_DataError(object sender, DataGridViewDataErrorEventArgs anError)

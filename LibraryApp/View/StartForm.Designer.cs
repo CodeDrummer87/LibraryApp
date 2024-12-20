@@ -204,6 +204,8 @@
             Text = "Библионикс 0.1";
             Activated += CancelButton_Click;
             Load += StartForm_Load;
+            KeyDown += StartForm_KeyDown;
+            KeyUp += StartForm_KeyUp;
             ((System.ComponentModel.ISupportInitialize)hidePasswordPictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)createAccountPictureBox).EndInit();
             ((System.ComponentModel.ISupportInitialize)startFormErrorProvider).EndInit();

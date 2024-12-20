@@ -73,7 +73,7 @@ namespace LibraryApp
         }
 
         // password salt
-        public byte[] GetSalt()
+        private byte[] GetSalt()
         {
             byte[] salt = RandomNumberGenerator.GetBytes(128 / 8);
 
@@ -94,7 +94,7 @@ namespace LibraryApp
         }
 
         // writing data to the Accounts table
-        private void SetAccountData(Person person, int role)
+        public void SetAccountData(Person person, int role)
         {
             byte[] salt = GetSalt();
             string pswdHash = GetHash(person.Password, salt);
@@ -114,6 +114,31 @@ namespace LibraryApp
                 command.Parameters.AddWithValue("@Lastname", person.Lastname);
                 command.Parameters.AddWithValue("@Surname", person.Surname);
                 command.Parameters.AddWithValue("@DateOfBirth", person.DateOfBirth);
+
+                DataBase.OpenConnection();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось создать запись в таблице Accounts. Ошибка:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка при работе с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
+
+        // writing the address of the profile image file to the Accounts table
+        public static void SetImagePathData(SqliteCommand command, string path, int LoginId)
+        {
+            string query = "UPDATE Accounts SET ImagePath = @Path WHERE LoginId = @LoginId;";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@Path", path);
+                command.Parameters.AddWithValue("@LoginId", LoginId);
 
                 DataBase.OpenConnection();
                 command.ExecuteNonQuery();
@@ -201,7 +226,8 @@ namespace LibraryApp
                         Login = reader.GetString(2),
                         Password = reader.GetString(3),
                         Salt = (byte[])reader[4],
-                        Role = reader.GetInt32(5)
+                        Role = reader.GetInt32(5),
+                        ImagePath = reader.IsDBNull(6) ? null : reader.GetString(6)
                     };
                 }
                 reader.Close();
@@ -245,6 +271,54 @@ namespace LibraryApp
                 DataBase.CloseConnection();
             }
         }
+
+        // checking the account for the deletion date
+        public bool CheckDeletedAccount(string login)
+        {
+            string query = "SELECT EXISTS (SELECT a.LoginId, a.Login, p.DateOfDeletion " +
+                           "FROM Accounts a " +
+                           "INNER JOIN Persons p " +
+                           "ON a.LoginId = p.Id " +
+                           "WHERE a.Login = @login AND " +
+                           "DateOfDeletion IS NULL)";
+
+            command = DataBase.GetConnection().CreateCommand();
+            command.CommandText = query;
+            command.Parameters.AddWithValue("login", login);
+
+            DataBase.OpenConnection();
+            bool answer = Convert.ToBoolean(command.ExecuteScalar());
+
+            DataBase.CloseConnection();
+            return answer;
+        }
+
+        // checking account deletion dates
+        // if the account was deleted more than a year ago,
+        // then we delete the data about it from the database
+        public void DeleteOldAccounts()
+        {
+            string query = "DELETE from Persons " +
+                           "WHERE date('now')-DateOfDeletion >= 1";
+
+            try
+            {
+                command = DataBase.GetConnection().CreateCommand();
+                command.CommandText = query;
+
+                DataBase.OpenConnection();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось произвести удаление архивных аккаунтов:\n\"{ex.Message}\"\n" +
+                                $"Обратитесь к системному администратору для её устранения.",
+                                "Ошибка работы с базой данных", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
+
+            DataBase.CloseConnection();
+        }
+
     }
 
 }

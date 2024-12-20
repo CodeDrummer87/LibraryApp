@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Compile Update="View\CreateEmployeeForm.cs">
+    <Compile Update="View\SubForms\CreateEmployeeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="View\CreatePostForm.cs">
+    <Compile Update="View\SubForms\CreatePostForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="View\EmployeeAccountForm.cs">
@@ -16,10 +16,13 @@
     <Compile Update="View\ListOfEmployeesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="View\ListOfPostsForm.cs">
+    <Compile Update="View\SubForms\ListOfPostsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="View\RegForm.cs">
+    <Compile Update="View\SubForms\RegForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="View\SubForms\SetReaderLoginPassword.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="View\StartForm.cs">
